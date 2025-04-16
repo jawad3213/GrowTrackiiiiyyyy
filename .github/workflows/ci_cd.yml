@@ -16,7 +16,7 @@ jobs:
         env:
           POSTGRES_USER: user
           POSTGRES_PASSWORD: password
-          POSTGRES_DB: bookshare_test
+          POSTGRES_DB: Growtrack_test
         ports:
           - 5432:5432
         options: >-
@@ -57,13 +57,13 @@ jobs:
 
       - name: Build and Push Backend Image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/bookshare-backend:latest ./backend
-          docker push ${{ secrets.DOCKER_USERNAME }}/bookshare-backend:latest
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/  Growtrack-backend:latest ./backend
+          docker push ${{ secrets.DOCKER_USERNAME }}/Growtrack-backend:latest
 
       - name: Build and Push Frontend Image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/bookshare-frontend:latest ./frontend
-          docker push ${{ secrets.DOCKER_USERNAME }}/bookshare-frontend:latest
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/Growtrack-frontend:latest ./frontend
+          docker push ${{ secrets.DOCKER_USERNAME }}/Growtrack-frontend:latest
 
   deploy:
     name: Deploy to Server
