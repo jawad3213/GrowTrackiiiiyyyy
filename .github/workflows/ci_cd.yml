@@ -1,0 +1,84 @@
+name: CI/CD for Growtrack
+
+on:
+  pull_request:
+    branches:
+      - dev
+
+jobs:
+  test:
+    name: Test Application with Docker Compose
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: bookshare_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U user"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Run Tests with Docker Compose
+        run: |
+          docker-compose -f docker-compose.yml up -d
+          sleep 10  # Laisser les services se lancer
+          docker-compose -f docker-compose.yml exec -T backend npm test
+          docker-compose -f docker-compose.yml exec -T frontend npm run test:unit
+          docker-compose -f docker-compose.yml down
+
+  build-and-push:
+    name: Build & Push Docker Images
+    runs-on: ubuntu-latest
+    needs: test  # Exécute seulement si les tests réussissent
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and Push Backend Image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/bookshare-backend:latest ./backend
+          docker push ${{ secrets.DOCKER_USERNAME }}/bookshare-backend:latest
+
+      - name: Build and Push Frontend Image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/bookshare-frontend:latest ./frontend
+          docker push ${{ secrets.DOCKER_USERNAME }}/bookshare-frontend:latest
+
+  deploy:
+    name: Deploy to Server
+    runs-on: ubuntu-latest
+    needs: build-and-push  # Exécute seulement si les builds Docker réussissent
+
+    steps:
+      - name: Deploy to VPS (SSH)
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            docker pull ${{ secrets.DOCKER_USERNAME }}/bookshare-backend:latest
+            docker pull ${{ secrets.DOCKER_USERNAME }}/bookshare-frontend:latest
+            docker-compose down
+            docker-compose up -d
