@@ -1,20 +1,11 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  
-  <div class="mx-auto flex max-w-sm items-center gap-x-4 rounded-xl bg-white p-6 shadow-lg outline outline-black/5 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
-  
-  <div>
-    <div class="text-xl font-medium text-black dark:text-white">ChitChat</div>
-    <p class="text-gray-500 dark:text-gray-400">You have a new message!</p>
-  </div>
-</div>
-  <RouterView />
+    <router-view />
 </template>
 
-<style scoped>
+<script>
 
-</style>
+export default {
+  name : 'App',
+}
+
+</script>
