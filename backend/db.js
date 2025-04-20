@@ -19,4 +19,4 @@ pool.connect()
     console.error('❌ Erreur de connexion à la base PostgreSQL :', err.message);
   });
 
-module.exports = pool;
+module.exports = {pool};
