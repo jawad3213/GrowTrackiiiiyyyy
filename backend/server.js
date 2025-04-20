@@ -21,6 +21,6 @@ app.listen(PORT, () => {
 
 const pool = require('./db');
 
-app.get('/testoi',(req,res)=>{
-    res.send('connexion reussie to backend');
+app.get('/testbackend',(req,res)=>{
+    res.send('connexion reussie to backend !! ');
 })
