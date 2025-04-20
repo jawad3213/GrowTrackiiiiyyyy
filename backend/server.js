@@ -18,3 +18,9 @@ app.post('/reset-pass-email',verify.verifyToken, authController.ResetPassEmail);
 app.listen(PORT, () => {
     console.log(`Server Running on http://localhost:${PORT}`);
 });
+
+const pool = require('./db');
+
+app.get('/testbackend',(req,res)=>{
+    res.send('connexion reussie to backend !! ');
+})
