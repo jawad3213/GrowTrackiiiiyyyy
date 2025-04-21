@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const {validations,validate} = require("../validations/adminValidation")
+const {validate_student,validations,validate} = require("../validations/adminValidation")
 const adminController = require("../controllers/adminController")
 
 
-router.post("/addstudent".validations,validate,adminController.addstudent)
+router.post("/addstudent",validate_student,validate,adminController.addstudent)
 
 module.exports = router;

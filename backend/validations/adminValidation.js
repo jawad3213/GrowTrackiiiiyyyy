@@ -63,5 +63,83 @@ const validate = (req,res,next) => {
     }
     next();
 }
+
+
+
+
+const validate_student = [
+  // Name
+  body('name')
+    .notEmpty().withMessage("Name is required.")
+    .isLength({ min: 2, max: 100 }).withMessage("Name must be between 2 and 100 characters.")
+    .matches(/^[A-Za-zÀ-ÿ\s\-']+$/).withMessage("Name can only contain letters, spaces, hyphens, and apostrophes.")
+    .trim()
+    .escape(),
+
+  // CIN
+  body('cin')
+    .notEmpty().withMessage("CIN is required.")
+    .isLength({ min: 6, max: 10 }).withMessage("CIN must be between 6 and 10 characters.")
+    .isAlphanumeric('fr-FR').withMessage("CIN must contain only letters and numbers.")
+    .trim()
+    .escape(),
+
+  // CNE
+  body('cne')
+    .notEmpty().withMessage("CNE is required.")
+    .isLength({ min: 10, max: 10 }).withMessage("CNE must be exactly 10 characters.")
+    .isAlphanumeric('fr-FR').withMessage("CNE must contain only letters and numbers.")
+    .trim()
+    .escape(),
+
+  // Email
+  body('email')
+    .notEmpty().withMessage("Email is required.")
+    .isEmail().withMessage("Invalid email address.")
+    .normalizeEmail(),
+
+  // Password
+  body('password')
+    .notEmpty().withMessage("Password is required.")
+    .isLength({ min: 8 }).withMessage("Password must be at least 8 characters long.")
+    .custom(value => {
+      if (disallowedPasswords.includes(value.toLowerCase())) {
+        throw new Error("Please choose a stronger password.");
+      }
+      if (!/^(?=.*[A-Z])(?=.*\d).{8,}$/.test(value)) {
+        throw new Error("Password must contain at least one uppercase letter and one number.");
+      }
+      return true;
+    }),
+
+  // Filiere
+  body('filiere')
+    .notEmpty().withMessage("Filière is required.")
+    .isLength({ min: 2, max: 50 }).withMessage("Filière must be between 2 and 50 characters.")
+    .matches(/^[A-Za-zÀ-ÿ\s\-']+$/).withMessage("Filière must contain only letters, spaces, hyphens, and apostrophes.")
+    .trim()
+    .escape(),
+
+  // Groupe
+  body('groupe')
+    .notEmpty().withMessage("Groupe is required.")
+    .isAlphanumeric('fr-FR').withMessage("Groupe must be alphanumeric.")
+    .isLength({ min: 1, max: 10 }).withMessage("Groupe must be between 1 and 10 characters.")
+    .trim()
+    .escape(),
+
+  // Admin Note (optional)
+  body('admin_note')
+    .optional()
+    .isLength({ max: 255 }).withMessage("Admin note must be less than 255 characters.")
+    .trim()
+    .escape()
+];
+
+module.exports = validations;
+
 module.exports = {
-    validations,validate}
+    validate_student,
+    validations,
+    validate
+}
