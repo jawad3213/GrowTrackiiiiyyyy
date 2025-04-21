@@ -55,7 +55,7 @@ export const useAuthStore = defineStore('auth',() =>
         async function resetPassword( newpassword, confirmpassword){
             loading.value = true
             try {
-                 await api.post('/resetpassword', {newpassword, confirmpassword}) //url backend
+                 await api.post('/reset-password', {newpassword, confirmpassword}) //url backend
             } catch (err) {
                 error.value = err.response?.data?.message || 'Reset password failed'
             }finally{
@@ -77,7 +77,7 @@ export const useAuthStore = defineStore('auth',() =>
         const load = computed(()=>loading.value);
 
         return{
-            user, errorMsg,load,fetchUser, Clearstatus, Login,logout,resetPassword, forgotPassword, isAuthenticated
+            user, errorMsg,load, Clearstatus, Login,logout,resetPassword, forgotPassword, isAuthenticated
         }
     }
     

@@ -70,7 +70,7 @@
                         <path fill="currentColor"
                           d="M11.983,0a12.206,...Z"></path>
                       </svg>
-                      <span class="text-red-800"> {{store.status.login.error}} </span>
+                      <span class="text-red-800"> {{store.errorMsg}} </span>
                     </div>
         </div>
 
