@@ -11,6 +11,7 @@ const hashPassword = async (plainPassword) => {
   const hashed = await bcrypt.hash(plainPassword, saltRounds);
   return hashed;
 };
+//ajout une chose
 
 exports.Login = [
 body('email')
