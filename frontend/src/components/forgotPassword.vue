@@ -23,18 +23,18 @@
           >
 
           <!-- Message d'erreur -->
-          <p v-if="store.status.forgot.error" class="text-red-600 text-sm mt-2 animate-fade-in">
-            {{store.status.forgot.error}}
+          <p v-if="store.errorMsg" class="text-red-600 text-sm mt-2 animate-fade-in">
+            {{store.errorMsg}}
           </p>
         </div>
 
         <!-- Bouton avec animation -->
         <button
           type="submit"
-          :disabled="store.status.forgot.loading"
+          :disabled="store.load"
           class="w-full py-3 text-lg font-semibold text-white rounded-md bg-gradient-to-r from-purple-600 to-orange-400 hover:from-purple-700 hover:to-orange-500 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <span v-if="store.status.forgot.loading">Sending...</span>
+          <span v-if="store.load">Sending...</span>
           <span v-else>Send Reset Link</span>
         </button>
       </form>
@@ -51,17 +51,20 @@
 import {ref , onMounted} from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
+
 const store = useAuthStore();
 const emailres = ref('');
 const router = useRouter();
+
 async function forgot() {
     await store.forgotPassword(emailres.value)
-    if(store.status.value.forgot.error === null){
+    if(store.errorMsg === null){
         router.push('/check');
     }
 };
+
 onMounted(() => {
-    if(store.isAuthenticated){ //à répeter
+    if(store. isAuthenticated){ //à répeter
         router.push('/');
     }
     store.Clearstatus();

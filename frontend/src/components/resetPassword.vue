@@ -13,7 +13,7 @@
       <p class="text-gray-600 text-sm mb-6">
         Your new password must be different from previously used passwords
       </p>
-      <div v-if="store.status.reset.loading" class="text-gray-500 text-sm">
+      <div v-if="store.load" class="text-gray-500 text-sm">
         Loading...
       </div>
       <!-- Formulaire -->
@@ -43,8 +43,8 @@
               required
             />
             <!-- Erreur store -->
-            <p v-if="!!store.status.reset.error" class="text-red-600 text-sm mt-2">
-              {{store.status.reset.error}}
+            <p v-if="!!store.errorMsg" class="text-red-600 text-sm mt-2">
+              {{store.errorMsg}}
             </p>
           </div>
           <!-- Bouton -->
@@ -77,12 +77,12 @@ function match(){
 
   async function resetPass() {
   if (!match()) {
-    store.status.value.reset.error = "Passwords do not match"
+    store.errorMsg = "Passwords do not match"
     confirmpasssword.value = ''
     return
   }
   await store.resetPassword(newpassword.value, confirmpasssword.value)
-  if (!!store.status.value.reset.success) {
+  if (!store.errorMsg) {
     router.push('/login')
   }
 }

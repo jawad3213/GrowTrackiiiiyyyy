@@ -3,7 +3,7 @@
     <!-- Form Section -->
     <div class="w-full lg:w-1/2 flex flex-col justify-center items-center bg-white p-8">
       
-      <div v-if="store.status.login.loading" class="text-gray-500 text-center mt-2 text-sm">
+      <div v-if="store.load" class="text-gray-500 text-center mt-2 text-sm">
             Loading...
       </div>
 
@@ -65,7 +65,7 @@
           
         <div class="px-2 mt-4">
 
-        <div v-if="!!store.status.login.error" class="bg-red-200 px-6 py-4  my-4 rounded-md text-lg flex items-center mx-auto max-w-lg">
+        <div v-if="!!store.errorMsg" class="bg-red-200 px-6 py-4  my-4 rounded-md text-lg flex items-center mx-auto max-w-lg">
                       <svg viewBox="0 0 24 24" class="text-red-600 w-5 h-5 mr-3">
                         <path fill="currentColor"
                           d="M11.983,0a12.206,...Z"></path>
@@ -110,7 +110,7 @@ const togglePassword = () => {
 const handlelogin = async () => {
   try {
     await store.Login(email.value, password.value)
-    if (store.status.login.success) {
+    if (!store.errorMsg) {
       router.push('/')
     }
   } catch (err) {
