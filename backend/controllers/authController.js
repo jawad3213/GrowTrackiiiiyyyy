@@ -12,7 +12,7 @@ const hashPassword = async (plainPassword) => {
   return hashed;
 };
 //ajout une chose
-
+//une nouvelle modi...
 exports.Login = [
 body('email')
 .notEmpty().withMessage("Email is required.")
