@@ -24,7 +24,7 @@
 </div>
   
   <div class="pb-0 overflow-hidden md:p-10 lg:p-0 sm:pb-0">
-    <img id="heroImg1" class="transition-all duration-300 ease-in-out hover:scale-105 lg:w-5/6 sm:mx-auto sm:w-5/6 sm:pb-12 lg:pb-0" src="../assets/students.jpg" alt="Awesome hero page image" width="500" height="888"/>
+    <img id="heroImg1" class="transition-all duration-300 ease-in-out hover:scale-105 lg:w-5/6 sm:mx-auto sm:w-5/6 sm:pb-12 lg:pb-0" src="@/assets/students.jpg" alt="Awesome hero page image" width="500" height="888"/>
   </div>
 </div>
 
@@ -131,7 +131,7 @@ Acknowledge achievements at individual and group levels. By spotlighting progres
         </p>
 
         <!-- Logo + name -->
-        <img src="../assets/prof1.png" alt="photo1" class="w-12 h-12 object-contain mb-2">
+        <img src="@/assets/prof1.png" alt="photo1" class="w-12 h-12 object-contain mb-2">
         <p class="text-sm text-gray-700 font-medium">Mr.John</p>
       </div>
 
@@ -148,7 +148,7 @@ Acknowledge achievements at individual and group levels. By spotlighting progres
         </p>
 
         <!-- Logo + name -->
-        <img src="../assets/prof3.jpg" alt="photo2" class="w-12 h-12 object-contain mb-2">
+        <img src="@/assets/prof3.jpg" alt="photo2" class="w-12 h-12 object-contain mb-2">
         <p class="text-sm text-gray-700 font-medium">Ms.Sara</p>
       </div>
     </div>
@@ -161,7 +161,7 @@ Acknowledge achievements at individual and group levels. By spotlighting progres
     
     <!-- Logo -->
     <div class="flex items-center space-x-2">
-      <img src="../assets/logo3.jpg" alt="Logo" class="w-50 h-10 object-contain" />
+      <img src="@/assets/logo3.jpg" alt="Logo" class="w-50 h-10 object-contain" />
 
     </div>
 
@@ -177,9 +177,9 @@ Acknowledge achievements at individual and group levels. By spotlighting progres
 
     
     <div class="flex space-x-4">
-      <a href="https://x.com/i/flow/login"><img src="../assets/twitter.png" alt="Twitter" class="w-6 h-6" /></a>
-      <a href="https://fr-fr.facebook.com/login/web/"><img src="../assets/facebook.png" alt="Facebook" class="w-6 h-6" /></a>
-      <a href="https://www.instagram.com/?flo=true"><img src="../assets/instagram.png" alt="Instagram" class="w-6 h-6" /></a>
+      <a href="https://x.com/i/flow/login"><img src="@/assets/twitter.png" alt="Twitter" class="w-6 h-6" /></a>
+      <a href="https://fr-fr.facebook.com/login/web/"><img src="@/assets/facebook.png" alt="Facebook" class="w-6 h-6" /></a>
+      <a href="https://www.instagram.com/?flo=true"><img src="@/assets/instagram.png" alt="Instagram" class="w-6 h-6" /></a>
     </div>
 
   </div>
@@ -189,7 +189,7 @@ Acknowledge achievements at individual and group levels. By spotlighting progres
 <script>
 
 import axios from 'axios';
-import HeaderPage from './Header.vue';
+import HeaderPage from "@/components/Header.vue";
 
 export default{
   name : 'Teachers',

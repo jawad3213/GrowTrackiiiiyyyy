@@ -23,7 +23,7 @@
           </div>
   
           <div class="pb-0 overflow-hidden md:p-10 lg:p-0 sm:pb-0">
-            <img id="heroImg1" class="transition-all duration-300 ease-in-out hover:scale-105 lg:w-full sm:mx-auto sm:w-5/6 sm:pb-12 lg:pb-0" src="../assets/LoadingPage.jpg" alt="Awesome hero page image" width="500" height="888"/>
+            <img id="heroImg1" class="transition-all duration-300 ease-in-out hover:scale-105 lg:w-full sm:mx-auto sm:w-5/6 sm:pb-12 lg:pb-0" src="@/assets/LoadingPage.jpg" alt="Awesome hero page image" width="500" height="888"/>
           </div>
         </div>
 
@@ -31,13 +31,13 @@
 <div class="bg-[#DAD1EE] py-7">
   <div class="mx-auto max-w-5xl px-6 lg:px-8">
     <div class="mx-auto mt-10 grid max-w-lg grid-cols-4 items-center gap-x-8 gap-y-10 sm:max-w-xl sm:grid-cols-6 sm:gap-x-10 lg:mx-0 lg:max-w-none lg:grid-cols-7">
-      <img class="col-span-2 w-32 h-32 object-contain lg:col-span-1" src="../assets/spons7.png" alt="Transistor">
-      <img class="col-span-2 w-32 h-32 object-contain lg:col-span-1" src="../assets/spons2.jpg" alt="Reform">
-      <img class="col-span-2 w-32 h-32 object-contain lg:col-span-1" src="../assets/spons6.jpg" alt="Reform">
-      <img class="col-span-2 w-32 h-32 object-contain lg:col-span-1" src="../assets/spons3.jpg" alt="Tuple">
-      <img class="col-span-2 w-32 h-32 object-contain lg:col-span-1" src="../assets/spons1.jpg" alt="Ensa">
-      <img class="col-span-2 w-32 h-32 object-contain sm:col-start-2 lg:col-span-1" src="../assets/spons4.jpg" alt="SavvyCal">
-      <img class="col-span-2 col-start-2 w-32 h-32 object-contain sm:col-start-auto lg:col-span-1" src="../assets/spons5.jpg" alt="Statamic">
+      <img class="col-span-2 w-32 h-32 object-contain lg:col-span-1" src="@/assets/spons7.png" alt="Transistor">
+      <img class="col-span-2 w-32 h-32 object-contain lg:col-span-1" src="@/assets/spons2.jpg" alt="Reform">
+      <img class="col-span-2 w-32 h-32 object-contain lg:col-span-1" src="@/assets/spons6.jpg" alt="Reform">
+      <img class="col-span-2 w-32 h-32 object-contain lg:col-span-1" src="@/assets/spons3.jpg" alt="Tuple">
+      <img class="col-span-2 w-32 h-32 object-contain lg:col-span-1" src="@/assets/spons1.jpg" alt="Ensa">
+      <img class="col-span-2 w-32 h-32 object-contain sm:col-start-2 lg:col-span-1" src="@/assets/spons4.jpg" alt="SavvyCal">
+      <img class="col-span-2 col-start-2 w-32 h-32 object-contain sm:col-start-auto lg:col-span-1" src="@/assets/spons5.jpg" alt="Statamic">
     </div>
   </div>
 </div>
@@ -51,7 +51,7 @@
   <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 text-center">
     
     <div>
-      <img src="../assets/icon1.png" alt="Auto-évaluation" class="mx-auto w-30 h-30 mb-4">
+      <img src="@/assets/icon1.png" alt="Auto-évaluation" class="mx-auto w-30 h-30 mb-4">
       <h3 class="text-[#692CF3] font-bold mb-2 text-xl">Auto-évaluation facile</h3>
       <p class="text-gray-800">
         Répondez à des questionnaires simples pour faire<br />
@@ -62,7 +62,7 @@
 
     
     <div>
-      <img src="../assets/icon3.png" alt="Évaluation 360" class="mx-auto w-30 h-30 mb-4">
+      <img src="@/assets/icon3.png" alt="Évaluation 360" class="mx-auto w-30 h-30 mb-4">
       <h3 class="text-[#692CF3] font-bold mb-2 text-xl">Évaluations 360°</h3>
       <p class="text-gray-800">
         Recevez des feedbacks constructifs de la part de<br />
@@ -73,7 +73,7 @@
 
     
     <div>
-      <img src="../assets/icon4.png" alt="Progression" class="mx-auto w-30 h-30 mb-4">
+      <img src="@/assets/icon4.png" alt="Progression" class="mx-auto w-30 h-30 mb-4">
       <h3 class="text-[#692CF3] font-bold mb-2 text-xl">Suivi visuel de votre progression</h3>
       <p class="text-gray-800">
         Consultez des tableaux de bord et des<br />
@@ -84,7 +84,7 @@
 
     
     <div>
-      <img src="../assets/icon2.png" alt="Défis" class="mx-auto w-30 h-30 mb-4">
+      <img src="@/assets/icon2.png" alt="Défis" class="mx-auto w-30 h-30 mb-4">
       <h3 class="text-[#692CF3] font-bold mb-2 text-xl">Détection et suivi des défis</h3>
       <p class="text-gray-800">
         Dès qu’un signe de difficulté apparaît, la<br />
@@ -113,7 +113,7 @@
   
   <!-- Item 1 : Image à gauche, texte à droite -->
   <div class="flex flex-col md:flex-row items-center gap-12">
-    <img src="../assets/feat1.jpg" alt="FAQ 1" class="w-80 h-80 object-contain ml-25" />
+    <img src="@/assets/feat1.jpg" alt="FAQ 1" class="w-80 h-80 object-contain ml-25" />
     <div class="max-w-xl">
       <h3 class="text-[#692CF3] font-bold text-2xl md:text-3xl lg:text-4xl mb-4 leading-snug">
         How Can I Track My Soft Skills Without Spending Hours On Evaluations?
@@ -128,7 +128,7 @@
 
   <!-- Item 2 : Texte à gauche, image à droite -->
   <div class="flex flex-col md:flex-row-reverse items-center gap-12">
-    <img src="../assets/feat2.jpg" alt="FAQ 2" class="w-80 h-80 object-contain mr-20" />
+    <img src="@/assets/feat2.jpg" alt="FAQ 2" class="w-80 h-80 object-contain mr-20" />
     <div class="max-w-xl">
       <h3 class="text-[#692CF3] font-bold text-2xl md:text-3xl lg:text-4xl mb-4 leading-snug">
         I’d Like Feedback From Peers But Worry About Privacy—What Can I Do?
@@ -142,7 +142,7 @@
 
   <!-- Item 3 : Image à gauche, texte à droite -->
   <div class="flex flex-col md:flex-row items-center gap-12">
-    <img src="../assets/feat3.jpg" alt="FAQ 3" class="w-80 h-80 object-contain ml-25" />
+    <img src="@/assets/feat3.jpg" alt="FAQ 3" class="w-80 h-80 object-contain ml-25" />
     <div class="max-w-xl">
       <h3 class="text-[#692CF3] font-bold text-2xl md:text-3xl lg:text-4xl mb-4 leading-snug">
         As A Professor, How Do I Spot Students Who Need Extra Support?
@@ -185,7 +185,7 @@
         </p>
 
         <!-- Logo + name -->
-        <img src="../assets/spons6.jpg" alt="Abdelmalek Essaâdi" class="w-12 h-12 object-contain mb-2">
+        <img src="@/assets/spons6.jpg" alt="Abdelmalek Essaâdi" class="w-12 h-12 object-contain mb-2">
         <p class="text-sm text-gray-700 font-medium">Ensa Tanger</p>
       </div>
 
@@ -202,7 +202,7 @@
         </p>
 
         <!-- Logo + name -->
-        <img src="../assets/spons1.jpg" alt="Abdelmalek Essaâdi" class="w-12 h-12 object-contain mb-2">
+        <img src="@/assets/spons1.jpg" alt="Abdelmalek Essaâdi" class="w-12 h-12 object-contain mb-2">
         <p class="text-sm text-gray-700 font-medium">Abdelmalek Essaâdi</p>
       </div>
     </div>
@@ -218,7 +218,7 @@
     
     <!-- Logo -->
     <div class="flex items-center space-x-2">
-      <img src="../assets/logo3.jpg" alt="Logo" class="w-50 h-10 object-contain" />
+      <img src="@/assets/logo3.jpg" alt="Logo" class="w-50 h-10 object-contain" />
 
     </div>
 
@@ -234,9 +234,9 @@
 
     
     <div class="flex space-x-4">
-      <a href="https://x.com/i/flow/login"><img src="../assets/twitter.png" alt="Twitter" class="w-6 h-6" /></a>
-      <a href="https://fr-fr.facebook.com/login/web/"><img src="../assets/facebook.png" alt="Facebook" class="w-6 h-6" /></a>
-      <a href="https://www.instagram.com/?flo=true"><img src="../assets/instagram.png" alt="Instagram" class="w-6 h-6" /></a>
+      <a href="https://x.com/i/flow/login"><img src="@/assets/twitter.png" alt="Twitter" class="w-6 h-6" /></a>
+      <a href="https://fr-fr.facebook.com/login/web/"><img src="@/assets/facebook.png" alt="Facebook" class="w-6 h-6" /></a>
+      <a href="https://www.instagram.com/?flo=true"><img src="@/assets/instagram.png" alt="Instagram" class="w-6 h-6" /></a>
     </div>
 
   </div>
@@ -251,7 +251,7 @@
 <script>
 
 import axios from 'axios';
-import HeaderPage from './Header.vue';
+import HeaderPage from "@/components/Header.vue";
 
 export default{
   name : 'LoadingPage',

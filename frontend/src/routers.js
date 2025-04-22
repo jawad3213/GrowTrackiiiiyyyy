@@ -1,13 +1,21 @@
 import { createRouter, createWebHistory } from "vue-router"; 
-import LoadingPage from "./components/LoadingPage.vue";
+import LoadingPage from "@/components/Home/LoadingPage.vue";
 import AboutUs from "./components/AboutUs.vue";
 import ContactUs from "./components/ContactUs.vue";
-import Teachers from "./components/Teachers.vue";
-import Students from "./components/Students.vue";
+import Teachers from "./components/Home/Teachers.vue";
+import Students from "./components/Home/Students.vue";
 import Login from "./components/Login.vue";
 import resetPassword from "./components/resetPassword.vue";
 import forgotPassword from "@/components/forgotPassword.vue";
 import check from "./components/check.vue";
+import Skills from "./components/Dash1/Skills.vue";
+import Supervisor from "./components/Dash1/Supervisor.vue";
+import Group from "./components/Dash1/Group.vue";
+import Professor from "./components/Dash1/Professor.vue";
+import Student from "./components/Dash1/Student.vue";
+import Departement from "./components/Dash1/Departement.vue";
+import AddStudentModal from "./components/AddStudentModal.vue";
+
 
 const routes = [
     {
@@ -55,6 +63,43 @@ const routes = [
         component: check,
         path:"/check",
     },
+    {
+        name: "Skills",
+        component: Skills,
+        path:"/Skills",
+    },
+    {
+        name: "Group",
+        component: Group,
+        path:"/Group",
+    },
+    {
+        name: "Professor",
+        component: Professor,
+        path:"/Professor",
+    },
+
+    {
+        name: "Supervisor",
+        component: Supervisor,
+        path:"/Supervisor",
+    },
+    {
+        name: "Student",
+        component: Student,
+        path:"/Student",
+    },
+    {
+        name: "Departement",
+        component: Departement,
+        path:"/Departement",
+    },
+    {
+        name: "AddStudentModal",
+        component: AddStudentModal,
+        path:"/AddStudent",
+    },
+
 
 ];
 

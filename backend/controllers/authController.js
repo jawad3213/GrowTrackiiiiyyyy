@@ -119,7 +119,7 @@ exports.Logout=(req, res)=>{
             secure: true,
             sameSite: "Strict"
           });;
-        return res.status(200).json({ message: "Logout successful" });
+        return res.status(200).json({ message: "Logged out successfully." });
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: "Internal Server Error" });
@@ -145,6 +145,7 @@ exports.ResetPass = [
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
+        console.log("hello");
         const {email} = req.body;
         try {
         const user = await authModel.FindUserByEmail(email);

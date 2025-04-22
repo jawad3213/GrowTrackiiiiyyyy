@@ -81,7 +81,7 @@ function match(){
     confirmpasssword.value = ''
     return
   }
-  await store.resetPassword(newpassword.value, confirmpasssword.value)
+  await store.resetPassword(newpassword.value)
   if (!store.errorMsg) {
     router.push('/login')
   }
