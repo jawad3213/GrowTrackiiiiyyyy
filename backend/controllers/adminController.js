@@ -84,3 +84,27 @@ exports.getStudentById = async (req, res) => {
     }
   };
   
+exports.updateStudent = async (req, res) => {
+    const userId = req.params.id;
+    const updates = req.body;
+
+    
+  console.log("ID :", userId);
+  console.log("Données :", updates);
+  
+    try {
+      const updatedUser = await adminModel.updateStudentById(userId, updates);
+  
+      if (!updatedUser) {
+        return res.status(404).json({ message: "Utilisateur introuvable ou aucun champ fourni." });
+      }
+  
+      res.status(200).json({
+        message: "Utilisateur mis à jour avec succès.",
+        data: updatedUser,
+      });
+    } catch (err) {
+      console.error("Erreur lors de la mise à jour :", err);
+      res.status(500).json({ message: "Erreur serveur." });
+    }
+  };

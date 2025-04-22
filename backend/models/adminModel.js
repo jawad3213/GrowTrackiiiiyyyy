@@ -59,3 +59,20 @@ exports.getStudentById = async (id_student) => {
     }
   };
   
+
+// Mise à jour partielle d’un utilisateur (PATCH)
+exports.updateStudentById = async (id, fieldsToUpdate) => {
+    console.log("Appel modèle avec :", id, fields);
+    
+    const keys = Object.keys(fieldsToUpdate);
+    const values = Object.values(fieldsToUpdate);
+  
+    if (keys.length === 0) return null;
+  
+    const setClause = keys.map((key, i) => `${key} = $${i + 1}`).join(", ");
+    const query = `UPDATE public.member SET ${setClause} WHERE id = $${keys.length + 1} RETURNING *`;
+  
+    const result = await pool.query(query, [...values, id]);
+    return result.rows[0]; // retourne l'utilisateur mis à jour
+  };
+  

@@ -7,7 +7,7 @@ const adminController = require("../../controllers/adminController")
 router.post("/",validate_student,validate,adminController.createStudent);
 router.get("/",adminController.getAllStudents);
 router.get("/:id_student",adminController.getStudentById);
-//router.put("/:id"adminController.updateStudent);
+router.patch("/:id_student",adminController.updateStudent);
 //router.delete("/:id"adminController.deleteStudent);
 
 module.exports = router;
