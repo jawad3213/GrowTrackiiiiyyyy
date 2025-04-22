@@ -13,7 +13,7 @@ exports.verifyToken = (req, res, next) => {
       next();
     });
   };
-  const authorizate = (Role =[]) => {
+  const authorize = (Role =[]) => {
     return  (req,res,next) => {
       const access_token = req.cookies.access_token || req.query.token;
     if (!access_token) {
@@ -39,4 +39,4 @@ exports.verifyToken = (req, res, next) => {
         
 
 
-  module.exports = authorizate;
+module.exports = {authorize};

@@ -99,7 +99,7 @@ const validate_student = [
     .normalizeEmail(),
 
   // Password
-  body('password')
+  body('pass')
     .notEmpty().withMessage("Password is required.")
     .isLength({ min: 8 }).withMessage("Password must be at least 8 characters long.")
     .custom(value => {
@@ -113,7 +113,7 @@ const validate_student = [
     }),
 
   // Filiere
-  body('filiere')
+  body('filier')
     .notEmpty().withMessage("Filière is required.")
     .isLength({ min: 2, max: 50 }).withMessage("Filière must be between 2 and 50 characters.")
     .matches(/^[A-Za-zÀ-ÿ\s\-']+$/).withMessage("Filière must contain only letters, spaces, hyphens, and apostrophes.")
@@ -121,7 +121,7 @@ const validate_student = [
     .escape(),
 
   // Groupe
-  body('groupe')
+  body('group')
     .notEmpty().withMessage("Groupe is required.")
     .isAlphanumeric('fr-FR').withMessage("Groupe must be alphanumeric.")
     .isLength({ min: 1, max: 10 }).withMessage("Groupe must be between 1 and 10 characters.")
@@ -129,7 +129,7 @@ const validate_student = [
     .escape(),
 
   // Admin Note (optional)
-  body('admin_note')
+  body('note')
     .optional()
     .isLength({ max: 255 }).withMessage("Admin note must be less than 255 characters.")
     .trim()
