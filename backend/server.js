@@ -10,10 +10,10 @@ app.use(express.json());
 app.use(cookieParser());
 
 const AuthRoute = require("./routes/AuthRoute");
-app.use("/auth", AuthRoute)
+app.use("/api/auth", AuthRoute)
 
 
-app.post('/reset-pass-email',verify.verifyToken, authController.ResetPassEmail);
+app.post('/api/reset-pass-email',verify.verifyToken, authController.ResetPassEmail);
 
 app.listen(PORT, () => {
     console.log(`Server Running on http://localhost:${PORT}`);
