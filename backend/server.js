@@ -16,10 +16,12 @@ app.use(express.urlencoded({ extended: true })); // Pour les formulaires HTML
 const AuthRoute = require("./routes/AuthRoute");
 app.use("/auth", AuthRoute)
 
-const adminRoute =require("./routes/routesadmin/adminRoute");
-app.use("/admin/students",authorize(["admin"]),adminRoute);
-//authorizate([admin])
+const studentRoute =require("./routes/adminRoutes/studentRoute");
+app.use("/admin/students",studentRoute);
+//authorize(["admin"])
 
+const professorRoute =require("./routes/adminRoutes/professorRoute");
+app.use("/admin/professors",professorRoute);
 //app.post('/reset-pass-email',verify.verifyToken, authController.ResetPassEmail);
 
 app.listen(PORT, () => {
