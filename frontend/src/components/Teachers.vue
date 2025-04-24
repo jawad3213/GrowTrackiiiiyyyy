@@ -1,4 +1,5 @@
 <template>
+  <div>
     <HeaderPage />
     <div class="items-center w-10/12 grid-cols-2 mx-auto overflow-x-hidden lg:grid md:py-14 lg:py-24 xl:py-14 lg:mt-3 xl:mt-5" data-aos="fade-right" data-aos-duration="800">
        <div class="pr-2 md:mb-14 py-14 md:py-0">
@@ -14,7 +15,7 @@
 
   <div class="mt-4">
     <router-link to="/Login" 
-      class="inline-block px-8 py-4 text-white text-base text-xl font-semibold rounded-full"
+      class="inline-block px-8 py-4 text-white text-base  font-semibold rounded-full"
       style="background: linear-gradient(to right, #692CF3, #F97316);">
       Start Now
     </router-link>
@@ -49,46 +50,46 @@
       <div class="space-y-8">
         <!-- Bloc 1 -->
         <div class="flex items-start gap-4">
-          <img src="@/assets/strengh.jpg" alt="Strength Icon" class="w-20 h-20 mt-1" />
+          <img src="@/assets/strengh.png" alt="Strength Icon" class="w-20 h-20 mt-1" />
           <div>
             <h3 class="text-3xl font-semibold text-gray-800 mb-1">
                 Pinpointing Student Strengths
             </h3>
-            <p class="text-xl text-gray-600 text-sm">
+            <p class=" text-gray-600 text-sm">
                 Assess your students’ soft skills to identify where each individual excels or needs support. Tailor lesson plans to guide them toward meaningful growth.            </p>
           </div>
         </div>
 
         <!-- Bloc 2 -->
         <div class="flex items-start gap-4">
-          <img src="@/assets/gathering.jpg" alt="Feedback Icon" class="w-20 h-20 mt-1" />
+          <img src="@/assets/gathering.png" alt="Feedback Icon" class="w-20 h-20 mt-1" />
           <div>
             <h3 class="text-3xl font-semibold text-gray-800 mb-1">
                 Gathering Comprehensive Feedback
             </h3>
-            <p class=" text-xl text-gray-600 text-sm">
+            <p class="  text-gray-600 text-sm">
                 Collect insights from colleagues, administrators, and the students themselves. This multi-source feedback highlights what’s working and reveals areas to improve.            </p>
           </div>
         </div>
 
         <!-- Bloc 3 -->
         <div class="flex items-start gap-4">
-          <img src="@/assets/cahier.jpg" alt="Progress Icon" class="w-20 h-20 mt-1" />
+          <img src="@/assets/cahier.png" alt="Progress Icon" class="w-20 h-20 mt-1" />
           <div>
-            <h3 class="text-3xl text-3xl font-semibold text-gray-800 mb-1">
+            <h3 class=" text-3xl font-semibold text-gray-800 mb-1">
                 Tracking Classroom Progress            </h3>
-            <p class="text-xl text-gray-600 text-sm">
+            <p class=" text-gray-600 text-sm">
                 Use real-time dashboards to monitor overall performance and spot emerging patterns. Respond quickly and effectively to keep your students on the right track.            </p>
           </div>
         </div>
 
         <!-- Bloc 4 -->
         <div class="flex items-start gap-4">
-          <img src="@/assets/person.jpg" alt="Recognition Icon" class="w-20 h-20 mt-1" />
+          <img src="@/assets/person.png" alt="Recognition Icon" class="w-20 h-20 mt-1" />
           <div>
             <h3 class="text-3xl font-semibold text-gray-800 mb-1">
                 Celebrating Milestones            </h3>
-            <p class="text-xl text-gray-600 text-sm">
+            <p class="t text-gray-600 text-sm">
 Acknowledge achievements at individual and group levels. By spotlighting progress, you cultivate a classroom culture that inspires and motivates everyone to aim higher.            </p>
           </div>
         </div>
@@ -156,45 +157,22 @@ Acknowledge achievements at individual and group levels. By spotlighting progres
     
   </div>
 </section>
-<footer class="bg-gradient-to-r from-[#692CF3] to-[#F97316] text-white py-6 px-4">
-  <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-    
-    <!-- Logo -->
-    <div class="flex items-center space-x-2">
-      <img src="../assets/logo3.jpg" alt="Logo" class="w-50 h-10 object-contain" />
 
-    </div>
-
-    
-    <div class="flex space-x-8 justify-center gap-4 text-lg font-medium">
-      <span>© Copyright 2025 GrowTrack</span>
-      <router-link to="/AboutUs" class="hover:underline">About Us</router-link>
-      <router-link to="/ContactUs" class="hover:underline">Contact Us</router-link>
-      <router-link to="/Teachers" class="hover:underline">Teachers</router-link>
-      <router-link to="/Students" class="hover:underline">Students</router-link>
-      <router-link to="/" class="hover:underline">Home</router-link>
-    </div>
-
-    
-    <div class="flex space-x-4">
-      <a href="https://x.com/i/flow/login"><img src="../assets/twitter.png" alt="Twitter" class="w-6 h-6" /></a>
-      <a href="https://fr-fr.facebook.com/login/web/"><img src="../assets/facebook.png" alt="Facebook" class="w-6 h-6" /></a>
-      <a href="https://www.instagram.com/?flo=true"><img src="../assets/instagram.png" alt="Instagram" class="w-6 h-6" /></a>
-    </div>
-
-  </div>
-</footer>
+<Footer />
+</div>
 </template>
 
 <script>
 
 import axios from 'axios';
 import HeaderPage from './Header.vue';
+import Footer from './Footer.vue'
 
 export default{
   name : 'Teachers',
   components :{
-        HeaderPage
+        HeaderPage,
+        Footer
     }
 }
 </script>
