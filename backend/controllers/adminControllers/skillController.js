@@ -1,18 +1,16 @@
-const bcrypt = require("bcrypt");
+
 const skillModel = require("../../models/adminModels/skillModel");
-const { v4: uuidv4 } = require("uuid");
+
 
 exports.createSkill = async (req, res) => {
+
   console.log("Received data:", req.body);
-  const { name, cin, email, pass, department, code, classe, note } = req.body;
+  const { skill_name, question1, question2, question3,desciption_skill} = req.body;
+  const { id_admin } = req.params;
 
   try {
-    const id_user = uuidv4();
-    const role = "skill";
-    const hashedPassword = await bcrypt.hash(pass, 10);
-
     const skills = await skillModel.createSkill(
-      id_user, name, cin, email, hashedPassword, department, code, classe, note, role
+        skill_name, question1, question2, question3, id_admin,desciption_skill
     );
 
     res.status(201).json({
@@ -49,32 +47,6 @@ exports.getAllSkills = async (req, res) => {
 
   } catch (error) {
     console.error("Error retrieving skills:", error);
-    return res.status(500).json({
-      error: "Internal server error. Please try again later.",
-    });
-  }
-};
-
-exports.getSkillByCin = async (req, res) => {
-  const { cin } = req.body;
-
-  try {
-    const skill = await skillModel.getSkillByCin(cin);
-
-    if (!skill) {
-      return res.status(404).json({
-        message: "Skill not found.",
-        data: null,
-      });
-    }
-
-    return res.status(200).json({
-      message: "Skill retrieved successfully.",
-      data: skill,
-    });
-
-  } catch (error) {
-    console.error("Error retrieving skill by CIN:", error);
     return res.status(500).json({
       error: "Internal server error. Please try again later.",
     });
@@ -143,44 +115,6 @@ exports.getTotalSkills = async (req, res) => {
 
   } catch (error) {
     console.error("Error retrieving total number of skills:", error);
-    return res.status(500).json({
-      message: "Internal server error. Please try again later.",
-    });
-  }
-};
-
-exports.getSkillsByClass = async (req, res) => {
-  const { classe } = req.body;
-
-  try {
-    const skills = await skillModel.getSkillsByClass(classe);
-
-    return res.status(200).json({
-      message: "Skills retrieved successfully by class.",
-      data: skills,
-    });
-
-  } catch (error) {
-    console.error("Error retrieving skills by class:", error);
-    return res.status(500).json({
-      message: "Internal server error. Please try again later.",
-    });
-  }
-};
-
-exports.getSkillsBySector = async (req, res) => {
-  const { sector } = req.body;
-
-  try {
-    const skills = await skillModel.getSkillsBySector(sector);
-
-    return res.status(200).json({
-      message: "Skills retrieved successfully by sector.",
-      data: skills,
-    });
-
-  } catch (error) {
-    console.error("Error retrieving skills by sector:", error);
     return res.status(500).json({
       message: "Internal server error. Please try again later.",
     });

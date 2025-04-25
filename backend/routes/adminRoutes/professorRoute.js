@@ -4,7 +4,7 @@ const {validate_student,validations,validate} = require("../../validations/admin
 const professorController = require("../../controllers/adminControllers/professorController")
 
 
-router.post("/",professorController.createProfessor);
+router.post("/create",professorController.createProfessor);
 //,validate_student,validate
 router.get("/",professorController.getAllProfessor);
 router.get("/search",professorController.getProfessorByCin);

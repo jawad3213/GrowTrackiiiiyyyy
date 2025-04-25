@@ -24,6 +24,9 @@ const professorRoute =require("./routes/adminRoutes/professorRoute");
 app.use("/admin/professors",professorRoute);
 //app.post('/reset-pass-email',verify.verifyToken, authController.ResetPassEmail);
 
+const classRoute =require("./routes/adminRoutes/classRoute");
+app.use("/admin/class",classRoute);
+
 app.listen(PORT, () => {
     console.log(`Server Running on http://localhost:${PORT}`);
 });

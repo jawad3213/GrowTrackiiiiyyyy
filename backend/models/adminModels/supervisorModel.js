@@ -1,6 +1,6 @@
 const pool = require("../../config/db");
 
-exports.createSupervisor = async (id_user, name, cin_sepervisor, email, pass, company, number, position, cin_student, note, role) => {
+exports.createSupervisor = async (id_user, name, cin_sepervisor, email, pass, company, number, position, cin_student, name_internship, date_start, date_done,subject, note, role) => {
   try {
     // Insert into the member table
     const result = await pool.query(
@@ -9,21 +9,35 @@ exports.createSupervisor = async (id_user, name, cin_sepervisor, email, pass, co
        ) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
       [id_user, name, cin_sepervisor, email, pass, role, note]
     );
-
-    const student = await pool.query(
-      `SELECT id_member FROM public.member 
-        WHERE cin = $1`,
-        [cin_student]
-    )
+    
 
 
     // Insert into the supervisor table using the retrieved class ID
     await pool.query(
       `INSERT INTO public.supervisor (
-         id_member, registration_number, company, position, id_student
+         id_member, registration_number, company, position
        ) VALUES ($1, $2, $3, $4)`,
-      [id_user, number,company, position,student.rows[0].id_member ]
+      [id_user, number,company, position ]
     );
+    await pool.query(
+      `INSERT INTO public.internship (
+         id_internship, date_start, date_done, subject_internship
+       ) VALUES ($1, $2, $3, $4)`,
+      [name_internship, date_start,date_done, subject ]
+    );
+    const student = await pool.query(
+      `SELECT id_member FROM public.member WHERE cin = $1`,
+      [cin_student]
+    )
+
+    await pool.query(
+      `INSERT INTO public.supervise (
+         id_supervisor, id_student, id_internship
+       ) VALUES ($1, $2, $3 )`,
+      [id_user, student.rows[0].id_member, name_internship]
+    );
+
+    
 
     return result.rows[0];
 
@@ -83,6 +97,10 @@ exports.updateSupervisorById = async (id, fieldsToUpdate) => {
 
 exports.deleteSupervisorById = async (id) => {
   try {
+    await pool.query(
+      "DELETE FROM public.supervise WHERE id_supervisor = $1",
+      [id]
+    )
     await pool.query(
       "DELETE FROM public.supervisor WHERE id_member = $1",
       [id]

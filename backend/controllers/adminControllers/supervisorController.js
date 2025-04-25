@@ -4,7 +4,7 @@ const { v4: uuidv4 } = require("uuid");
 
 exports.createSupervisor = async (req, res) => {
   console.log("Received data:", req.body);
-  const { name, cin_sepervisor, email, pass, company, number, position, cin_student, note } = req.body;
+  const { name, cin_sepervisor, email, pass, company, number, position, cin_student,name_internship, date_start, date_done,subject, note } = req.body;
 
   try {
     const id_user = uuidv4();
@@ -12,7 +12,7 @@ exports.createSupervisor = async (req, res) => {
     const hashedPassword = await bcrypt.hash(pass, 10);
 
     const supervisors = await supervisorModel.createSupervisor(
-      id_user, name, cin_sepervisor, email, hashedPassword, company, number, position, cin_student, note, role
+      id_user, name, cin_sepervisor, email, hashedPassword, company, number, position, cin_student,name_internship, date_start, date_done,subject, note, role
     );
 
     res.status(201).json({

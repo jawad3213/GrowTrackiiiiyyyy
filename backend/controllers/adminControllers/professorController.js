@@ -5,14 +5,14 @@ const { v4: uuidv4 } = require("uuid");
 
 exports.createProfessor = async (req, res) => {
     console.log("Données reçues :", req.body);
-  const { name, cin, email, pass,departement,code, classe, note } = req.body;
+  const { name, cin, email, pass,departement, course, code, classe, note } = req.body;
 
   try {
     const id_user = uuidv4();
     const role = "professor";
     const hashedPassword = await bcrypt.hash(pass, 10);
 
-    const professors = await professorModel.createProfessor(id_user, name, cin, email, hashedPassword,departement,code, classe, note, role);
+    const professors = await professorModel.createProfessor(id_user, name, cin, email, hashedPassword,departement, course, code, classe, note, role);
 
     res.status(201).json({
       message: "professor added successfully.",

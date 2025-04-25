@@ -125,13 +125,13 @@ exports.getStudentsByClass = async (classe) => {
         `SELECT 
            s.id_member, s.cne, 
            m.full_name, m.cin, m.email, m.date_add, 
-           f.sector_name, 
-           c.class_name
+           f.id_sector, 
+           c.id_class
          FROM public.member m 
          JOIN public.student s ON m.id_member = s.id_member 
          JOIN public.class c ON c.id_class = s.id_classe 
          JOIN public.sector f ON f.id_sector = c.sector_id
-         WHERE c.class_name = $1`,
+         WHERE c.id_class = $1`,
         [classe]
       );
   
@@ -149,13 +149,13 @@ exports.getStudentsByClass = async (classe) => {
         `SELECT 
            s.id_member, s.cne, 
            m.full_name, m.cin, m.email, m.date_add, 
-           f.sector_name, 
-           c.class_name
+           f.id_sector, 
+           c.id_class
          FROM public.member m 
          JOIN public.student s ON m.id_member = s.id_member 
          JOIN public.class c ON c.id_class = s.id_classe 
          JOIN public.sector f ON f.id_sector = c.sector_id
-         WHERE f.sector_name = $1`,
+         WHERE f.id_sector = $1`,
         [sector]
       );
   

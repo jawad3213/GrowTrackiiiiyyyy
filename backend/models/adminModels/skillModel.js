@@ -1,24 +1,12 @@
 const pool = require("../../config/db");
 
-exports.createSkill = async (id_user, name, cin, email, pass, department, code, classe, note, role) => {
+exports.createSkill = async (skill_name, question1, question2, question3,desciption_skill, id_admin) => {
   try {
     const result = await pool.query(
-      `INSERT INTO public.member (
-         id_member, full_name, cin, email, password, role, description
-       ) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-      [id_user, name, cin, email, pass, role, note]
-    );
-
-    const group = await pool.query(
-      `SELECT id_class FROM public.class WHERE class_name = $1`,
-      [classe]
-    );
-
-    await pool.query(
       `INSERT INTO public.skill (
-         id_member, department, code, id_classe
-       ) VALUES ($1, $2, $3, $4)`,
-      [id_user, department, code, group.rows[0].id_class]
+         skill_name, question1, question2, question3,desciption_skill, id_admin
+       ) VALUES ($1, $2, $3, $4, $5)`,
+      [skill_name, question1, question2, question3,desciption_skill, id_admin]
     );
 
     return result.rows[0];
@@ -32,10 +20,8 @@ exports.createSkill = async (id_user, name, cin, email, pass, department, code, 
 exports.getAllSkills = async () => {
   try {
     const result = await pool.query(
-      `SELECT m.cin, m.full_name, s.code, m.email, s.department, c.class_name, m.date_add 
-       FROM public.member m 
-       JOIN public.skill s ON m.id_member = s.id_member 
-       JOIN public.class c ON c.id_class = s.id_classe`
+      `SELECT skill_name, desciption_skill, 
+       FROM public.skill`
     );
     return result.rows;
   } catch (error) {
@@ -44,27 +30,6 @@ exports.getAllSkills = async () => {
   }
 };
 
-exports.getSkillByCin = async (cin) => {
-  try {
-    const result = await pool.query(
-      `SELECT m.id_member, m.cin, m.full_name, s.code, m.email, s.department, c.class_name, m.date_add 
-       FROM public.member m 
-       JOIN public.skill s ON m.id_member = s.id_member 
-       JOIN public.class c ON c.id_class = s.id_classe 
-       WHERE m.cin = $1`,
-      [cin]
-    );
-
-    if (!result || result.rows.length === 0) {
-      return null;
-    }
-
-    return result.rows[0];
-  } catch (error) {
-    console.error("Error retrieving skill:", error);
-    throw error;
-  }
-};
 
 exports.updateSkillById = async (id, fieldsToUpdate) => {
   const keys = Object.keys(fieldsToUpdate);
@@ -81,13 +46,9 @@ exports.updateSkillById = async (id, fieldsToUpdate) => {
 
 exports.deleteSkillById = async (id) => {
   try {
-    await pool.query(
-      "DELETE FROM public.skill WHERE id_member = $1",
-      [id]
-    );
 
     const result = await pool.query(
-      "DELETE FROM public.member WHERE id_member = $1",
+      "DELETE FROM public.skill WHERE id_member = $1",
       [id]
     );
 
@@ -106,49 +67,6 @@ exports.total = async () => {
     return result.rows[0];
   } catch (error) {
     console.error("Error retrieving total number of skills:", error);
-    throw error;
-  }
-};
-
-exports.getSkillsByClass = async (classe) => {
-  try {
-    const result = await pool.query(
-      `SELECT 
-         m.cin, m.full_name, s.code, m.email, s.department,  
-         c.class_name, m.date_add
-       FROM public.member m 
-       JOIN public.skill s ON m.id_member = s.id_member 
-       JOIN public.class c ON c.id_class = s.id_classe 
-       WHERE c.class_name = $1`,
-      [classe]
-    );
-
-    return result.rows;
-
-  } catch (error) {
-    console.error("Error retrieving skills by class:", error);
-    throw error;
-  }
-};
-
-exports.getSkillsBySector = async (sector) => {
-  try {
-    const result = await pool.query(
-      `SELECT 
-         m.cin, m.full_name, s.code, m.email, s.department,  
-         c.class_name, m.date_add
-       FROM public.member m 
-       JOIN public.skill s ON m.id_member = s.id_member 
-       JOIN public.class c ON c.id_class = s.id_classe 
-       JOIN public.sector sec ON sec.id_sector = c.sector_id
-       WHERE sec.sector_name = $1`,
-      [sector]
-    );
-
-    return result.rows;
-
-  } catch (error) {
-    console.error("Error retrieving skills by sector:", error);
     throw error;
   }
 };

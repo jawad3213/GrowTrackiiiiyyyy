@@ -2,7 +2,7 @@ const pool = require("../../config/db");
 
 
 
-exports.createProfessor = async (id_user, name, cin, email, pass,departement, code, classe, note, role) => {
+exports.createProfessor = async (id_user, name, cin, email, pass,departement, course, code, classe, note, role) => {
     try {
       // Insertion dans la table member
       const result = await pool.query(
@@ -11,20 +11,22 @@ exports.createProfessor = async (id_user, name, cin, email, pass,departement, co
          ) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
         [id_user, name, cin, email, pass, role, note]
       );
-  
-      // Récupérer id_class à partir du nom de classe
-      const group = await pool.query(
-        `SELECT id_class FROM public.class WHERE class_name = $1`,
-        [classe]
-      );
+
   
   
       // Insérer dans la table student avec id_class et id_sector récupérés
       await pool.query(
         `INSERT INTO public.professor (
-           id_member, department, code, id_classe
-         ) VALUES ($1, $2, $3, $4 )`,
-        [id_user, departement, code, group.rows[0].id_class ]
+           id_member, department, code
+         ) VALUES ($1, $2, $3 )`,
+        [id_user, departement, code ]
+      );
+
+      await pool.query(
+        `INSERT INTO public.teach (
+           id_member, id_class, course
+         ) VALUES ($1, $2, $3 )`,
+        [id_user, classe, course ]
       );
   
       return result.rows[0];
@@ -40,10 +42,11 @@ exports.createProfessor = async (id_user, name, cin, email, pass,departement, co
   exports.getAllProfessor = async () => { 
     try { 
       const result = await pool.query(
-        `SELECT m.cin, m.full_name, p.code, m.email, p.department, c.class_name, m.date_add 
+        `SELECT m.cin, m.full_name, p.code, m.email, p.department, c.id_class, m.date_add 
          FROM public.member m 
          JOIN public.professor p ON m.id_member = p.id_member 
-         JOIN public.class c ON c.id_class = p.id_classe `
+         JOIN public.teach t ON p.id_member = t.id_member 
+         JOIN public.class c ON t.id_class = c.id_class `
       );
       return result.rows;
     } catch(error) { 
@@ -55,10 +58,11 @@ exports.createProfessor = async (id_user, name, cin, email, pass,departement, co
 exports.getProfessorByCin = async (cin) => {
     try {
       const result = await pool.query(
-        `SELECT m.id_member, m.cin, m.full_name, p.code, m.email, p.department, c.class_name, m.date_add 
+        `SELECT m.id_member, m.cin, m.full_name, p.code, m.email, p.department, c.id_class, m.date_add 
          FROM public.member m 
          JOIN public.professor p ON m.id_member = p.id_member 
-         JOIN public.class c ON c.id_class = p.id_classe 
+         JOIN public.teach t ON p.id_member = t.id_member 
+         JOIN public.class c ON t.id_class = c.id_class
          WHERE m.cin = $1`,
          [cin]
       );
@@ -93,6 +97,11 @@ exports.updateProfessorById = async (id, fieldsToUpdate) => {
 
 exports.deleteProfessorById = async (id) => {
     try {
+      await pool.query(
+        "DELETE FROM public.teach WHERE id_member = $1",
+        [id]
+      );
+
 
       await pool.query(
         "DELETE FROM public.professor WHERE id_member = $1",
@@ -126,14 +135,12 @@ exports.total = async (req,res) => {
 exports.getProfessorsByClass = async (classe) => {
     try {
       const result = await pool.query(
-        `SELECT 
-           m.cin, 
-           m.full_name, p.code, m.email, p.department,  
-           c.class_name, m.date_add
+        `SELECT m.cin, m.full_name, p.code, m.email, p.department, c.id_class, m.date_add 
          FROM public.member m 
          JOIN public.professor p ON m.id_member = p.id_member 
-         JOIN public.class c ON c.id_class = p.id_classe 
-         WHERE c.class_name = $1`,
+         JOIN public.teach t ON p.id_member = t.id_member 
+         JOIN public.class c ON t.id_class = c.id_class
+         WHERE c.id_class = $1`,
         [classe]
       );
   
@@ -148,15 +155,13 @@ exports.getProfessorsByClass = async (classe) => {
   exports.getStudentsBySector = async (sector) => {
     try {
       const result = await pool.query(
-        `SELECT 
-           m.cin, 
-           m.full_name, p.code, m.email, p.department,  
-           c.class_name, m.date_add
+        `SELECT m.cin, m.full_name, p.code, m.email, p.department, c.id_class, m.date_add 
          FROM public.member m 
          JOIN public.professor p ON m.id_member = p.id_member 
-         JOIN public.class c ON c.id_class = p.id_classe 
-         JOIN public.sector s ON s.id_sector = c.sector_id
-         WHERE s.sector_name = $1`,
+         JOIN public.teach t ON p.id_member = t.id_member 
+         JOIN public.class c ON t.id_class = c.id_class
+         JOIN public.sector s ON c.sector_id = s.id_sector
+         WHERE s.id_sector = $1`,
         [sector]
       );
   

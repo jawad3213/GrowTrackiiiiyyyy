@@ -4,7 +4,7 @@ const {validate_student,validations,validate} = require("../../validations/admin
 const supervisorController = require("../../controllers/adminControllers/supervisorController")
 
 
-router.post("/",supervisorController.createSupervisor);
+router.post("/create",supervisorController.createSupervisor);
 //,validate_student,validate
 router.get("/",supervisorController.getAllSupervisors);
 router.get("/search",supervisorController.getSupervisorByCin);
