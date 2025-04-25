@@ -15,7 +15,12 @@ import Professor from "./components/Dash1/Professor.vue";
 import Student from "./components/Dash1/Student.vue";
 import Departement from "./components/Dash1/Departement.vue";
 import AddStudentModal from "./components/AddStudentModal.vue";
-
+import dashboard from "./components/dashboard.vue";
+import Calendar from "./components/Others/Calendar.vue";
+import UserProfile from "./components/Others/UserProfile.vue";
+import GlobalOverview from "./components/Dash1/GlobalOverview.vue";
+import Signals from "./components/Dash1/Signals.vue";
+import Coach from "./components/Dash1/Coach.vue";
 
 const routes = [
     {
@@ -99,8 +104,36 @@ const routes = [
         component: AddStudentModal,
         path:"/AddStudent",
     },
-
-
+    {
+        name : "dashboard",
+        component : dashboard,
+        path : "/dashboard",
+    },
+    {
+        name : "Calendar",
+        component : Calendar,
+        path : "/Calendar",
+    },
+    {
+        name : "UserProfile",
+        component : UserProfile,
+        path : "/UserProfile",
+    },
+    {
+        name : "GlobalOverview",
+        component : GlobalOverview,
+        path : "/GlobalOverview",
+    },
+    {
+        name : "Signals",
+        component : Signals,
+        path : "/Signals",
+    },
+    {
+        name : "Coach",
+        component : Coach,
+        path : "/Coach",
+    },
 ];
 
 const router =createRouter({

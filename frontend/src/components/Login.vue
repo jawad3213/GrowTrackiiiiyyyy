@@ -111,7 +111,7 @@ const handlelogin = async () => {
   try {
     await store.Login(email.value, password.value)
     if (!store.errorMsg) {
-      router.push('/Group')
+      router.push('/dashboard')
     }
   } catch (err) {
     console.error('Erreur lors de la connexion :', err)
@@ -120,7 +120,7 @@ const handlelogin = async () => {
 
 onMounted(() => {
     if(store.isAuthenticated){ //à répeter
-        router.push('/Group');
+        router.push('/dashboard');
     }
     store.Clearstatus();
 });
