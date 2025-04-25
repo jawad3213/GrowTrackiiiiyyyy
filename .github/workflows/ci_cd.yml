@@ -1,49 +1,53 @@
 name: CI/CD for Growtrack
 
 on:
+  push:
+    branches: [dev]
   pull_request:
-    branches:
-      - dev
+    branches: [dev]
 
 jobs:
   test:
-    name: Test Application with Docker Compose
+    name: Install, Audit & Test
     runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_USER: user
-          POSTGRES_PASSWORD: password
-          POSTGRES_DB: Growtrack_test
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U user"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
 
-      - name: Run Tests with Docker Compose
-        run: |
-          docker-compose -f docker-compose.yml up -d
-          sleep 10  # Laisser les services se lancer
-          docker-compose -f docker-compose.yml exec -T backend npm test
-          docker-compose -f docker-compose.yml exec -T frontend npm run test:unit
-          docker-compose -f docker-compose.yml down
+      - name: Install Backend Dependencies
+        working-directory: ./backend
+        run: npm ci
+
+      - name: Audit Backend Dependencies
+        working-directory: ./backend
+        run: npm audit --audit-level=high || true
+
+      - name: Run Backend Tests
+        working-directory: ./backend
+        run: npm test
+
+      - name: Install Frontend Dependencies
+        working-directory: ./frontend
+        run: npm ci
+
+      - name: Audit Frontend Dependencies
+        working-directory: ./frontend
+        run: npm audit --audit-level=high || true
+
+      - name: Run Frontend Unit Tests
+        working-directory: ./frontend
+        run: npm run test:unit
 
   build-and-push:
     name: Build & Push Docker Images
     runs-on: ubuntu-latest
-    needs: test  # Exécute seulement si les tests réussissent
+    needs: test
 
     steps:
       - name: Checkout code
@@ -57,8 +61,8 @@ jobs:
 
       - name: Build and Push Backend Image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/  Growtrack-backend:latest ./backend
-          docker push ${{ secrets.DOCKER_USERNAME }}/Growtrack-backend:latest
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/bookshare-backend:latest ./backend
+          docker push ${{ secrets.DOCKER_USERNAME }}/bookshare-backend:latest
 
       - name: Build and Push Frontend Image
         run: |
@@ -66,19 +70,36 @@ jobs:
           docker push ${{ secrets.DOCKER_USERNAME }}/Growtrack-frontend:latest
 
   deploy:
-    name: Deploy to Server
+    name: Deploy to AWS EC2
     runs-on: ubuntu-latest
-    needs: build-and-push  # Exécute seulement si les builds Docker réussissent
+    needs: build-and-push
 
     steps:
-      - name: Deploy to VPS (SSH)
+      - name: Deploy via SSH
         uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
+            export DATABASE_URL=${{ secrets.DATABASE_URL }}
+
             docker pull ${{ secrets.DOCKER_USERNAME }}/bookshare-backend:latest
             docker pull ${{ secrets.DOCKER_USERNAME }}/bookshare-frontend:latest
-            docker-compose down
-            docker-compose up -d
+
+            docker stop backend_app || true && docker rm backend_app || true
+            docker stop frontend_app || true && docker rm frontend_app || true
+
+            docker run -d \
+              --name backend_app \
+              -p 3000:3000 \
+              -e NODE_ENV=production \
+              -e DATABASE_URL=$DATABASE_URL \
+              ${{ secrets.DOCKER_USERNAME }}/bookshare-backend:latest
+
+            docker run -d \
+              --name frontend_app \
+              -p 5173:5173 \
+              -e NODE_ENV=production \
+              -e VITE_API_URL=http://localhost:3000 \
+              ${{ secrets.DOCKER_USERNAME }}/bookshare-frontend:latest
