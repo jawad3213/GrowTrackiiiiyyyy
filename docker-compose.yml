@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+
+  backend:
+    build: ./backend
+    container_name: backend_app_c
+    ports:
+      - "3000:3000"
+    working_dir: /app
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - ACCESS_SECRET=f3e02c4c7d9a44b7a6b5c9f7df6ad7c34fd021fa6f70834b82dfccd5ecfbd3f9a4e0ef1a20660a
+      - REFRESH_SECRET=96cb57ea0c8a437eb7a5c21Ffa0a8ea1b33f9cfefb3e1ab98aa4b5b3cf449f2e90d9627e4ecb83
+      - EMAIL_USER=eloukilinada2004@gmail.com
+      - EMAIL_PASS=eova pcft uyil asbk
+      - DATABASE_URL=postgresql://SKILLS_owner:npg_ogbEHrAJ63Rf@ep-shrill-wildflower-a5dpbyo4-pooler.us-east-2.aws.neon.tech/SKILLS?sslmode=require
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    container_name: frontend_app_c
+    ports:
+      - "5173:5173"
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - VITE_API_URL=http://localhost:3000
+    command: ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+    restart: unless-stopped
