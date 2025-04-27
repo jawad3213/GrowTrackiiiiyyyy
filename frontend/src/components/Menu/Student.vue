@@ -1,14 +1,12 @@
 <template>
     <admin-layout>
 
-    <div class="flex min-h-screen bg-gray-50 font-sans">
-      
+    <div class="flex min-h-screen bg-gray-50 font-sans dark:border-gray-800 dark:bg-white/[0.03]">
       
   
       <!-- Main -->
       <main class="flex-1 flex flex-col">
   
-       
   
         <!-- Search -->
         <div class="flex items-center justify-between p-6 border border-gray-300 rounded-md">
@@ -25,10 +23,10 @@
         <!-- No Data -->
         <div class="flex-1 flex flex-col items-center justify-center text-center text-gray-600">
           <div class="text-5xl mb-4">🔍</div>
-          <p class="text-lg font-semibold mb-2">No groups or fields configured</p>
-          <p class="mb-6">Set up fields or academic tracks to better segment your platform.</p>
+          <p class="text-lg font-semibold mb-2">No student defined</p>
+          <p class="mb-6">You haven’t set up any student yet.</p>
           <button class="bg-[#F97316] hover:bg-[#FA9148] text-white font-bold py-3 px-20 rounded-md">
-            + Add Group/Field
+            + Add a student
           </button>
         </div>
   
@@ -48,12 +46,9 @@
   </template>
   
   <script setup>
-  import AdminLayout from '../layout/AdminLayout.vue';
-  
-
   
   import { useRouter } from 'vue-router';
-  
+  import AdminLayout from '../layout/AdminLayout.vue';
   const router = useRouter();
   
   function navigate(link) {

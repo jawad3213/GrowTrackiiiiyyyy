@@ -1,14 +1,14 @@
 <template>
     <admin-layout>
 
-    <div class="flex min-h-screen bg-gray-50 font-sans">
+    <div class="flex min-h-screen bg-gray-50 font-sans dark:border-gray-800 dark:bg-white/[0.03]">
       
       
   
       <!-- Main -->
       <main class="flex-1 flex flex-col">
   
-      
+       
   
         <!-- Search -->
         <div class="flex items-center justify-between p-6 border border-gray-300 rounded-md">
@@ -25,10 +25,11 @@
         <!-- No Data -->
         <div class="flex-1 flex flex-col items-center justify-center text-center text-gray-600">
           <div class="text-5xl mb-4">🔍</div>
-          <p class="text-lg font-semibold mb-2">No skills defined</p>
-          <p class="mb-6">You haven’t set up any soft skills yet.<br />Create skills and indicators to build your custom evaluation framework.</p>
+          <p class="text-lg font-semibold mb-2">No Coaches Found</p>
+          <p class="mb-6">It looks like no coaches are registered yet.<br />Start by adding coaches to guide students through personalized soft skill development and monitor <br />their progress throughout the program.
+        </p>
           <button class="bg-[#F97316] hover:bg-[#FA9148] text-white font-bold py-3 px-20 rounded-md">
-            + Add Skill
+            + Add Coach
           </button>
         </div>
   
@@ -45,13 +46,11 @@
     </div>
   </admin-layout>
 
-
   </template>
   
   <script setup>
-  import { ref } from 'vue';
+  import AdminLayout from '../layout/AdminLayout.vue';
   
-  import AdminLayout from '@/components/layout/AdminLayout.vue';
 
   
   import { useRouter } from 'vue-router';

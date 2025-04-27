@@ -1,7 +1,8 @@
+
 <template>
-  <div class="relative" v-click-outside="closeDropdown" ref="dropdown">
+  <div class="relative" v-click-outside="closeDropdown" ref="dropdown"> <!-- si je clique en dehors-->
     <!-- Dropdown Trigger Button -->
-    <button @click="toggleDropdown" :class="buttonClass">
+    <button @click="toggleDropdown" :class="buttonClass"> <!--ouvre ou ferme le menu-->
       <slot name="icon">
         <!-- Default icon -->
         <svg
@@ -51,8 +52,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import vClickOutside from './v-click-outside.vue'
+import { ref } from 'vue' 
+import vClickOutside from './v-click-outside.vue' //détecter un clic en dehors du menu.
+
+
 
 const props = defineProps({
   menuItems: {

@@ -1,7 +1,7 @@
 <template>
       <admin-layout>
 
-    <div class="flex min-h-screen mt-1 bg-gray-50 font-sans">
+    <div class="flex min-h-screen mt-1 bg-gray-50 font-sans dark:border-gray-800 dark:bg-white/[0.03]">
       
     
   

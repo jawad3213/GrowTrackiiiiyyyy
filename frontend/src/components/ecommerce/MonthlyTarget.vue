@@ -52,7 +52,7 @@
         <p
           class="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 dark:text-white/90 sm:text-lg"
         >
-          $20K
+          80%
           <svg
             width="16"
             height="16"
@@ -126,7 +126,7 @@ const chartOptions = {
         value: {
           fontSize: '36px',
           fontWeight: '600',
-          offsetY: 10,
+          offsetY: 90,
           color: '#1D2939',
           formatter: function (val: number) {
             return val.toFixed(2) + '%'

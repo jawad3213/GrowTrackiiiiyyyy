@@ -15,7 +15,7 @@
 
             <div>
               <p class="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">Last Name</p>
-              <p class="text-sm font-medium text-gray-800 dark:text-white/90">Elouansaidi</p>
+              <p class="text-sm font-medium text-gray-800 dark:text-white/90"></p>
             </div>
 
             <div>
@@ -228,14 +228,7 @@
               </div>
             </div>
             <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-  <!-- Close Button -->
-  <button
-    @click="isProfileInfoModal = false"
-    type="button"
-    class="flex w-full justify-center rounded-md border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-300 transition sm:w-auto"
-  >
-    ✖ Close
-  </button>
+  
 
   <!-- Save Changes Button -->
   <button

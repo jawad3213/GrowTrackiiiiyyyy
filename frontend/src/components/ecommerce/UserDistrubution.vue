@@ -1,6 +1,6 @@
 
     <template>
-  <div class="w-full md:w-1/2 rounded-xl border border-gray-200 p-6 bg-white shadow">
+  <div class="w-full md:w-1/2 rounded-xl border border-gray-200 p-6 bg-white shadow dark:border-gray-800 dark:bg-white/[0.03]">
     <!-- Header -->
     <div class="flex justify-between items-center mb-4">
       <h2 class="font-semibold text-gray-800 text-sm">User Distrubution by Role</h2>

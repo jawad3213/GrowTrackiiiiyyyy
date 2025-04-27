@@ -1,5 +1,5 @@
 <template>
-    <div class="rounded-xl border border-gray-200 p-6 bg-white shadow mb-20">
+    <div class="rounded-xl border border-gray-200 p-6 bg-white shadow mb-20 dark:border-gray-800 dark:bg-white/[0.03]">
       <!-- Header -->
       <div class="flex justify-between items-center mb-2">
         <h2 class="text-sm font-semibold text-gray-700">Total Evaluation</h2>

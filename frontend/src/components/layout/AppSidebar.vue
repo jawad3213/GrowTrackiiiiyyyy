@@ -173,16 +173,10 @@ import {
   GridIcon,
   CalenderIcon,
   UserCircleIcon,
-  ChatIcon,
-  MailIcon,
-  DocsIcon,
-  PieChartIcon,
   ChevronDownIcon,
   HorizontalDots,
   PageIcon,
-  TableIcon,
-  ListIcon,
-  PlugInIcon,
+
 } from "@/components/icons";
 import { useSidebar } from "@/composables/useSidebar";
 

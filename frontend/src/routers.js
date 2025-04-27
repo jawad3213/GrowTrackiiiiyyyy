@@ -8,19 +8,18 @@ import Login from "./components/Login.vue";
 import resetPassword from "./components/resetPassword.vue";
 import forgotPassword from "@/components/forgotPassword.vue";
 import check from "./components/check.vue";
-import Skills from "./components/Dash1/Skills.vue";
-import Supervisor from "./components/Dash1/Supervisor.vue";
-import Group from "./components/Dash1/Group.vue";
-import Professor from "./components/Dash1/Professor.vue";
-import Student from "./components/Dash1/Student.vue";
-import Departement from "./components/Dash1/Departement.vue";
+import Skills from "./components/Menu/Skills.vue";
+import Supervisor from "./components/Menu/Supervisor.vue";
+import Group from "./components/Menu/Group.vue";
+import Professor from "./components/Menu/Professor.vue";
+import Student from "./components/Menu/Student.vue";
 import AddStudentModal from "./components/AddStudentModal.vue";
 import dashboard from "./components/dashboard.vue";
-import Calendar from "./components/Others/Calendar.vue";
-import UserProfile from "./components/Others/UserProfile.vue";
-import GlobalOverview from "./components/Dash1/GlobalOverview.vue";
-import Signals from "./components/Dash1/Signals.vue";
-import Coach from "./components/Dash1/Coach.vue";
+import Calendar from "./components/Menu/Calendar.vue";
+import UserProfile from "./components/Menu/UserProfile.vue";
+import GlobalOverview from "./components/Menu/GlobalOverview.vue";
+import Signals from "./components/Menu/Signals.vue";
+import Coach from "./components/Menu/Coach.vue";
 
 const routes = [
     {
@@ -95,11 +94,6 @@ const routes = [
         path:"/Student",
     },
     {
-        name: "Departement",
-        component: Departement,
-        path:"/Departement",
-    },
-    {
         name: "AddStudentModal",
         component: AddStudentModal,
         path:"/AddStudent",
@@ -133,6 +127,11 @@ const routes = [
         name : "Coach",
         component : Coach,
         path : "/Coach",
+    },
+    {
+        path: '/reset-pass-email',
+        name: 'ResetPassword',
+        component: resetPassword,
     },
 ];
 

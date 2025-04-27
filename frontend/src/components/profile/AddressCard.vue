@@ -134,14 +134,7 @@
               </div>
             </div>
             <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-  <!-- Close Button -->
-  <button
-    @click="isProfileInfoModal = false"
-    type="button"
-    class="flex w-full justify-center rounded-md border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-300 transition sm:w-auto"
-  >
-    ✖ Close
-  </button>
+ 
 
   <!-- Save Changes Button -->
   <button
@@ -173,4 +166,3 @@ const saveProfile = () => {
 }
 </script>
 
-<style></style>

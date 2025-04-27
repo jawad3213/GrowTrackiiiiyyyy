@@ -22,4 +22,5 @@ router.post('/reset-password',authController.ResetPass);
 router.post('/logout',authController.Logout);
 router.post('/refresh',authController.RefreshToken);
 
+
 module.exports = router;

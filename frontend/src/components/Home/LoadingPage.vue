@@ -2,7 +2,7 @@
 <template>
 <HeaderPage />
 
-   <div class="items-center w-10/12 grid-cols-2 mx-auto overflow-x-hidden lg:grid md:py-14 lg:py-24 xl:py-14 lg:mt-3 xl:mt-5" data-aos="fade-right" data-aos-duration="800">
+   <div class="items-center w-10/12 grid-cols-2 mx-auto overflow-x-hidden lg:grid md:py-14 lg:py-24 xl:py-14 lg:mt-3 xl:mt-5 " data-aos="fade-right" data-aos-duration="800">
           <div class="pr-2 md:mb-14 py-14 md:py-0">
             <h1 style="font-weight: bold; font-size: 60px; color: #212121; font-family: 'Inter', sans-serif;">
                <span class="block w-full">Grow Your Skills.Shape Your Future</span> 
@@ -28,19 +28,27 @@
         </div>
 
 
-<div class="bg-[#DAD1EE] py-7">
-  <div class="mx-auto max-w-5xl px-6 lg:px-8">
-    <div class="mx-auto mt-10 grid max-w-lg grid-cols-4 items-center gap-x-8 gap-y-10 sm:max-w-xl sm:grid-cols-6 sm:gap-x-10 lg:mx-0 lg:max-w-none lg:grid-cols-7">
-      <img class="col-span-2 w-32 h-32 object-contain lg:col-span-1" src="@/assets/spons7.png" alt="Transistor">
-      <img class="col-span-2 w-32 h-32 object-contain lg:col-span-1" src="@/assets/spons2.jpg" alt="Reform">
-      <img class="col-span-2 w-32 h-32 object-contain lg:col-span-1" src="@/assets/spons6.jpg" alt="Reform">
-      <img class="col-span-2 w-32 h-32 object-contain lg:col-span-1" src="@/assets/spons3.jpg" alt="Tuple">
-      <img class="col-span-2 w-32 h-32 object-contain lg:col-span-1" src="@/assets/spons1.jpg" alt="Ensa">
-      <img class="col-span-2 w-32 h-32 object-contain sm:col-start-2 lg:col-span-1" src="@/assets/spons4.jpg" alt="SavvyCal">
-      <img class="col-span-2 col-start-2 w-32 h-32 object-contain sm:col-start-auto lg:col-span-1" src="@/assets/spons5.jpg" alt="Statamic">
+        <div class="bg-[#DAD1EE] py-7 overflow-hidden">
+    <div class="relative w-full">
+      <div class="flex animate-slide gap-32">
+        <img class="w-32 h-32 object-contain" src="@/assets/sponss7.png" alt="Transistor" />
+        <img class="w-32 h-32 object-contain" src="@/assets/sponss2.png" alt="Reform" />
+        <img class="w-32 h-32 object-contain" src="@/assets/sponss6.png" alt="Reform" />
+        <img class="w-32 h-32 object-contain" src="@/assets/sponss3.png" alt="Tuple" />
+        <img class="w-32 h-32 object-contain" src="@/assets/sponss1.png" alt="Ensa" />
+        <img class="w-32 h-32 object-contain" src="@/assets/sponss4.png" alt="SavvyCal" />
+        <img class="w-32 h-32 object-contain" src="@/assets/sponss5.png" alt="Statamic" />
+        <!-- on double pour éviter le vide quand ça recommence -->
+        <img class="w-32 h-32 object-contain" src="@/assets/sponss7.png" alt="Transistor" />
+        <img class="w-32 h-32 object-contain" src="@/assets/sponss2.png" alt="Reform" />
+        <img class="w-32 h-32 object-contain" src="@/assets/sponss6.png" alt="Reform" />
+        <img class="w-32 h-32 object-contain" src="@/assets/sponss3.png" alt="Tuple" />
+        <img class="w-32 h-32 object-contain" src="@/assets/sponss1.png" alt="Ensa" />
+        <img class="w-32 h-32 object-contain" src="@/assets/sponss4.png" alt="SavvyCal" />
+        <img class="w-32 h-32 object-contain" src="@/assets/sponss5.png" alt="Statamic" />
+      </div>
     </div>
   </div>
-</div>
 
 
 <section class="bg-white py-16 px-6">
@@ -52,44 +60,43 @@
     
     <div>
       <img src="@/assets/icon1.png" alt="Auto-évaluation" class="mx-auto w-30 h-30 mb-4">
-      <h3 class="text-[#692CF3] font-bold mb-2 text-xl">Auto-évaluation facile</h3>
+      <h3 class="text-[#692CF3] font-bold mb-2 text-xl">Self-assessment made easy</h3>
       <p class="text-gray-800">
-        Répondez à des questionnaires simples pour faire<br />
-        le point sur vos compétences et voir où vous<br />
-        brillez ou ce que vous pourriez améliorer.
+        Answer simple questionnaires to evaluate your skills,<br />
+        see where you shine, and identify areas<br />
+        you could improve.
       </p>
     </div>
 
     
     <div>
       <img src="@/assets/icon3.png" alt="Évaluation 360" class="mx-auto w-30 h-30 mb-4">
-      <h3 class="text-[#692CF3] font-bold mb-2 text-xl">Évaluations 360°</h3>
+      <h3 class="text-[#692CF3] font-bold mb-2 text-xl">Evaluations 360°</h3>
       <p class="text-gray-800">
-        Recevez des feedbacks constructifs de la part de<br />
-        vos camarades, professeurs, tuteurs et même<br />
-        d'encadrants extérieurs.
+        Get constructive feedback from your <br />
+        classmates,professors, tutors, and even external<br />
+        and even external supervisors to help you grow and improve..
       </p>
     </div>
 
     
     <div>
       <img src="@/assets/icon4.png" alt="Progression" class="mx-auto w-30 h-30 mb-4">
-      <h3 class="text-[#692CF3] font-bold mb-2 text-xl">Suivi visuel de votre progression</h3>
+      <h3 class="text-[#692CF3] font-bold mb-2 text-xl">Visual tracking of your progress</h3>
       <p class="text-gray-800">
-        Consultez des tableaux de bord et des<br />
-        graphiques clairs pour observer votre évolution<br />
-        au fil du temps.
+        Explore clear dashboards and charts to monitor<br />
+        monitor  your growth and track your development over time.
       </p>
     </div>
 
     
     <div>
       <img src="@/assets/icon2.png" alt="Défis" class="mx-auto w-30 h-30 mb-4">
-      <h3 class="text-[#692CF3] font-bold mb-2 text-xl">Détection et suivi des défis</h3>
+      <h3 class="text-[#692CF3] font-bold mb-2 text-xl">Challenge detection and monitoring</h3>
       <p class="text-gray-800">
-        Dès qu’un signe de difficulté apparaît, la<br />
-        plateforme vous alerte pour que vous puissiez<br />
-        agir rapidement.
+        As soon as any sign of difficulty arises, <br />
+        the platform alerts you, allowing you to take quick <br />
+        action and stay on track.
       </p>
     </div>
   </div>
@@ -113,7 +120,7 @@
   
   <!-- Item 1 : Image à gauche, texte à droite -->
   <div class="flex flex-col md:flex-row items-center gap-12">
-    <img src="@/assets/feat1.jpg" alt="FAQ 1" class="w-80 h-80 object-contain ml-25" />
+    <img src="@/assets/featt1.png" alt="FAQ 1" class="w-80 h-80 object-contain ml-25" />
     <div class="max-w-xl">
       <h3 class="text-[#692CF3] font-bold text-2xl md:text-3xl lg:text-4xl mb-4 leading-snug">
         How Can I Track My Soft Skills Without Spending Hours On Evaluations?
@@ -128,7 +135,7 @@
 
   <!-- Item 2 : Texte à gauche, image à droite -->
   <div class="flex flex-col md:flex-row-reverse items-center gap-12">
-    <img src="@/assets/feat2.jpg" alt="FAQ 2" class="w-80 h-80 object-contain mr-20" />
+    <img src="@/assets/featt2.png" alt="FAQ 2" class="w-80 h-80 object-contain mr-20" />
     <div class="max-w-xl">
       <h3 class="text-[#692CF3] font-bold text-2xl md:text-3xl lg:text-4xl mb-4 leading-snug">
         I’d Like Feedback From Peers But Worry About Privacy—What Can I Do?
@@ -142,7 +149,7 @@
 
   <!-- Item 3 : Image à gauche, texte à droite -->
   <div class="flex flex-col md:flex-row items-center gap-12">
-    <img src="@/assets/feat3.jpg" alt="FAQ 3" class="w-80 h-80 object-contain ml-25" />
+    <img src="@/assets/featt3.png" alt="FAQ 3" class="w-80 h-80 object-contain ml-25" />
     <div class="max-w-xl">
       <h3 class="text-[#692CF3] font-bold text-2xl md:text-3xl lg:text-4xl mb-4 leading-snug">
         As A Professor, How Do I Spot Students Who Need Extra Support?
@@ -260,3 +267,18 @@ export default{
     }
 }
 </script>
+
+<style scoped>
+@keyframes slide {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-slide {
+  animation: slide 30s linear infinite; /* 30 secondes pour un cycle complet */
+}
+</style>

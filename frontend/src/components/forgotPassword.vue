@@ -59,7 +59,7 @@ const router = useRouter();
 async function forgot() {
     await store.forgotPassword(emailres.value)
     if(store.errorMsg === null){
-        router.push('/login');
+        router.push('/check');
     }
 };
 
