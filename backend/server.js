@@ -33,7 +33,7 @@ app.use("/api/auth", AuthRoute)
 
 app.use(limiter);
 
-app.post('/api/reset-pass-email',verify.verifyToken, authController.ResetPassEmail);
+app.post('/api/resetpass',verify.verifyToken, authController.ResetPassEmail);
 
 app.listen(PORT, () => {
     console.log(`Server Running on http://localhost:${PORT}`);

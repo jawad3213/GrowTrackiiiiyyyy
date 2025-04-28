@@ -52,10 +52,10 @@ export const useAuthStore = defineStore('auth',() =>
             }
         };
 
-        async function resetPassword( newpassword, token){
+        async function resetPassword(password, token){
             loading.value = true
             try {
-                 await api.post('/api/auth/reset-pass-email', {newpassword, token}) 
+                 await api.post(`/api/resetpass?token=${token}`, {password}) 
             } catch (err) {
                 error.value = err.response?.data?.message || 'Reset password failed'
             }finally{
