@@ -8,7 +8,7 @@ on:
 
 jobs:
   test:
-    name: Install, Audit & Test
+    name: Install, & Test
     runs-on: ubuntu-latest
 
     steps:
@@ -24,10 +24,6 @@ jobs:
         working-directory: ./backend
         run: npm ci
 
-      - name: Audit Backend Dependencies
-        working-directory: ./backend
-        run: npm audit --audit-level=high || true
-
       - name: Run Backend Tests
         working-directory: ./backend
         run: npm test
@@ -35,10 +31,6 @@ jobs:
       - name: Install Frontend Dependencies
         working-directory: ./frontend
         run: npm ci
-
-      - name: Audit Frontend Dependencies
-        working-directory: ./frontend
-        run: npm audit --audit-level=high || true
 
       - name: Run Frontend Unit Tests
         working-directory: ./frontend
