@@ -17,7 +17,7 @@
   
         <!-- Bouton OK -->
         <button
-          @click="router.push('/resetpass')"
+          @click="router.push('/')"
           class="px-6 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition"
         >
           Ok
