@@ -2,21 +2,21 @@ const pool = require("../../config/db");
 
 
 
-exports.createStudent = async (id_user, name, cin, cne, email, pass, field, note, role) => {
+exports.createStudent = async (id_user, name, cin, cne, email, pass, field, note, role,imagePath) => {
     try {
       // Insertion dans la table member
       const result = await pool.query(
         `INSERT INTO public.member (
-           id_member, full_name, cin, email, password, role, description
-         ) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-        [id_user, name, cin, email, pass, role, note]
+           id_member, full_name, cin, email, password, role, description, profile_picture
+         ) VALUES ($1, $2, $3, $4, $5, $6, $7,$8)`,
+        [id_user, name, cin, email, pass, role, note,imagePath]
       );
   
   
       // Insérer dans la table student avec id_class et id_sector récupérés
       await pool.query(
         `INSERT INTO public.student (
-           id_member, id_classe
+           id_member,cne, id_class
          ) VALUES ($1, $2, $3)`,
         [id_user, cne, field ]
       );
@@ -34,10 +34,10 @@ exports.createStudent = async (id_user, name, cin, cne, email, pass, field, note
   exports.getAllStudents = async () => { 
     try { 
       const result = await pool.query(
-        `SELECT s.cne, m.full_name, m.cin, m.email, f.id_sector, c.id_class, m.date_add 
+        `SELECT s.cne, m.full_name, m.cin, m.email, f.id_sector, m.profile_picture, c.id_class, m.date_add 
          FROM public.member m 
          JOIN public.student s ON m.id_member = s.id_member 
-         JOIN public.class c ON c.id_class = s.id_classe 
+         JOIN public.class c ON c.id_class = s.id_class 
          JOIN public.sector f ON f.id_sector = c.sector_id`
       );
       return result.rows;
@@ -50,10 +50,10 @@ exports.createStudent = async (id_user, name, cin, cne, email, pass, field, note
 exports.getStudentByCin = async (cin) => {
     try {
       const result = await pool.query(
-        `SELECT s.id_member, s.cne, m.full_name, m.cin, m.email, f.sector_name, c.class_name, m.date_add 
+        `SELECT s.id_member, s.cne, m.full_name, m.cin, m.email, f.id_sector, m.profile_picture, c.id_class, m.date_add 
          FROM public.member m 
          JOIN public.student s ON m.id_member = s.id_member 
-         JOIN public.class c ON c.id_class = s.id_classe 
+         JOIN public.class c ON c.id_class = s.id_class 
          JOIN public.sector f ON f.id_sector = c.sector_id
          WHERE m.cin = $1`,
          [cin]
@@ -72,20 +72,59 @@ exports.getStudentByCin = async (cin) => {
   
 
 // Mise à jour partielle d’un utilisateur (PATCH)
-exports.updateStudentById = async (id, fieldsToUpdate) => {
-    //console.log("Appel modèle avec :", id, fields);
 
-    const keys = Object.keys(fieldsToUpdate);
-    const values = Object.values(fieldsToUpdate);
+  exports.updateStudentById = async (id, fieldsToUpdate) => {
+    try {
+      // Cloner fieldsToUpdate pour éviter de modifier l'original
+      const fields = { ...fieldsToUpdate };
   
-    if (keys.length === 0) return null;
+      // Préparer les parties à mettre à jour dans chaque table
+      const memberFields = {};
+      const studentFields = {};
   
-    const setClause = keys.map((key, i) => `${key} = $${i + 1}`).join(", ");
-    const query = `UPDATE public.member SET ${setClause} WHERE id_member = $${keys.length + 1} RETURNING *`;
+      // Séparer les champs selon leur table
+      for (const key in fields) {
+        if (["full_name", "cin", "email", "password", "role", "description", "profile_picture"].includes(key)) {
+          memberFields[key] = fields[key];
+        } else if (["cne", "id_class"].includes(key)) {
+          studentFields[key] = fields[key];
+        }
+      }
   
-    const result = await pool.query(query, [...values, id]);
-    return result.rows[0]; // retourne l'utilisateur mis à jour
+      // Résultat final
+      let updatedMember = null;
+  
+      // 1. Mise à jour de la table member s'il y a des champs à modifier
+      if (Object.keys(memberFields).length > 0) {
+        const memberKeys = Object.keys(memberFields);
+        const memberValues = Object.values(memberFields);
+  
+        const setClauseMember = memberKeys.map((key, i) => `${key} = $${i + 1}`).join(", ");
+        const queryMember = `UPDATE public.member SET ${setClauseMember} WHERE id_member = $${memberKeys.length + 1} RETURNING *`;
+  
+        const result = await pool.query(queryMember, [...memberValues, id]);
+        updatedMember = result.rows[0];
+      }
+  
+      // 2. Mise à jour de la table student s'il y a des champs à modifier
+      if (Object.keys(studentFields).length > 0) {
+        const studentKeys = Object.keys(studentFields);
+        const studentValues = Object.values(studentFields);
+  
+        const setClauseStudent = studentKeys.map((key, i) => `${key} = $${i + 1}`).join(", ");
+        const queryStudent = `UPDATE public.student SET ${setClauseStudent} WHERE id_member = $${studentKeys.length + 1}`;
+  
+        await pool.query(queryStudent, [...studentValues, id]);
+      }
+  
+      return updatedMember; // on retourne seulement ce qu'on a mis à jour dans member (comme tu faisais avant)
+      
+    } catch (error) {
+      console.error("Error updating student:", error);
+      throw error;
+    }
   };
+  
 
 exports.deleteStudentById = async (id) => {
     try {
@@ -125,11 +164,11 @@ exports.getStudentsByClass = async (classe) => {
         `SELECT 
            s.id_member, s.cne, 
            m.full_name, m.cin, m.email, m.date_add, 
-           f.id_sector, 
+           f.id_sector, m.profile_picture,
            c.id_class
          FROM public.member m 
          JOIN public.student s ON m.id_member = s.id_member 
-         JOIN public.class c ON c.id_class = s.id_classe 
+         JOIN public.class c ON c.id_class = s.id_class
          JOIN public.sector f ON f.id_sector = c.sector_id
          WHERE c.id_class = $1`,
         [classe]
@@ -149,13 +188,12 @@ exports.getStudentsByClass = async (classe) => {
         `SELECT 
            s.id_member, s.cne, 
            m.full_name, m.cin, m.email, m.date_add, 
-           f.id_sector, 
+           c.sector_id, m.profile_picture,
            c.id_class
          FROM public.member m 
          JOIN public.student s ON m.id_member = s.id_member 
-         JOIN public.class c ON c.id_class = s.id_classe 
-         JOIN public.sector f ON f.id_sector = c.sector_id
-         WHERE f.id_sector = $1`,
+         JOIN public.class c ON c.id_class = s.id_class 
+         WHERE c.sector_id = $1`,
         [sector]
       );
   

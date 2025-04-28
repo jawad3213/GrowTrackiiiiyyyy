@@ -7,7 +7,7 @@ exports.createCoach = async (id_user,  name, cin, email, pass, field,note, role)
             `INSERT INTO public.member (
                id_member, full_name, cin, email, password, role, description
              ) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-            [id_user, name, cin, email, pass, note, role]
+            [id_user, name, cin, email, pass, role, note]
         );
 
         // Insérer dans la table coach avec id_class et id_sector récupérés
@@ -29,7 +29,7 @@ exports.createCoach = async (id_user,  name, cin, email, pass, field,note, role)
 exports.getAllCoach = async () => {
     try {
         const result = await pool.query(
-            `SELECT m.cin, m.full_name, c.field, mdate_add
+            `SELECT m.cin, m.full_name, c.field, m.date_add
              FROM public.member m 
              JOIN public.coach c ON m.id_member = c.id_member `
         );

@@ -1,0 +1,103 @@
+Documentation des routes `signal`
+
+---
+
+# Routes `signal`
+
+### 1 - Récupération de tous les signalements
+ROUTE : http://localhost:3000/api/signal/
+
+A DONNÉ PAR FRONT :
+- rien
+
+A DONNÉ PAR BACK :
+- La route retourne un objet JSON :
+  - message : (string) "Signals retrieved successfully."
+  - data : (array d'objets) chaque signal contient :
+    - id_signal : (string) identifiant du signalement
+    - Autres champs descriptifs du signal (reporder, reported, etc.)
+    - nom de reporedr
+    - reporder_profile_picture_url : (string) URL complète de l'image du reporter
+    - nom de reported
+    - reported_profile_picture_url : (string) URL complète de l'image de la personne signalée
+
+---
+
+### 2 - Récupération du nombre total de signalements de la derniere mois
+ROUTE : http://localhost:3000/api/signal/total
+
+A DONNÉ PAR FRONT :
+- rien
+
+A DONNÉ PAR BACK :
+- La route retourne un objet JSON :
+  - message : (string) "Total number of signals retrieved successfully."
+  - data : (integer) nombre total de signalements
+
+---
+
+### 3 - Récupération d'un signalement par son ID
+ROUTE : http://localhost:3000/api/signal/:id_signal
+
+A DONNÉ PAR FRONT :
+- Params :
+  - id_signal : (string) identifiant du signalement
+
+A DONNÉ PAR BACK :
+- Si trouvé :
+  - message : (string) "signals retrieved successfully by id."
+  - data : (objet) informations sur le signalement
+
+---
+
+### 4 - Envoyer une solution pour un signalement
+ROUTE : http://localhost:3000/api/signal/send/:id_signal
+
+A DONNÉ PAR FRONT :
+- Params :
+  - id_signal : (string) identifiant du signalement
+- Body (format JSON) :
+  - option_solution : (string) type de solution proposée
+  - details : (string) détails de la solution
+  - name_coach : (string) nom du coach en charge
+  - start_date : (date) date de début d'intervention
+  - date_done : (date) date de clôture prévue ou effective
+
+A DONNÉ PAR BACK :
+- La route retourne un objet JSON :
+  - message : (string) "send notification succes"
+
+---
+
+### 5 - Suppression d'un signalement
+ROUTE : http://localhost:3000/api/signal/:id_signal
+
+A DONNÉ PAR FRONT :
+- Params :
+  - id_signal : (string) identifiant du signalement
+
+A DONNÉ PAR BACK :
+- Si suppression réussie :
+  - message : (string) "signal deleted successfully."
+- Sinon :
+  - message : (string) "signal not found."
+
+---
+
+# Résumé rapide
+
+| Route | Méthode | Action |
+|:------|:--------|:-------|
+| / | GET | Liste de tous les signalements |
+| /total | GET | Nombre total de signalements |
+| /:id_signal | GET | Obtenir un signalement par ID |
+| /send/:id_signal | POST | Envoyer une solution pour un signalement |
+| /:id_signal | DELETE | Supprimer un signalement |
+
+---
+
+# Remarques
+- Les images des utilisateurs (reporter et signalé) sont retournées sous forme d'URL complète basée sur `http://localhost:8080/uploads/`.
+- La route `sendSolution` permet d'envoyer une solution en liant un coach à un signalement.
+- Tous les retours sont normalisés avec `message` + `data`.
+

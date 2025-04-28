@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const signalController = require("../../controllers/adminControllers/signalController");
+const signalController = require("../../controllers/adminControllers/signalConroller");
 
 
 

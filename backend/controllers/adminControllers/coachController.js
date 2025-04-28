@@ -12,7 +12,7 @@ exports.createCoach = async (req, res) => {
         const role = "coach";
         const hashedPassword = await bcrypt.hash(pass, 10);
 
-        const coachs = await coachModel.createCoach(id_user, name, cin, email, pass, field ,note, role);
+        const coachs = await coachModel.createCoach(id_user, name, cin, email, hashedPassword, field ,note, role);
 
         res.status(201).json({
             message: "Coach added successfully.",
@@ -144,40 +144,4 @@ exports.getTotalCoachs = async (req, res) => {
     }
 };
 
-exports.getCoachsByClass = async (req, res) => {
-    const { classe } = req.body;
 
-    try {
-        const coachs = await coachModel.getCoachsByClass(classe);
-
-        return res.status(200).json({
-            message: "Coachs retrieved successfully by class.",
-            data: coachs,
-        });
-
-    } catch (error) {
-        console.error("Error retrieving coachs by class:", error);
-        return res.status(500).json({
-            message: "Internal server error. Please try again later.",
-        });
-    }
-};
-
-exports.getCoachsBySector = async (req, res) => {
-    const { sector } = req.body;
-
-    try {
-        const coachs = await coachModel.getCoachsBySector(sector);
-
-        return res.status(200).json({
-            message: "Coachs retrieved successfully by sector.",
-            data: coachs,
-        });
-
-    } catch (error) {
-        console.error("Error retrieving coachs by sector:", error);
-        return res.status(500).json({
-            message: "Internal server error. Please try again later.",
-        });
-    }
-};

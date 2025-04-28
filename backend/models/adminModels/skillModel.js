@@ -5,7 +5,7 @@ exports.createSkill = async (skill_name, question1, question2, question3,descipt
     const result = await pool.query(
       `INSERT INTO public.skill (
          skill_name, question1, question2, question3,desciption_skill, id_admin
-       ) VALUES ($1, $2, $3, $4, $5)`,
+       ) VALUES ($1, $2, $3, $4, $5, $6)`,
       [skill_name, question1, question2, question3,desciption_skill, id_admin]
     );
 
@@ -20,7 +20,7 @@ exports.createSkill = async (skill_name, question1, question2, question3,descipt
 exports.getAllSkills = async () => {
   try {
     const result = await pool.query(
-      `SELECT skill_name, desciption_skill, 
+      `SELECT skill_name, desciption_skill
        FROM public.skill`
     );
     return result.rows;
@@ -62,7 +62,7 @@ exports.deleteSkillById = async (id) => {
 exports.total = async () => {
   try {
     const result = await pool.query(
-      "SELECT COUNT(id_member) AS total FROM public.skill"
+      "SELECT COUNT(skill_name) AS total FROM public.skill"
     );
     return result.rows[0];
   } catch (error) {

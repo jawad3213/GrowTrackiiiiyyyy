@@ -1,35 +1,48 @@
 
-const signalModel = require("../../models/adminModels/siganlModel");
+const signalModel = require("../../models/adminModels/signalModel");
 
-
+// Fonction pour générer l'URL complète de l'image
+const generateImageUrl = (path) => {
+  if (!path) return null; // Si l'utilisateur n'a pas d'image
+  return `http://localhost:8080/uploads/${path}`; // Chemin de ton serveur + dossier d'upload
+};
 
 exports.getAllSignals = async (req, res) => {
   try {
-    const signal = await signalModel.getAllSignals();
+    const result = await signalModel.getAllSignals(); // Appel du modèle
+    const signals = result.rows; // Récupérer les lignes
 
-    if (skills.length === 0) {
+    if (signals.length === 0) {
       return res.status(200).json({
-        message: "No signal found.",
+        message: "No signals found.",
         data: [],
       });
     }
 
+    const updatedSignals = signals.map(signal => ({
+      ...signal,
+      reporder_profile_picture_url: generateImageUrl(signal.reporder_picture), // utilise le bon champ
+      reported_profile_picture_url: generateImageUrl(signal.reported_picture), // utilise le bon champ
+    }));
+    
+
     return res.status(200).json({
-      message: "signals retrieved successfully.",
-      data: siganl,
+      message: "Signals retrieved successfully.",
+      data: updatedSignals,
     });
 
   } catch (error) {
     console.error("Error retrieving signals:", error);
     return res.status(500).json({
-      error: "Internal server error. Please try again later.",
+      message: "An error occurred while retrieving signals.",
     });
   }
 };
 
+
 exports.getTotalSignals = async (req, res) => {
     try {
-      const total = await skillModel.total();
+      const total = await signalModel.total();
   
       return res.status(200).json({
         message: "Total number of signals retrieved successfully.",
@@ -53,7 +66,7 @@ exports.getTotalSignals = async (req, res) => {
     
         return res.status(200).json({
             message: "signals retrieved successfully by id.",
-            data: professors,
+            data: result,
           });
       
         } catch (error) {
@@ -64,11 +77,12 @@ exports.getTotalSignals = async (req, res) => {
         }
     };
 
-exports.sendSolution = async ( option_solution,subject_solution, name_coach,date_start,date_done) => {
+exports.sendSolution = async (req,res ) => {
+    const {option_solution ,details, name_coach,start_date,date_done} =  req.body;
     const { id_signal } = req.params;
 
     try{
-        const result = await signalModel.solution(id_signal, option_solution,subject_solution, name_coach,date_start,date_done);
+        const result = await signalModel.solution( id_signal,option_solution,details, name_coach,start_date,date_done);
         return res.status(200).json({message : "send notification succes"})
     }catch (error) {
         console.error("Error retrieving signal by id:", error);

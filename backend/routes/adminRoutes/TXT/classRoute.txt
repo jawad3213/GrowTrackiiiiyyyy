@@ -1,0 +1,108 @@
+Documentation des routes `class`
+
+---
+
+1 - Création d'un secteur (field) et d'une ou plusieurs classes
+ROUTE : http://localhost:8080/admin/class/create/:id_admin
+
+A DONNÉ PAR FRONT :
+- Params :
+  - id_admin : (string) identifiant de l'administrateur
+- Body (format JSON) :
+  - field : (string) nom du secteur
+  - description : (string) description du secteur
+  - classe : (!!!!!array de strings) liste des noms des classes à créer
+
+A DONNÉ PAR BACK :
+- La route retourne un objet JSON :
+  - message : (string) "Class created successfully."
+  - data : (array d'objets) contenant les classes créées avec leurs informations
+
+---
+
+2 - Récupération de tous les secteurs (fields)
+ROUTE : http://localhost:3000/api/class/
+
+A DONNÉ PAR FRONT :
+- rien
+
+A DONNÉ PAR BACK :
+- La route retourne un objet JSON :
+  - message : (string) "Classes retrieved successfully."
+  - data : (array d'objets) chaque objet représente un secteur avec le nombres de ces classes
+
+---
+
+3 - Rechercher une classe par son nom
+ROUTE : http://localhost:3000/api/class/search
+
+A DONNÉ PAR FRONT :
+-  body :
+  - name : (string) nom de la classe recherchée
+
+A DONNÉ PAR BACK :
+- Si la classe est trouvée :
+  - message : (string) "Class retrieved successfully."
+  - data : (objet) informations sur la classe
+- Si la classe n'est pas trouvée :
+  - message : (string) "Class not found."
+
+---
+
+4 - Mise à jour d'une classe
+ROUTE : http://localhost:3000/api/class/:id_class
+
+A DONNÉ PAR FRONT :
+- Params :
+  - id_class : (string) identifiant de la classe
+- Body (format JSON) :
+  - Champs à mettre à jour (name, description, etc.)
+
+A DONNÉ PAR BACK :
+- Si la mise à jour réussit :
+  - message : (string) "Class updated successfully."
+  - data : (objet) classe mise à jour
+- Si la classe n'est pas trouvée ou pas de données fournies :
+  - message : (string) "Class not found or no data provided."
+
+---
+
+5 - Suppression d'une classe
+ROUTE : http://localhost:3000/api/class/:id_class
+
+A DONNÉ PAR FRONT :
+- Params :
+  - id_class : (string) identifiant de la classe
+
+A DONNÉ PAR BACK :
+- Si la suppression réussit :
+  - message : (string) "Class deleted successfully."
+- Si la classe n'est pas trouvée :
+  - message : (string) "Class not found."
+
+---
+
+6 - Récupération du nombre total de classes
+ROUTE : http://localhost:3000/api/class/total
+
+A DONNÉ PAR FRONT :
+- rien
+
+A DONNÉ PAR BACK :
+- La route retourne un objet JSON :
+  - message : (string) "Total number of classes retrieved successfully."
+  - data : (integer) nombre total de classes
+
+---
+
+Résumé rapide
+
+| Route | Méthode | Action |
+|:------|:--------|:-------|
+| /create/:id_admin | POST | Créer secteur + classes |
+| / | GET | Liste tous les secteurs |
+| /search?name= | GET | Trouver une classe |
+| /:id_class | PATCH | Modifier une classe |
+| /:id_class | DELETE | Supprimer une classe |
+| /total | GET | Nombre total de classes |
+

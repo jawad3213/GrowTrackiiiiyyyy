@@ -1,32 +1,44 @@
-const express = require("express")
-const app = express()
+const express = require("express");
+const app = express();
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
-const PORT = process.env.PORT;
-const authController = require('./controllers/authController');
-const {authorize}=require('./middlewares/VerifyToken')
-//const {authorizate} =require("../middlewares/VerifyToken")
+const path = require("path");
 
-app.use(express.json());
+// Récupération du port depuis le fichier .env
+const PORT = process.env.PORT || 8080;
+
+// Middleware pour parser les cookies
 app.use(cookieParser());
-app.use(express.json()); // Pour les requêtes JSON
-app.use(express.urlencoded({ extended: true })); // Pour les formulaires HTML
 
+// Ces deux lignes sont utiles pour les routes POST/PUT classiques (JSON ou form-urlencoded)
+// 👉 PAS utilisées par multer, mais ne posent pas de problème pour le reste de l'app
+app.use(express.json()); // Pour les requêtes avec JSON (API)
+app.use(express.urlencoded({ extended: true })); // Pour les formulaires HTML classiques
 
+// Rendre le dossier "uploads" accessible publiquement
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Importation des routes
 const AuthRoute = require("./routes/AuthRoute");
-app.use("/auth", AuthRoute)
+const studentRoute = require("./routes/adminRoutes/studentRoute");
+const professorRoute = require("./routes/adminRoutes/professorRoute");
+const supervisorRoute = require("./routes/adminRoutes/supervisorRoute");
+const skillRoute = require("./routes/adminRoutes/skillRoute");
+const classRoute = require("./routes/adminRoutes/classRoute");
+const coachRoute = require("./routes/adminRoutes/coachRoute");
+const signalRoute = require("./routes/adminRoutes/signalRoute");
 
-const studentRoute =require("./routes/adminRoutes/studentRoute");
-app.use("/admin/students",studentRoute);
-//authorize(["admin"])
+// Montage des routes
+app.use("/auth", AuthRoute);
+app.use("/admin/students", studentRoute);
+app.use("/admin/professors", professorRoute);
+app.use("/admin/supervisors", supervisorRoute);
+app.use("/admin/skills", skillRoute);
+app.use("/admin/class", classRoute);
+app.use("/admin/coachs", coachRoute);
+app.use("/admin/signals", signalRoute);
 
-const professorRoute =require("./routes/adminRoutes/professorRoute");
-app.use("/admin/professors",professorRoute);
-//app.post('/reset-pass-email',verify.verifyToken, authController.ResetPassEmail);
-
-const classRoute =require("./routes/adminRoutes/classRoute");
-app.use("/admin/class",classRoute);
-
+// Lancement du serveur
 app.listen(PORT, () => {
-    console.log(`Server Running on http://localhost:${PORT}`);
+    console.log(`✅ Server Running on http://localhost:${PORT}`);
 });

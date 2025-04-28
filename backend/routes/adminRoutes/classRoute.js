@@ -3,17 +3,17 @@ const router = express.Router();
 
 const classController = require("../../controllers/adminControllers/classController");
 
-// Create a class
-router.post("/create", classController.createClass);
+// Create a fields ans classes
+router.post("/create/:id_admin", classController.createClass);
 
-// Get all classes
-router.get("/", classController.getAllClasses);
+// Get all fields
+router.get("/", classController.getAllSectors);
 
 // Get class by name
 router.get("/search", classController.getClassByName);
 
 // Update class
-router.patch("/:id_class", classController.updateClass);
+router.patch("/:id_class", classController.updateField);
 
 // Delete class
 router.delete("/:id_class", classController.deleteClass);

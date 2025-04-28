@@ -1,0 +1,147 @@
+Documentation des routes `professor`
+
+---
+
+# Routes `professor`
+
+1 - Création d'un professeur
+ROUTE : http://localhost:3000/api/professor/
+
+A DONNÉ PAR FRONT :
+- Body (format JSON) :
+  - name : (string) nom complet du professeur
+  - cin : (string) CIN du professeur
+  - email : (string) email du professeur
+  - pass : (string) mot de passe
+  - departement : (string) nom du département
+  - course : (!!!array de strings) cours enseignés
+  - code : (string) code de professeur
+  - classe : (!!!array de strings) classes concernées
+  - note : (string) notes ou remarques
+- Fichier :
+  - profile_picture : (fichier image optionnel)
+
+A DONNÉ PAR BACK :
+- La route retourne un objet JSON :
+  - message : (string) "Professor added successfully."
+  - professor : (objet) données du professeur ajouté
+
+---
+
+2 - Récupération de tous les professeurs
+ROUTE : http://localhost:3000/api/professor/
+
+A DONNÉ PAR FRONT :
+- rien
+
+A DONNÉ PAR BACK :
+- La route retourne un objet JSON :
+  - message : (string)
+    - "Professors retrieved successfully." ou "No professor found."
+  - data : (array d'objets) liste des professeurs avec leurs URLs d'image
+
+---
+
+3 - Rechercher un professeur par son CIN
+ROUTE : http://localhost:3000/api/professor/search
+
+A DONNÉ PAR FRONT :
+- Body (format JSON) :
+  - cin : (string) CIN du professeur
+
+A DONNÉ PAR BACK :
+- Si trouvé :
+  - message : (string) "Professor retrieved successfully."
+  - data : (objet) données du professeur avec URL d'image
+- Sinon :
+  - message : (string) "Professor not found."
+
+---
+
+4 - Mise à jour d'un professeur
+ROUTE : http://localhost:3000/api/professor/:id_professor
+
+A DONNÉ PAR FRONT :
+- Params :
+  - id_professor : (string) identifiant du professeur
+- Body (format JSON) :
+  - Champs à mettre à jour (name, email, departement, etc.)
+
+A DONNÉ PAR BACK :
+- Si mise à jour réussie :
+  - message : (string) "Professor updated successfully."
+  - data : (objet) professeur mis à jour
+- Sinon :
+  - message : (string) "Professor not found or no fields provided."
+
+---
+
+5 - Suppression d'un professeur
+ROUTE : http://localhost:3000/api/professor/:id_professor
+
+A DONNÉ PAR FRONT :
+- Params :
+  - id_professor : (string) identifiant du professeur
+
+A DONNÉ PAR BACK :
+- Si suppression réussit :
+  - message : (string) "Professor deleted successfully."
+- Sinon :
+  - message : (string) "Professor not found."
+
+---
+
+6 - Récupération du nombre total de professeurs
+ROUTE : http://localhost:3000/api/professor/total
+
+A DONNÉ PAR FRONT :
+- rien
+
+A DONNÉ PAR BACK :
+- La route retourne un objet JSON :
+  - message : (string) "Total number of professors retrieved successfully."
+  - data : (integer) nombre total de professeurs
+
+---
+
+7 - Récupération des professeurs par classe
+ROUTE : http://localhost:3000/api/professor/class
+
+A DONNÉ PAR FRONT :
+- Body (format JSON) :
+  - classe : (string) nom de la classe
+
+A DONNÉ PAR BACK :
+- La route retourne un objet JSON :
+  - message : (string) "Professors retrieved successfully by class."
+  - data : (array d'objets) liste des professeurs avec URL d'image
+
+---
+
+8 - Récupération des professeurs par secteur
+ROUTE : http://localhost:3000/api/professor/sector
+
+A DONNÉ PAR FRONT :
+- Body (format JSON) :
+  - sector : (string) nom du secteur
+
+A DONNÉ PAR BACK :
+- La route retourne un objet JSON :
+  - message : (string) "Professors retrieved successfully by sector."
+  - data : (array d'objets) liste des professeurs avec URL d'image
+
+---
+
+# Résumé rapide
+
+| Route | Méthode | Action |
+|:------|:--------|:-------|
+| / | POST | Créer un professeur |
+| / | GET | Liste tous les professeurs |
+| /search | POST | Chercher un professeur par CIN |
+| /:id_professor | PATCH | Modifier un professeur |
+| /:id_professor | DELETE | Supprimer un professeur |
+| /total | GET | Nombre total de professeurs |
+| /class | POST | Liste professeurs par classe |
+| /sector | POST | Liste professeurs par secteur |
+

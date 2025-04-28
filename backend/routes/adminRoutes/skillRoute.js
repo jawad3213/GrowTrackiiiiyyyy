@@ -6,7 +6,7 @@ const router = express.Router();
 
 const skillController = require("../../controllers/adminControllers/skillController");
 
-router.post("/create", skillController.createSkill);
+router.post("/create/:id_admin", skillController.createSkill);
 router.get("/", skillController.getAllSkills);
 router.patch("/:id_skill", skillController.updateSkill);
 router.delete("/:id_skill", skillController.deleteSkill);

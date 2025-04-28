@@ -1,31 +1,36 @@
-
 const skillModel = require("../../models/adminModels/skillModel");
 
-
 exports.createSkill = async (req, res) => {
-
   console.log("Received data:", req.body);
-  const { skill_name, question1, question2, question3,desciption_skill} = req.body;
+
+  const { skill_name, question1, question2, question3, desciption_skill } = req.body;
   const { id_admin } = req.params;
 
   try {
-    const skills = await skillModel.createSkill(
-        skill_name, question1, question2, question3, id_admin,desciption_skill
+    const skill = await skillModel.createSkill(
+      skill_name,
+      question1,
+      question2,
+      question3,
+      desciption_skill,
+      id_admin
     );
 
-    res.status(201).json({
-      message: "Skill added successfully.",
-      data: skills,
+    return res.status(201).json({
+      message: "Skill created successfully.",
+      data: skill,
     });
 
   } catch (error) {
     if (error.code === '23505') {
       return res.status(400).json({
-        error: "The email address already exists. Please use a different email.",
+        error: "Skill already exists. Please choose a different skill name.",
       });
     }
-    console.error("Error while adding skill:", error.message);
-    res.status(500).json({ message: "Internal server error. Please try again later." });
+    console.error("Error creating skill:", error.message);
+    return res.status(500).json({
+      message: "Internal server error. Please try again later.",
+    });
   }
 };
 
@@ -33,50 +38,45 @@ exports.getAllSkills = async (req, res) => {
   try {
     const skills = await skillModel.getAllSkills();
 
-    if (skills.length === 0) {
-      return res.status(200).json({
-        message: "No skills found.",
-        data: [],
-      });
-    }
-
     return res.status(200).json({
-      message: "Skills retrieved successfully.",
+      message: skills.length ? "Skills retrieved successfully." : "No skills found.",
       data: skills,
     });
 
   } catch (error) {
-    console.error("Error retrieving skills:", error);
+    console.error("Error retrieving skills:", error.message);
     return res.status(500).json({
-      error: "Internal server error. Please try again later.",
+      message: "Internal server error. Please try again later.",
     });
   }
 };
 
 exports.updateSkill = async (req, res) => {
-  const userId = req.params.id_skill;
+  const { id_skill } = req.params;
   const updates = req.body;
 
-  console.log("ID:", userId);
-  console.log("Updates:", updates);
+  console.log("Skill ID:", id_skill);
+  console.log("Update fields:", updates);
 
   try {
-    const updatedUser = await skillModel.updateSkillById(userId, updates);
+    const updatedSkill = await skillModel.updateSkillById(id_skill, updates);
 
-    if (!updatedUser) {
+    if (!updatedSkill) {
       return res.status(404).json({
-        message: "User not found or no fields provided.",
+        message: "Skill not found or no fields provided for update.",
       });
     }
 
-    res.status(200).json({
-      message: "User updated successfully.",
-      data: updatedUser,
+    return res.status(200).json({
+      message: "Skill updated successfully.",
+      data: updatedSkill,
     });
 
-  } catch (err) {
-    console.error("Error while updating skill:", err);
-    res.status(500).json({ message: "Internal server error. Please try again later." });
+  } catch (error) {
+    console.error("Error updating skill:", error.message);
+    return res.status(500).json({
+      message: "Internal server error. Please try again later.",
+    });
   }
 };
 
@@ -97,7 +97,7 @@ exports.deleteSkill = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Error deleting skill:", error);
+    console.error("Error deleting skill:", error.message);
     return res.status(500).json({
       message: "Internal server error. Please try again later.",
     });
@@ -114,7 +114,7 @@ exports.getTotalSkills = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Error retrieving total number of skills:", error);
+    console.error("Error retrieving total number of skills:", error.message);
     return res.status(500).json({
       message: "Internal server error. Please try again later.",
     });

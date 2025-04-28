@@ -3,16 +3,26 @@ const bcrypt = require("bcrypt");
 const studentModel = require("../../models/adminModels/studentModel");
 const { v4: uuidv4 } = require("uuid");
 
+
+const generateImageUrl = (path) => {
+  return path ? `http://localhost:8080/${path.replace(/\\/g, "/")}` : null;
+};
+
+
+
 exports.createStudent = async (req, res) => {
     console.log("Données reçues :", req.body);
   const { name, cin, cne, email, pass, field, note } = req.body;
+  console.log(req.body)
+  const imagePath = req.file ? req.file.path : null;
 
   try {
     const id_user = uuidv4();
     const role = "student";
-    const hashedPassword = await bcrypt.hash(pass, 10);
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(pass, salt);
 
-    const student = await studentModel.createStudent(id_user, name, cin, cne, email, hashedPassword, field, note, role);
+    const student = await studentModel.createStudent(id_user, name, cin, cne, email, hashedPassword, field, note, role,imagePath);
 
     res.status(201).json({
       message: "Student added successfully.",
@@ -44,10 +54,16 @@ exports.getAllStudents = async (req, res) => {
         });
       }
   
-      return res.status(200).json({
-        message: "Students retrieved successfully.",
-        data: students,
-      });
+      // 🔁 Ajout de l'URL complète de l'image
+      const updatedStudents = students.map(student => ({
+        ...student,
+        profile_picture_url: generateImageUrl(student.profile_picture),
+      }));
+
+    return res.status(200).json({
+      message: "Students retrieved successfully.",
+      data: updatedStudents,
+    });
   
     } catch (error) {
       console.error("Error retrieving students:", error);
@@ -70,6 +86,7 @@ exports.getStudentByCin = async (req, res) => {
           data: null
         });
       }
+      student.profile_picture_url = generateImageUrl(student.profile_picture);
   
       return res.status(200).json({
         message: "Student retrieved successfully.",
@@ -156,11 +173,17 @@ exports.deleteStudent = async (req, res) => {
   
     try {
       const students = await studentModel.getStudentsByClass(classe);
+
+      const updatedStudents = students.map(student => ({
+        ...student,
+        profile_picture_url: generateImageUrl(student.profile_picture),
+      }));
   
       return res.status(200).json({
         message: "Students retrieved successfully by class.",
-        data: students,
+        data: updatedStudents,
       });
+      
   
     } catch (error) {
       console.error("Error retrieving students by class:", error);
@@ -175,10 +198,15 @@ exports.deleteStudent = async (req, res) => {
   
     try {
       const students = await studentModel.getStudentsBySector(sector);
+      
+      const updatedStudents = students.map(student => ({
+        ...student,
+        profile_picture_url: generateImageUrl(student.profile_picture),
+      }));
   
       return res.status(200).json({
         message: "Students retrieved successfully by sector.",
-        data: students,
+        data: updatedStudents,
       });
   
     } catch (error) {

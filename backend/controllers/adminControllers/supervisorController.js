@@ -2,17 +2,23 @@ const bcrypt = require("bcrypt");
 const supervisorModel = require("../../models/adminModels/supervisorModel");
 const { v4: uuidv4 } = require("uuid");
 
+// Générer l'URL complète de l'image
+const generateImageUrl = (path) => {
+  return path ? `http://localhost:8080/${path.replace(/\\/g, "/")}` : null;
+};
+
 exports.createSupervisor = async (req, res) => {
   console.log("Received data:", req.body);
-  const { name, cin_sepervisor, email, pass, company, number, position, cin_student,name_internship, date_start, date_done,subject, note } = req.body;
+  const { name, cin_sepervisor, email, pass, company, number, position, cin_student, name_internship, date_start, date_done, subject, note } = req.body;
+  const imagePath = req.file ? req.file.path : null; // Gestion image
 
   try {
     const id_user = uuidv4();
-    const role = "supervisor";
+    const role = "Supervisor";
     const hashedPassword = await bcrypt.hash(pass, 10);
 
     const supervisors = await supervisorModel.createSupervisor(
-      id_user, name, cin_sepervisor, email, hashedPassword, company, number, position, cin_student,name_internship, date_start, date_done,subject, note, role
+      id_user, name, cin_sepervisor, email, hashedPassword, company, number, position, cin_student, name_internship, date_start, date_done, subject, note, role, imagePath
     );
 
     res.status(201).json({
@@ -42,9 +48,15 @@ exports.getAllSupervisors = async (req, res) => {
       });
     }
 
+    // Ajouter URL complète pour chaque superviseur
+    const updatedSupervisors = supervisors.map(supervisor => ({
+      ...supervisor,
+      profile_picture_url: generateImageUrl(supervisor.profile_picture),
+    }));
+
     return res.status(200).json({
       message: "Supervisors retrieved successfully.",
-      data: supervisors,
+      data: updatedSupervisors,
     });
 
   } catch (error) {
@@ -67,6 +79,9 @@ exports.getSupervisorByCin = async (req, res) => {
         data: null,
       });
     }
+
+    // Ajouter l'URL de l'image
+    supervisor.profile_picture_url = generateImageUrl(supervisor.profile_picture);
 
     return res.status(200).json({
       message: "Supervisor retrieved successfully.",
@@ -155,13 +170,18 @@ exports.getSupervisorsByPosition = async (req, res) => {
   try {
     const supervisors = await supervisorModel.getSupervisorsByPosition(position);
 
+    const updatedSupervisors = supervisors.map(supervisor => ({
+      ...supervisor,
+      profile_picture_url: generateImageUrl(supervisor.profile_picture),
+    }));
+
     return res.status(200).json({
-      message: "Supervisors retrieved successfully by class.",
-      data: supervisors,
+      message: "Supervisors retrieved successfully by position.",
+      data: updatedSupervisors,
     });
 
   } catch (error) {
-    console.error("Error retrieving supervisors by class:", error);
+    console.error("Error retrieving supervisors by position:", error);
     return res.status(500).json({
       message: "Internal server error. Please try again later.",
     });
@@ -172,15 +192,20 @@ exports.getSupervisorsByCompany = async (req, res) => {
   const { company } = req.body;
 
   try {
-    const supervisors = await supervisorModel.getSupervisorsBySector(company);
+    const supervisors = await supervisorModel.getSupervisorsByCompany(company);
+
+    const updatedSupervisors = supervisors.map(supervisor => ({
+      ...supervisor,
+      profile_picture_url: generateImageUrl(supervisor.profile_picture),
+    }));
 
     return res.status(200).json({
-      message: "Supervisors retrieved successfully by sector.",
-      data: supervisors,
+      message: "Supervisors retrieved successfully by company.",
+      data: updatedSupervisors,
     });
 
   } catch (error) {
-    console.error("Error retrieving supervisors by sector:", error);
+    console.error("Error retrieving supervisors by company:", error);
     return res.status(500).json({
       message: "Internal server error. Please try again later.",
     });

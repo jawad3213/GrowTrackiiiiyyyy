@@ -4,20 +4,24 @@ const pool = require("../../config/db");
 exports.getAllSignals = async () => {
     try {
         const result = await pool.query(
+          // r.id_reporder, r.id_reported,
             `SELECT 
                 r.id_signal,
-                r.id_reporder,
+                reporder.profile_picture AS reporder_picture,
                 reporder.full_name AS reporder_name,
                 reporder.role AS reporder_role,
-                r.id_reported,
+
+                reported.profile_picture AS reported_picture,
                 reported.full_name AS reported_name,
                 reported.role AS reported_role,
+
                 s.approved,
                 s.solution_state
-                FROM public.report r
-                JOIN public.member reporder ON reporder.id_member = r.id_reporter
-                JOIN public.member reported ON reported.id_member = r.id_reported;
-                JOIN public.signal s ON s.id_signal = r.id_signal `
+            FROM public.report r
+            JOIN public.member reporder ON reporder.id_member = r.id_reporter
+            JOIN public.member reported ON reported.id_member = r.id_reported
+            JOIN public.signal s ON s.id_signal = r.id_signal
+ `
         );
 
         //   const signals = await Promise.all(
@@ -41,16 +45,20 @@ exports.getAllSignals = async () => {
 };
 
 exports.total = async () => {
-    try {
-      const result = await pool.query(
-        "SELECT COUNT(id_signal) AS total FROM public.signal"
-      );
-      return result.rows[0];
-    } catch (error) {
-      console.error("Error retrieving total number of signals:", error);
-      throw error;
-    }
-  };
+  try {
+    const result = await pool.query(
+      `SELECT COUNT(id_signal) AS total 
+       FROM public.signal
+       WHERE date_add >= CURRENT_DATE - INTERVAL '1 month'
+      `
+    );
+    return result.rows[0];
+  } catch (error) {
+    console.error("Error retrieving total number of signals:", error);
+    throw error;
+  }
+};
+
 
 exports.getSignalById = async (id_signal) => {
     const result = await pool.query(
@@ -74,33 +82,55 @@ exports.getSignalById = async (id_signal) => {
     return result.rows[0];
 }
 
-exports.solution = async (id_signal, option_solution,subject_solution, name_coach,date_start,date_done) => {
-    try{
-        const coach = await pool.query(
-            `SELECT id_member FROM public.member WHERE full_name = $1`,
-            [name_coach]
-        )
 
-        const result = await pool.query(
-            `INSERT INTO public.solution(id_signal, option_solution,subject_solution, id_coach ,date_start,date_done) VALUE($1,$2,$3,$4,$5,$6)RETURNNING *`,
-            [id_signal, option_solution,subject_solution, coach.rows[0].id_member,date_start,date_done]
-        )
+exports.solution = async (id_signal, option_solution, details, name_coach, start_date, date_done) => {
+  try {
+    // 1. Trouver l'id du coach
+    const coach = await pool.query(
+      `SELECT id_member FROM public.member WHERE full_name = $1`,
+      [name_coach]
+    );
 
-        const student = await pool.query(
-            `SELECT id_reported FROM public.report WHERE id_signal = $1`,
-            [id_signal]
-        )
-        
-        await pool.query(
-            `INSERT INTO public.follow_up (id_coach,id_student,id_solution) VALUE ($1,$2,$3)`,
-            [coach.rows[0].id_member,student.rows[0].id_reported,result.rows[0].id_solution]
-        )
-        return result.rows[0];
-    }catch (error) {
-        console.error("Error retrieving signals:", error);
-        throw error;
-    }
-}
+    // 2. Trouver l'id de la solution
+    const solution = await pool.query(
+      `SELECT id_solution FROM public.solution WHERE option_solution = $1`,
+      [option_solution]
+    );
+
+    // 3. Trouver l'étudiant signalé
+    const student = await pool.query(
+      `SELECT id_reported FROM public.report WHERE id_signal = $1`,
+      [id_signal]
+    );
+
+    // 4. Insérer dans la table follow_up
+    await pool.query(
+      `INSERT INTO public.follow_up (id_coach, id_student, id_solution, message, start_date, date_done)
+       VALUES ($1, $2, $3, $4, $5, $6)`,
+      [coach.rows[0].id_member, student.rows[0].id_reported, solution.rows[0].id_solution, details, start_date, date_done]
+    );
+
+    // 5. Mettre à jour la table signal pour associer la solution
+    await pool.query(
+      `UPDATE public.signal SET id_solution = $1 WHERE id_signal = $2`,
+      [solution.rows[0].id_solution, id_signal]
+    );
+
+    // 6. Mettre à jour le statut de la solution
+    await pool.query(
+      `UPDATE public.signal SET solution_state = 'in progress' WHERE id_signal = $1`,
+      [id_signal]
+    );
+
+    // Retourner un message de succès (pas result.rows[0] car pas RETURNING)
+    return { message: "Solution created and follow-up inserted successfully." };
+
+  } catch (error) {
+    console.error("Error inserting solution:", error);
+    throw error;
+  }
+};
+
 
 exports.deleteSignal = async (id) => {
     try {

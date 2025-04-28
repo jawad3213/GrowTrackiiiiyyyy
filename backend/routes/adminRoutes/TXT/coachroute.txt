@@ -1,0 +1,111 @@
+Documentation des routes `coach`
+
+---
+
+1 - Création d'un coach
+ROUTE : http://localhost:3000/api/coach/
+
+A DONNÉ PAR FRONT :
+- Body (format JSON) :
+  - name : (string) nom complet du coach
+  - cin : (string) CIN du coach
+  - email : (string) email du coach
+  - pass : (string) mot de passe du coach
+  - field : (string) domaine/secteur du coach
+  - note : (string) note ou description du coach
+
+A DONNÉ PAR BACK :
+- La route retourne un objet JSON :
+  - message : (string) "Coach added successfully."
+  - coachs : (objet) informations du coach créé
+
+---
+
+2 - Récupération de tous les coachs
+ROUTE : http://localhost:3000/api/coach/
+
+A DONNÉ PAR FRONT :
+- rien
+
+A DONNÉ PAR BACK :
+- La route retourne un objet JSON :
+  - message : (string)
+    - "Coachs retrieved successfully." ou "No coach found."
+  - data : (array d'objets) liste des coachs ou tableau vide
+
+---
+
+3 - Rechercher un coach par son CIN
+ROUTE : http://localhost:3000/api/coach/search
+
+A DONNÉ PAR FRONT :
+- Body (format JSON) :
+  - cin : (string) CIN du coach
+
+A DONNÉ PAR BACK :
+- Si le coach est trouvé :
+  - message : (string) "Coach retrieved successfully."
+  - data : (objet) informations du coach
+- Sinon :
+  - message : (string) "Coach not found."
+
+---
+
+4 - Mise à jour d'un coach
+ROUTE : http://localhost:3000/api/coach/:id_coach
+
+A DONNÉ PAR FRONT :
+- Params :
+  - id_coach : (string) identifiant du coach
+- Body (format JSON) :
+  - Champs à mettre à jour (name, email, field, etc.)
+
+A DONNÉ PAR BACK :
+- Si la mise à jour réussit :
+  - message : (string) "User updated successfully."
+  - data : (objet) coach mis à jour
+- Sinon :
+  - message : (string) "User not found or no fields provided."
+
+---
+
+5 - Suppression d'un coach
+ROUTE : http://localhost:3000/api/coach/:id_coach
+
+A DONNÉ PAR FRONT :
+- Params :
+  - id_coach : (string) identifiant du coach
+
+A DONNÉ PAR BACK :
+- Si suppression réussit :
+  - message : (string) "Coach deleted successfully."
+- Sinon :
+  - message : (string) "Coach not found."
+
+---
+
+6 - Récupération du nombre total de coachs
+ROUTE : http://localhost:3000/api/coach/total
+
+A DONNÉ PAR FRONT :
+- rien
+
+A DONNÉ PAR BACK :
+- La route retourne un objet JSON :
+  - message : (string) "Total number of coachs retrieved successfully."
+  - data : (integer) nombre total de coachs
+
+---
+
+
+Résumé rapide
+
+| Route | Méthode | Action |
+|:------|:--------|:-------|
+| / | POST | Créer un coach |
+| / | GET | Récupérer tous les coachs |
+| /search | GET | Chercher un coach par CIN |
+| /:id_coach | PATCH | Modifier un coach |
+| /:id_coach | DELETE | Supprimer un coach |
+| /total | GET | Nombre total de coachs |
+

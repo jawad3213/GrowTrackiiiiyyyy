@@ -2,11 +2,15 @@
 const classModel = require("../../models/adminModels/classModel");
 
 exports.createClass = async (req, res) => {
-  const { name, description, name_sector } = req.body;
+  const { field, description, classe } = req.body;
+  const {id_admin} = req.params;
 
   try {
+    if (!Array.isArray(classe)) {
+      return res.status(400).json({ message: "Classe must be an array." });
+    }
 
-    const newClass = await classModel.createClass( name, description, name_sector);
+    const newClass = await classModel.createClass(field, description, classe,id_admin);
 
     res.status(201).json({
       message: "Class created successfully.",
@@ -18,9 +22,9 @@ exports.createClass = async (req, res) => {
   }
 };
 
-exports.getAllClasses = async (req, res) => {
+exports.getAllSectors = async (req, res) => {
   try {
-    const classes = await classModel.getAllClasses();
+    const classes = await classModel.getAllSectors();
     res.status(200).json({
       message: "Classes retrieved successfully.",
       data: classes,
@@ -32,7 +36,7 @@ exports.getAllClasses = async (req, res) => {
 };
 
 exports.getClassByName = async (req, res) => {
-  const { name } = req.query;
+  const { name } = req.body;
 
   try {
     const foundClass = await classModel.getClassByName(name);
@@ -51,12 +55,12 @@ exports.getClassByName = async (req, res) => {
   }
 };
 
-exports.updateClass = async (req, res) => {
+exports.updateField = async (req, res) => {
   const classId = req.params.id_class;
   const updates = req.body;
 
   try {
-    const updatedClass = await classModel.updateClassById(classId, updates);
+    const updatedClass = await classModel.updateFieldById(classId, updates);
 
     if (!updatedClass) {
       return res.status(404).json({ message: "Class not found or no data provided." });
