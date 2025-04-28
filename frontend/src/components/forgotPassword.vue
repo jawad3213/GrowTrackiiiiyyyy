@@ -15,7 +15,7 @@
         <div class="text-left">
           <label class="block text-sm font-semibold text-gray-700 mb-1">Email address</label>
           <input
-            v-model="email"
+            v-model="emailres"
             type="email"
             placeholder="Enter your email address"
             class="w-full px-4 py-3 border border-gray-300 rounded-md text-sm placeholder-gray-400 focus:ring-2 focus:ring-purple-400 focus:outline-none"

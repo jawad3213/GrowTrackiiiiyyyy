@@ -234,8 +234,12 @@
 
 <script>
 import axios from 'axios';
+<<<<<<< HEAD:frontend/src/components/LoadingPage.vue
 import HeaderPage from './Header.vue';
 import Footer from './Footer.vue';
+=======
+import HeaderPage from "@/components/Header.vue";
+>>>>>>> lastVersionFront:frontend/src/components/Home/LoadingPage.vue
 
 export default {
   name: 'LoadingPage',
@@ -293,5 +297,21 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 <style scoped>
+<<<<<<< HEAD:frontend/src/components/LoadingPage.vue
 /* Si vous avez besoin de styles personnalisés, ajoutez-les ici */
 </style>
+=======
+@keyframes slide {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-slide {
+  animation: slide 30s linear infinite; /* 30 secondes pour un cycle complet */
+}
+</style>
+>>>>>>> lastVersionFront:frontend/src/components/Home/LoadingPage.vue

@@ -63,35 +63,36 @@
 
 <script setup>
 import { ref , onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 
 const store = useAuthStore()
 const newpassword = ref('')
-const confirmpasssword = ref('')
+const confirmpasssword = ref('')     
 const router = useRouter()
+const route = useRoute() //pour recupérer  de l'url 
+const token = route.query.token //pour recupérer le token de de l'url 
+
 function match(){
   return newpassword.value === confirmpasssword.value;
 }
-
-
   async function resetPass() {
   if (!match()) {
     store.errorMsg = "Passwords do not match"
     confirmpasssword.value = ''
     return
   }
-  await store.resetPassword(newpassword.value, confirmpasssword.value)
+  await store.resetPassword(newpassword.value , token) 
   if (!store.errorMsg) {
-    router.push('/login')
+    router.push('/check')
   }
 }
-
 onMounted(() => {
     if(store.isAuthenticated){ //à répeter
         router.push('/');
     }
     store.Clearstatus();
 });
+
 
 </script>

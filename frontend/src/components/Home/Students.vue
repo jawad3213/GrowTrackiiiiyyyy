@@ -25,7 +25,7 @@
 </div>
   
   <div class="pb-0 overflow-hidden md:p-10 lg:p-0 sm:pb-0">
-    <img id="heroImg1" class="transition-all duration-300 ease-in-out hover:scale-105 lg:w-5/6 sm:mx-auto sm:w-5/6 sm:pb-12 lg:pb-0" src="../assets/students.jpg" alt="Awesome hero page image" width="500" height="888"/>
+    <img id="heroImg1" class="transition-all duration-300 ease-in-out hover:scale-105 lg:w-5/6 sm:mx-auto sm:w-5/6 sm:pb-12 lg:pb-0" src="@/assets/students.jpg" alt="Awesome hero page image" width="500" height="888"/>
   </div>
 </div>
 
@@ -143,7 +143,7 @@
         </p>
 
         <!-- Logo + name -->
-        <img src="../assets/photo1.png" alt="photo1" class="w-12 h-12 object-contain mb-2">
+        <img src="@/assets/photo1.png" alt="photo1" class="w-12 h-12 object-contain mb-2">
         <p class="text-sm text-gray-700 font-medium">Sarah LA</p>
       </div>
 
@@ -160,7 +160,7 @@
         </p>
 
         <!-- Logo + name -->
-        <img src="../assets/photo2.webp" alt="photo2" class="w-12 h-12 object-contain mb-2">
+        <img src="@/assets/photo2.webp" alt="photo2" class="w-12 h-12 object-contain mb-2">
         <p class="text-sm text-gray-700 font-medium">Soukaina EL</p>
       </div>
     </div>
