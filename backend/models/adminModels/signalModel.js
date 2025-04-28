@@ -122,6 +122,12 @@ exports.solution = async (id_signal, option_solution, details, name_coach, start
       [id_signal]
     );
 
+    // 7. Insérer dans la table notifications
+    await pool.query(
+      `INSERT INTO public.notifications(content_notification,id_member) VALUES ($1,$2)`,
+      [details,student.rows[0].id_reported]
+    )
+
     // Retourner un message de succès (pas result.rows[0] car pas RETURNING)
     return { message: "Solution created and follow-up inserted successfully." };
 
