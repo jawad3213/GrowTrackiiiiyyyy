@@ -119,7 +119,7 @@ exports.Logout=(req, res)=>{
             secure: true,
             sameSite: "Strict"
           });;
-        return res.status(200).json({ message: "Logout successful" });
+        return res.status(200).json({ message: "Logged out successfully." });
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: "Internal Server Error" });
@@ -145,6 +145,7 @@ exports.ResetPass = [
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
+        console.log("hello");
         const {email} = req.body;
         try {
         const user = await authModel.FindUserByEmail(email);
@@ -155,7 +156,7 @@ exports.ResetPass = [
                     process.env.ACCESS_SECRET,
                     { expiresIn: '15m'})
             
-            const resetLink = `http://localhost:${PORT}/reset-pass-email?token=${Reset_Token}`;
+            const resetLink = `http://localhost:5173/resetpass?token=${Reset_Token}`;
             const mailOptions = {
                 from: process.env.EMAIL_USER,
                 to: email,
