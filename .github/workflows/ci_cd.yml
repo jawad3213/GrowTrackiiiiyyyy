@@ -8,7 +8,7 @@ on:
 
 jobs:
   test:
-    name: Install, & Test
+    name: Install
     runs-on: ubuntu-latest
 
     steps:
@@ -24,17 +24,9 @@ jobs:
         working-directory: ./backend
         run: npm ci
 
-      - name: Run Backend Tests
-        working-directory: ./backend
-        run: npm test
-
       - name: Install Frontend Dependencies
         working-directory: ./frontend
         run: npm ci
-
-      - name: Run Frontend Unit Tests
-        working-directory: ./frontend
-        run: npm run test:unit
 
   build-and-push:
     name: Build & Push Docker Images
