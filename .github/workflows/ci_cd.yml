@@ -61,37 +61,4 @@ jobs:
           docker build -t ${{ secrets.DOCKER_USERNAME }}/Growtrack-frontend:latest ./frontend
           docker push ${{ secrets.DOCKER_USERNAME }}/Growtrack-frontend:latest
 
-  deploy:
-    name: Deploy to AWS EC2
-    runs-on: ubuntu-latest
-    needs: build-and-push
-
-    steps:
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@v0.1.7
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
-          script: |
-            export DATABASE_URL=${{ secrets.DATABASE_URL }}
-
-            docker pull ${{ secrets.DOCKER_USERNAME }}/bookshare-backend:latest
-            docker pull ${{ secrets.DOCKER_USERNAME }}/bookshare-frontend:latest
-
-            docker stop backend_app || true && docker rm backend_app || true
-            docker stop frontend_app || true && docker rm frontend_app || true
-
-            docker run -d \
-              --name backend_app \
-              -p 3000:3000 \
-              -e NODE_ENV=production \
-              -e DATABASE_URL=$DATABASE_URL \
-              ${{ secrets.DOCKER_USERNAME }}/bookshare-backend:latest
-
-            docker run -d \
-              --name frontend_app \
-              -p 5173:5173 \
-              -e NODE_ENV=production \
-              -e VITE_API_URL=http://localhost:3000 \
-              ${{ secrets.DOCKER_USERNAME }}/bookshare-frontend:latest
+  
