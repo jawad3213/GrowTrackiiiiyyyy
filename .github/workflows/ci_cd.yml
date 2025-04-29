@@ -45,12 +45,12 @@ jobs:
 
       - name: Build and Push Backend Image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/bookshare-backend:latest ./backend
-          docker push ${{ secrets.DOCKER_USERNAME }}/bookshare-backend:latest
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/growtrack-backend:latest ./backend
+          docker push ${{ secrets.DOCKER_USERNAME }}/growtrack-backend:latest
 
       - name: Build and Push Frontend Image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/Growtrack-frontend:latest ./frontend
-          docker push ${{ secrets.DOCKER_USERNAME }}/Growtrack-frontend:latest
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/growtrack-frontend:latest ./frontend
+          docker push ${{ secrets.DOCKER_USERNAME }}/growtrack-frontend:latest
 
   
