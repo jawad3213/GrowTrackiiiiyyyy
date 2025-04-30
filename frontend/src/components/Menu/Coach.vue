@@ -28,9 +28,11 @@
           <p class="text-lg font-semibold mb-2">No Coaches Found</p>
           <p class="mb-6">It looks like no coaches are registered yet.<br />Start by adding coaches to guide students through personalized soft skill development and monitor <br />their progress throughout the program.
         </p>
-          <button class="bg-[#F97316] hover:bg-[#FA9148] text-white font-bold py-3 px-20 rounded-md">
-            + Add Coach
+        <router-link to="/AddCoach">
+        <button class="bg-[#F97316] hover:bg-[#FA9148] text-white font-bold py-3 px-20 rounded-md">
+          + Add Coach
           </button>
+          </router-link>
         </div>
   
         <!-- Pagination -->

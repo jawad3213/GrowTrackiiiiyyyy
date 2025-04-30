@@ -25,9 +25,11 @@
           <div class="text-5xl mb-4">🔍</div>
           <p class="text-lg font-semibold mb-2">No supervisors found</p>
           <p class="mb-6">No internship or external supervisors have been added.<br /> Add supervisors to allow them to evaluate students during real-world experiences.</p>
+         <router-link to="/AddSupervisor">
           <button class="bg-[#F97316] hover:bg-[#FA9148] text-white font-bold py-3 px-20 rounded-md">
             + Add Supervisor
           </button>
+          </router-link>
         </div>
   
         <!-- Pagination -->
