@@ -176,7 +176,8 @@ CREATE TABLE public.signal (
     prove bytea,
     id_solution character varying(100),
     id_member character varying(100),
-    date_add date DEFAULT CURRENT_DATE
+    date_add date DEFAULT CURRENT_DATE,
+    solution_state character varying(50) DEFAULT 'No Access Taken'::character varying
 );
 
 
@@ -327,6 +328,7 @@ ALTER TABLE ONLY public.skill_evaluation ALTER COLUMN id_evaluation SET DEFAULT 
 --
 
 COPY public.admin (id_member, assigned_zone) FROM stdin;
+M002	\N
 \.
 
 
@@ -335,7 +337,10 @@ COPY public.admin (id_member, assigned_zone) FROM stdin;
 --
 
 COPY public.class (id_class, sector_id, start_date) FROM stdin;
-GINF1	CI1	2025-04-26
+GINF1	CI1	2025-04-27
+GIND1	CI1	2025-04-27
+GIL1	CI1	2025-04-27
+CYS1	CI1	2025-04-27
 \.
 
 
@@ -344,6 +349,7 @@ GINF1	CI1	2025-04-26
 --
 
 COPY public.coach (id_member, field) FROM stdin;
+71673502-4f3d-4dde-9879-fca92da6c983	Informatique
 \.
 
 
@@ -371,7 +377,6 @@ Développement Web	2025-05-01	2025-08-01	Création d'une application de gestion
 
 COPY public.member (id_member, cin, phone, password, full_name, email, profile_picture, description, date_add, role) FROM stdin;
 M001	CIN001	0612345678	hashedpass1	Nada Admin	admin1@example.com	admin.png	Admin system manager	2025-04-23 20:11:38.736008	admin
-M002	CIN002	0623456789	$2b$10$XCZ3EcjDWRh5Ej59TVsqn.iwrrhKcHVED2QC5gY5msC823xA4REaG	Omar Étudiant	eloukili.nada@etu.uae.ac.ma	student.png	1ère année ingénierie	2025-04-23 20:11:38.736008	student
 M003	CIN003	0634567890	hashedpass3	Sara Superviseure	supervisor1@example.com	supervisor.png	Supervise les projets de fin des	2025-04-23 20:11:38.736008	Supervisor
 M004	CIN004	0645678901	hashedpass4	Youssef Prof	prof1@example.com	prof.png	Professeur de base de données	2025-04-23 20:11:38.736008	Professor
 M005	CIN005	0656789012	hashedpass5	Amal Coach	coach1@example.com	coach.png	Coach en soft skills	2025-04-23 20:11:38.736008	coach
@@ -385,9 +390,19 @@ F007	CIN007	0612345684	hashed_pwd7	Mohamed Benali	mohamed.benali@student.ma	moha
 F008	CIN008	0612345685	hashed_pwd8	Sara Laaroussi	sara.laaroussi@student.ma	sara.png	Étudiante active au club robotique.	2025-04-23 21:26:21.8554	student
 F009	CIN009	0612345686	hashed_pwd9	Yassine Ait Taleb	yassine.aittaleb@student.ma	yassine.png	Étudiant intéressé par l’IA et les données.	2025-04-23 21:26:21.8554	student
 F010	CIN010	0612345687	hashed_pwd10	Fatima Zahra Idrissi	fatima.idrissi@student.ma	fatima.png	Étudiante motivée en cybersécurité.	2025-04-23 21:26:21.8554	student
-54c5b83f-2a94-44a6-8001-af0a4cbeb645	CIN653232	\N	$2b$10$YCwD45yF0mw3CEmpqWWjeeMw.aRF4navXEx22sntGLkISq7bEVUui	hamza	hamza@gamil.com	uploads\\1745630775446-Screenshot 2025-01-21 150850.png	nouveau etudiant	2025-04-26 01:31:22.866761	student
 21e2dc75-98b3-4f95-8a17-073b96634a86	lb28634	\N	$2b$10$yvQgOMjMuNlg4yZ506MJfeD6vwfMrQ81FkJmAaLvDX9qTNAj/hwyS	mohamed	dhjd@gmail.com	uploads\\1745634382322-Capture d’écran 2024-12-12 155640.png	nouveau	2025-04-26 02:31:30.437286	Professor
 3f89087a-0f35-43a9-bca3-d441df394223	AB123456	\N	$2b$10$litQYGB9mWF8lvfmbaaUqerkaO1z5HvoSFdM8yxyX4zi19wCwo3PS	Ali Ben Salah	ali.salah@example.com	uploads\\1745636364638-Screenshot 2025-01-21 205954.png	Projet très important pour le département IT.	2025-04-26 03:04:33.449826	Supervisor
+F011	NJ0	\N	hashedpass	\N	student11@example.com	\N	\N	2024-03-15 00:00:00	student
+F031	NJ30	\N	hashedpass	\N	student12@example.com	\N	\N	2025-03-15 00:00:00	student
+F0341	NJ340	\N	hashedpass	\N	student14@example.com	\N	\N	2025-03-15 00:00:00	student
+F03412	NJ2340	\N	hashedpass	\N	student142@example.com	\N	\N	2025-03-15 00:00:00	student
+F03414	NJ3404	\N	hashedpass	\N	student144@example.com	\N	\N	2025-03-15 00:00:00	student
+71673502-4f3d-4dde-9879-fca92da6c983	AB12456	\N	$2b$10$XqtBCOLC45wLPJ.LfHbtduisMfEUJLW0Y2o2oaLSe5lOMUKaXlNI2	Omar Benjelloun	omar.benjelloun@example.com	\N	Professeur expérimenté en développement web.	2025-04-27 01:55:49.308871	coach
+54c5b83f-2a94-44a6-8001-af0a4cbeb645	CIN653232	\N	$2b$10$YCwD45yF0mw3CEmpqWWjeeMw.aRF4navXEx22sntGLkISq7bEVUui	hamza	hamza@gamil.com	uploads\\1745630775446-Screenshot 2025-01-21 150850.png	nouveau etudiant	2025-04-26 01:31:22.866761	student
+d8a7acb0-7f80-40da-b493-595c87b4d499	CIN65323	\N	$2b$10$6K.T.aXB7BUcS/fUwfKYtufnbCtrkH/hZV3Js..X/YmVAxDJMgVdi	ossma 	ossama@gamil.com	uploads\\1745714353151-Screenshot 2025-01-21 150850.png	nouveau etudiant	2025-04-27 00:44:23.510264	student
+13dae651-f693-4959-8930-738d0d8ed844	c12	\N	$2b$10$E2blC8XINfAZ.DAFv6UAqeO12y5XyByvcPxM8q5V4Nn/6.gsp9SK.	khaled	khaled13@gmail.com	uploads\\1745716437314-Capture d’écran 2024-12-12 155640.png	nouveau	2025-04-27 01:19:06.307434	Professor
+hdkdak	kzlflz	\N	$2b$10$XCZ3EcjDWRh5Ej59TVsqn.iwrrhKcHVED2QC5gY5msC823xA4REaG	\N	elouansaidisoukaina@gmail.com	\N	\N	2025-04-27 03:07:56.286762	admin
+M002	CIN002	0623456789	$2b$10$lXwUpW569qS9f4ICGYeTnOwR0k5mDC16gw3dz86tY9ot9I4FTloNO	Omar Étudiant	eloukili.nada@etu.uae.ac.ma	student.png	1ère année ingénierie	2025-04-23 20:11:38.736008	student
 \.
 
 
@@ -408,6 +423,7 @@ F001	Informatique	CODE001
 F002	Intelligence Artificielle	CODE002
 F003	Cybersécurité	CODE003
 21e2dc75-98b3-4f95-8a17-073b96634a86	\N	8725
+13dae651-f693-4959-8930-738d0d8ed844	\N	100
 \.
 
 
@@ -432,6 +448,7 @@ COPY public.rate (id_rate, id_member) FROM stdin;
 --
 
 COPY public.report (id_reporter, id_reported, id_signal) FROM stdin;
+54c5b83f-2a94-44a6-8001-af0a4cbeb645	54c5b83f-2a94-44a6-8001-af0a4cbeb645	10
 \.
 
 
@@ -440,7 +457,7 @@ COPY public.report (id_reporter, id_reported, id_signal) FROM stdin;
 --
 
 COPY public.sector (id_sector, sector_name, id_admin) FROM stdin;
-CI1	\N	\N
+CI1	Année préparatoire 1	M002
 \.
 
 
@@ -448,27 +465,28 @@ CI1	\N	\N
 -- Data for Name: signal; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.signal (id_signal, approved, message, anony, option_signal, prove, id_solution, id_member, date_add) FROM stdin;
-SIG001	\N	\N	\N	\N	\N	\N	\N	2025-01-05
-SIG002	\N	\N	\N	\N	\N	\N	\N	2025-01-12
-SIG003	\N	\N	\N	\N	\N	\N	\N	2025-01-18
-SIG004	\N	\N	\N	\N	\N	\N	\N	2025-01-23
-SIG005	\N	\N	\N	\N	\N	\N	\N	2025-01-29
-SIG006	\N	\N	\N	\N	\N	\N	\N	2025-02-03
-SIG007	\N	\N	\N	\N	\N	\N	\N	2025-02-10
-SIG008	\N	\N	\N	\N	\N	\N	\N	2025-02-14
-SIG009	\N	\N	\N	\N	\N	\N	\N	2025-02-20
-SIG010	\N	\N	\N	\N	\N	\N	\N	2025-02-25
-SIG011	\N	\N	\N	\N	\N	\N	\N	2025-03-02
-SIG012	\N	\N	\N	\N	\N	\N	\N	2025-03-08
-SIG013	\N	\N	\N	\N	\N	\N	\N	2025-03-15
-SIG014	\N	\N	\N	\N	\N	\N	\N	2025-03-22
-SIG015	\N	\N	\N	\N	\N	\N	\N	2025-03-30
-SIG016	\N	\N	\N	\N	\N	\N	\N	2025-04-01
-SIG017	\N	\N	\N	\N	\N	\N	\N	2025-04-06
-SIG018	\N	\N	\N	\N	\N	\N	\N	2025-04-12
-SIG019	\N	\N	\N	\N	\N	\N	\N	2025-04-18
-SIG020	\N	\N	\N	\N	\N	\N	\N	2025-04-24
+COPY public.signal (id_signal, approved, message, anony, option_signal, prove, id_solution, id_member, date_add, solution_state) FROM stdin;
+SIG001	\N	\N	\N	\N	\N	\N	\N	2025-01-05	No Access Taken
+SIG002	\N	\N	\N	\N	\N	\N	\N	2025-01-12	No Access Taken
+SIG003	\N	\N	\N	\N	\N	\N	\N	2025-01-18	No Access Taken
+SIG004	\N	\N	\N	\N	\N	\N	\N	2025-01-23	No Access Taken
+SIG005	\N	\N	\N	\N	\N	\N	\N	2025-01-29	No Access Taken
+SIG006	\N	\N	\N	\N	\N	\N	\N	2025-02-03	No Access Taken
+SIG007	\N	\N	\N	\N	\N	\N	\N	2025-02-10	No Access Taken
+SIG008	\N	\N	\N	\N	\N	\N	\N	2025-02-14	No Access Taken
+SIG009	\N	\N	\N	\N	\N	\N	\N	2025-02-20	No Access Taken
+SIG010	\N	\N	\N	\N	\N	\N	\N	2025-02-25	No Access Taken
+SIG011	\N	\N	\N	\N	\N	\N	\N	2025-03-02	No Access Taken
+SIG012	\N	\N	\N	\N	\N	\N	\N	2025-03-08	No Access Taken
+SIG013	\N	\N	\N	\N	\N	\N	\N	2025-03-15	No Access Taken
+SIG014	\N	\N	\N	\N	\N	\N	\N	2025-03-22	No Access Taken
+SIG015	\N	\N	\N	\N	\N	\N	\N	2025-03-30	No Access Taken
+SIG016	\N	\N	\N	\N	\N	\N	\N	2025-04-01	No Access Taken
+SIG017	\N	\N	\N	\N	\N	\N	\N	2025-04-06	No Access Taken
+SIG018	\N	\N	\N	\N	\N	\N	\N	2025-04-12	No Access Taken
+SIG019	\N	\N	\N	\N	\N	\N	\N	2025-04-18	No Access Taken
+SIG020	\N	\N	\N	\N	\N	\N	\N	2025-04-24	No Access Taken
+10	\N	nouveau	\N	tricher	\N	\N	\N	2025-04-27	No Access Taken
 \.
 
 
@@ -477,6 +495,7 @@ SIG020	\N	\N	\N	\N	\N	\N	\N	2025-04-24
 --
 
 COPY public.skill (skill_name, desciption_skill, question1, question2, question3, id_admin) FROM stdin;
+Communication	Compétence permettant de transmettre	Quelles sont les qualités essentielles d'un bon communicant ?	Comment adapter sa communication en fonction de son interlocuteur ?	Pourquoi l'écoute active est-elle importante dans une conversation ?	M002
 \.
 
 
@@ -513,6 +532,7 @@ COPY public.skill_evaluation (id_evaluation, note_evaluation, type_evaluation, c
 --
 
 COPY public.solution (id_solution, option_solution, subject_solution, periode, state) FROM stdin;
+20	Tutoring Support	\N	\N	New
 \.
 
 
@@ -522,7 +542,8 @@ COPY public.solution (id_solution, option_solution, subject_solution, periode, s
 
 COPY public.student (id_member, cne, id_class) FROM stdin;
 F010	CNE123456	\N
-54c5b83f-2a94-44a6-8001-af0a4cbeb645	p137638	GINF1
+54c5b83f-2a94-44a6-8001-af0a4cbeb645	lc234	GINF1
+d8a7acb0-7f80-40da-b493-595c87b4d499	p137634	GINF1
 \.
 
 
@@ -549,7 +570,8 @@ COPY public.supervisor (id_member, registration_number, company, "position") FRO
 --
 
 COPY public.teach (id_member, id_class, course) FROM stdin;
-21e2dc75-98b3-4f95-8a17-073b96634a86	GINF1	linux
+13dae651-f693-4959-8930-738d0d8ed844	GINF1	Mathématiques
+13dae651-f693-4959-8930-738d0d8ed844	GIND1	Programmation
 \.
 
 

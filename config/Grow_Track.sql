@@ -3,16 +3,36 @@
 
 --DONE--
 CREATE TABLE member ( 
-   id_member VARCHAR(100) PRIMARY KEY,
+   id_member VARCHAR(100),
    cin VARCHAR(50) UNIQUE,
    phone VARCHAR(50),
    password VARCHAR(255) NOT NULL,
-   role VARCHAR(50) NOT NULL CHECK (type_evaluation IN ('admin', 'student', 'Supervisor', 'Professor', 'coach')),
+   role VARCHAR(50) NOT NULL CHECK (role IN ('admin', 'student', 'Supervisor', 'Professor', 'coach')),
    full_name VARCHAR(50),
    email VARCHAR(50) NOT NULL UNIQUE,
    profile_picture VARCHAR(50), 
    description VARCHAR(1000), 
    date_add TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
+);
+
+--creation des fillieres par les admins
+--DONE--
+CREATE TABLE sector (
+   id_sector VARCHAR(100),
+   description VARCHAR(2000), 
+   id_admin VARCHAR(100),
+   PRIMARY KEY(id_sector),
+   FOREIGN KEY(id_admin) REFERENCES admin(id_member)
+);
+
+
+--DONE--
+CREATE TABLE class (
+  id_class VARCHAR(100),
+  start_date DATE DEFAULT CURRENT_DATE,
+  sector_id VARCHAR(100) NOT NULL,
+  PRIMARY KEY(id_class),
+  FOREIGN KEY(sector_id) REFERENCES sector(id_sector)
 );
 
 --DONE--
@@ -55,21 +75,11 @@ CREATE TABLE admin (
    FOREIGN KEY (id_member) REFERENCES member(id_member)
 );
 
---creation des fillieres par les admins
---DONE--
-CREATE TABLE sector (
-   id_sector VARCHAR(100),
-   sector_name VARCHAR(100), --?? deja doit etre id
-   id_admin VARCHAR(100),
-   PRIMARY KEY(id_sector),
-   FOREIGN KEY(id_admin) REFERENCES admin(id_member)
-);
-
 
 -- TRAITEMENT SIGNIAL - SOLUTION - SUIVI
 --DONE--
 CREATE TABLE solution (
-   id_solution VARCHAR(100),
+   id_solution SERIAL,
    option_solution VARCHAR(100),
    subject_solution VARCHAR(100),
    periode VARCHAR(100),
@@ -80,8 +90,8 @@ CREATE TABLE solution (
 --DONE--
 CREATE TABLE report (
   id_reporter VARCHAR(100),   
-  id_reported VARCHAR(100),  
-  id_signal   VARCHAR(100)
+  id_reported VARCHAR(100),
+  id_signal INT,
 
   PRIMARY KEY (id_reporter, id_reported, id_signal),
 
@@ -93,16 +103,16 @@ CREATE TABLE report (
 
 --DONE--
 CREATE TABLE signal (
-   id_signal VARCHAR(100),
+   id_signal SERIAL PRIMARY KEY,
    approved BOOLEAN,
    message VARCHAR(1000),
    anony BOOLEAN,
    option_signal VARCHAR(100),
    prove BYTEA,
-   id_solution VARCHAR(100) ,
+   id_solution INT ,
    id_member VARCHAR(100) ,
    date_add DATE DEFAULT CURRENT_DATE,
-   PRIMARY KEY(id_signal),
+   solution_state VARCHAR(100),
    FOREIGN KEY(id_solution) REFERENCES solution(id_solution),
    FOREIGN KEY(id_member) REFERENCES member(id_member)
 );
@@ -111,8 +121,10 @@ CREATE TABLE signal (
 CREATE TABLE follow_up (
    id_coach VARCHAR(100),
    id_student VARCHAR(100),
-   id_solution VARCHAR(100),
+   id_solution INT,
    message VARCHAR(1000),
+   start_date DATE DEFAULT CURRENT_DATE,
+   date_done DATE,
    PRIMARY KEY(id_coach, id_student, id_solution),
    FOREIGN KEY(id_coach) REFERENCES coach(id_member),
    FOREIGN KEY(id_student) REFERENCES student(id_member),
@@ -123,31 +135,28 @@ CREATE TABLE follow_up (
 --l'ensemble de regroupement des etudiants : stage - groupe/projet - classe
 --DONE--
 CREATE TABLE project (
-   id_project VARCHAR(100),
+   id_project SERIAL PRIMARY KEY,
    description_project VARCHAR(1000),
    date_project DATE,
    subject_project VARCHAR(1000),
    id_prof VARCHAR(100) NOT NULL,
-   PRIMARY KEY(id_project),
    FOREIGN KEY(id_prof) REFERENCES professor(id_member)
 );
 
 --DONE--
 CREATE TABLE internship (
-   id_internship VARCHAR(100),
+   id_internship SERIAL PRIMARY KEY,
    date_start DATE,
    date_done DATE,
-   subject_internship VARCHAR(100),
-   PRIMARY KEY(id_internship)
+   subject_internship VARCHAR(100)
 );
 
 --DONE--
 CREATE TABLE team (
-   id_team VARCHAR(100),
+   id_team SERIAL PRIMARY KEY,
    note DOUBLE PRECISION,
    id_prof VARCHAR(100) NOT NULL,
-   id_project VARCHAR(100) NOT NULL,
-   PRIMARY KEY(id_team),
+   id_project INT,
    FOREIGN KEY(id_prof) REFERENCES professor(id_member),
    FOREIGN KEY(id_project) REFERENCES project(id_project)
 );
@@ -159,15 +168,6 @@ CREATE TABLE team_student (
    PRIMARY KEY(id_team, student_id),
    FOREIGN KEY(id_team) REFERENCES team(id_team),
    FOREIGN KEY(student_id) REFERENCES student(id_member)
-);
-
---DONE--
-CREATE TABLE class (
-  id_class VARCHAR(100),
-  start_date DATE DEFAULT CURRENT_DATE,
-  sector_id VARCHAR(100) NOT NULL,
-  PRIMARY KEY(id_class),
-  FOREIGN KEY(sector_id) REFERENCES sector(id_sector)
 );
 
 
@@ -188,7 +188,7 @@ CREATE TABLE teach (
 CREATE TABLE supervise (
    id_supervisor VARCHAR(100), 
    id_student VARCHAR(100), 
-   id_internship VARCHAR(100),
+   id_internship INT,
    PRIMARY KEY(id_supervisor, id_student, id_internship),
    FOREIGN KEY(id_supervisor) REFERENCES supervisor(id_member), 
    FOREIGN KEY(id_student) REFERENCES student(id_member), 
@@ -199,7 +199,7 @@ CREATE TABLE supervise (
 --DONE--
 CREATE TABLE skill (
    skill_name VARCHAR(100),
-   desciption_skill VARCHAR(1000),
+   description_skill VARCHAR(1000),
    question1 VARCHAR(100),
    question2 VARCHAR(100),
    question3 VARCHAR(100),
@@ -214,9 +214,9 @@ CREATE TABLE skill_evaluation (
    note_evaluation DOUBLE PRECISION,
    type_evaluation VARCHAR(100) CHECK (type_evaluation IN ('Pair', 'Self', 'Supervisor', 'Professor')),
    comment_evaluation VARCHAR(1000),
-   id_internship VARCHAR(100),
+   id_internship INT,
    id_class VARCHAR(100),
-   id_team VARCHAR(100),
+   id_team INT,
    id_student VARCHAR(100),
    id_evaluator VARCHAR(100),
    skill_name VARCHAR(100),
@@ -233,11 +233,10 @@ CREATE TABLE skill_evaluation (
 -- Notifications
 --DONE--
 CREATE TABLE notifications (
-   id_notification VARCHAR(100),
+   id_notification SERIAL PRIMARY KEY,
    content_notification VARCHAR(100),
    date_notification TIMESTAMP,
    id_member VARCHAR(100),
-   PRIMARY KEY(id_notification),
    FOREIGN KEY(id_member) REFERENCES member(id_member)
 );
 
@@ -245,7 +244,7 @@ CREATE TABLE notifications (
 --rate
 --DONE--
 CREATE TABLE rate (
-   id_rate VARCHAR(100),
+   id_rate SERIAL,
    id_member VARCHAR(100),
    PRIMARY KEY(id_rate),
    FOREIGN KEY(id_member) REFERENCES member(id_member)
