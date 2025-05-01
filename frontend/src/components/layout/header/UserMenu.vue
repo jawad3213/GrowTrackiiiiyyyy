@@ -59,8 +59,12 @@
 
 <script setup>
 import { UserCircleIcon, ChevronDownIcon, LogoutIcon, SettingsIcon, InfoCircleIcon } from '@/components/icons'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useAuthStore } from '../../../stores/auth'
+
+const store = useAuthStore()
+const router = useRouter()
 
 const dropdownOpen = ref(false)
 const dropdownRef = ref(null)
@@ -78,10 +82,17 @@ const closeDropdown = () => {
   dropdownOpen.value = false
 }
 
-const signOut = () => {
-  // Implement sign out logic here
-  console.log('Signing out...')
-  closeDropdown()
+const signOut = async () => {
+  try {
+    await store.logout();
+    if (!store.errorMsg) {
+      router.push('/login');
+    }else {
+      console.error('Error during logout:', store.errorMsg); // Log error message if there's any
+    }
+  } catch (err) {
+    console.error('Erreur lors de la connexion :', err)
+  }
 }
 
 const handleClickOutside = (event) => {

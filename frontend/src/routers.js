@@ -24,6 +24,12 @@ import AddField from "./components/AddField.vue";
 import AddProfessorModal from "./components/AddProfessorModal.vue";
 import AddSkill from "./components/AddSkill.vue";
 import AddStudentModal from "./components/AddStudentModal.vue";
+import dashboard from "./components/dashboard.vue";
+import Calendar from "./components/Others/Calendar.vue";
+import UserProfile from "./components/Others/UserProfile.vue";
+import GlobalOverview from "./components/Dash1/GlobalOverview.vue";
+import Signals from "./components/Dash1/Signals.vue";
+import Coach from "./components/Dash1/Coach.vue";
 import AddSupervisorModal from "./components/AddSupervisorModal.vue";
 import Evaluation from "./components/Evaluation.vue";
 import Personalized from "./components/Personalized.vue";
@@ -31,6 +37,8 @@ import AddSignal from "./components/AddSignal.vue";
 import Solution from "./components/Solution.vue";
 import ListeStudent from "./components/Formulaire/ListeStudent.vue";
 import DeleteStudent from "./components/DeleteStudent.vue";
+import api from "./services/api";
+
 
 const routes = [
     {
@@ -108,6 +116,7 @@ const routes = [
         name : "dashboard",
         component : dashboard,
         path : "/dashboard",
+        meta: { requiresAuth: true },
     },
     {
         name : "Calendar",
@@ -201,6 +210,19 @@ const routes = [
 const router =createRouter({
     history: createWebHistory(),
     routes
+});
+
+router.beforeEach(async (to, from, next)=>{
+    if (to.meta.requiresAuth) {
+        try {
+          await api.get('/api/auth/check',{ withCredentials: true });
+          next(); // Token OK
+        } catch (error) {
+          next('/login'); // Token not OK
+        }
+      } else {
+        next();
+      }
 });
 
 export default router
