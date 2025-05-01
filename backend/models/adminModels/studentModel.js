@@ -130,6 +130,21 @@ exports.deleteStudentById = async (id) => {
     try {
 
       await pool.query(
+        "DELETE FROM public.follow_up WHERE id_student = $1",
+        [id]
+      );
+
+      await pool.query(
+        "DELETE FROM public.report WHERE id_reported = $1",
+        [id]
+      );
+
+      await pool.query(
+        "DELETE FROM public.supervise WHERE id_student = $1",
+        [id]
+      );
+
+      await pool.query(
         "DELETE FROM public.student WHERE id_member = $1",
         [id]
       );

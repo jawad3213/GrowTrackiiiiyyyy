@@ -92,20 +92,25 @@ exports.sendSolution = async (req,res ) => {
       }
 }
 
-exports.sendSolutionPersonalie = async (req,res ) => {
-  const {details, reporter_full_name,reported_full_name} =  req.body;
+exports.sendAlert = async (req, res) => {
+  const { details } = req.body;
   const { id_signal } = req.params;
 
-  try{
-      const result = await signalModel.solution( id_signal,option_solution,details, name_coach,start_date,date_done);
-      return res.status(200).json({message : "send notification succes"})
-  }catch (error) {
-      console.error("Error retrieving signal by id:", error);
-      return res.status(500).json({
-        message: "Internal server error. Please try again later.",
-      });
-    }
-}
+  try {
+    const result = await signalModel.sendAlert(id_signal, details);
+    
+    return res.status(200).json({
+      message: "Notification envoyée avec succès.",
+      data: result
+    });
+  } catch (error) {
+    console.error("Erreur lors de l'envoi de la notification :", error);
+    return res.status(500).json({
+      message: "Erreur serveur interne. Veuillez réessayer plus tard."
+    });
+  }
+};
+
 
 
 exports.deleteSignal = async (req, res) => {

@@ -137,9 +137,48 @@ exports.solution = async (id_signal, option_solution, details, name_coach, start
   }
 };
 
+exports.sendAlert = async (id_signal, details) => {
+  try {
+    
+    // 3. Trouver l'étudiant signalé
+    const reporder = await pool.query(
+      `SELECT id_reporter FROM public.report WHERE id_signal = $1`,
+      [id_signal]
+    );
+
+    // 3. Trouver l'étudiant signalé
+    const reporter = await pool.query(
+      `SELECT id_reported FROM public.report WHERE id_signal = $1`,
+      [id_signal]
+    );
+
+    
+    // 6. Mettre à jour le statut de la solution
+    await pool.query(
+      `UPDATE public.signal SET solution_state = 'in progress' WHERE id_signal = $1`,
+      [id_signal]
+    );
+
+    // 7. Insérer dans la table notifications
+    await pool.query(
+      `INSERT INTO public.notifications(content_notification,id_member,id_reporter) VALUES ($1,$2,$3)`,
+      [details,reporter.rows[0].id_reported,reporder.rows[0].id_reporter]
+    )
+
+    // Retourner un message de succès (pas result.rows[0] car pas RETURNING)
+    return { message: "Solution created successfully." };
+
+  } catch (error) {
+    console.error("Error inserting solution:", error);
+    throw error;
+  }
+};
+
 
 exports.deleteSignal = async (id) => {
     try {
+
+      
   
       const result = await pool.query(
         "DELETE FROM public.signal WHERE id_siganl = $1",

@@ -13,12 +13,12 @@ router.get("/", classController.getAllSectors);
 router.get("/search", classController.getClassByName);
 
 // Update class
-router.patch("/:id_class", classController.updateField);
+router.patch("/:id_field", classController.updateField);
 
 // Delete class
 router.delete("/:id_class", classController.deleteClass);
 
 // Count total classes
-router.get("/total", classController.getTotalClasses);
+router.get("/total", classController.getTotalfield);
 
 module.exports = router;

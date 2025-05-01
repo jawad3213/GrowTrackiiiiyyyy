@@ -56,18 +56,18 @@ exports.getClassByName = async (req, res) => {
 };
 
 exports.updateField = async (req, res) => {
-  const classId = req.params.id_class;
+  const fieldId = req.params.id_field;
   const updates = req.body;
 
   try {
-    const updatedClass = await classModel.updateFieldById(classId, updates);
+    const updatedClass = await classModel.updateFieldById(fieldId, updates);
 
     if (!updatedClass) {
-      return res.status(404).json({ message: "Class not found or no data provided." });
+      return res.status(404).json({ message: "Field not found or no data provided." });
     }
 
     res.status(200).json({
-      message: "Class updated successfully.",
+      message: "Field updated successfully.",
       data: updatedClass,
     });
   } catch (error) {
@@ -93,7 +93,7 @@ exports.deleteClass = async (req, res) => {
   }
 };
 
-exports.getTotalClasses = async (req, res) => {
+exports.getTotalfield = async (req, res) => {
   try {
     const total = await classModel.totalClasses();
     res.status(200).json({
