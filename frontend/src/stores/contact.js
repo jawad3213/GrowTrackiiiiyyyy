@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import api from '@/services/api'
 
-export const useContactStore = defineStore('contact', () => {
+export const useContactStore = defineStore('contact', () => { //creer un store appelé contact
 
     const error = ref(null)
     const success = ref(null)

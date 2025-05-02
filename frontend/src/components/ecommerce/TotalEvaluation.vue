@@ -2,7 +2,7 @@
     <div class="rounded-xl border border-gray-200 p-6 bg-white shadow mb-20 dark:border-gray-800 dark:bg-white/[0.03]">
       <!-- Header -->
       <div class="flex justify-between items-center mb-2">
-        <h2 class="text-sm font-semibold text-gray-700">Total Evaluation</h2>
+        <h2 class="text-sm font-semibold text-gray-700 dark:text-white">Total Evaluation</h2>
         <button
           class="bg-gray-100 text-gray-500 w-6 h-6 rounded-full flex items-center justify-center text-sm"
           aria-label="Info"
@@ -11,7 +11,7 @@
         </button>
       </div>
   
-      <p class="text-sm text-gray-400 mb-4">Secondary text</p>
+      <p class="text-sm text-gray-400 mb-4 dark:text-white">Secondary text</p>
   
       <!-- Chart -->
       <apexchart

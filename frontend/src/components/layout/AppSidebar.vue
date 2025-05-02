@@ -16,9 +16,18 @@
     <!-- LOGO CENTRÉ -->
     <div class="py-8 flex items-center justify-center">
       <div class="flex items-center justify-center">
+
         <img
           v-if="isExpanded || isHovered || isMobileOpen"
           class="dark:hidden"
+          src="@/assets/logo.png"
+          alt="Logo"
+          width="220"
+          height="80"
+        />
+        <img
+          v-if="isExpanded || isHovered || isMobileOpen"
+          class="hidden dark:block"
           src="@/assets/logo.png"
           alt="Logo"
           width="220"
@@ -56,12 +65,12 @@
                   v-if="item.subItems"
                   @click="toggleSubmenu(groupIndex, index)"
                   :class="[
-                    'menu-item group w-full flex items-center justify-between',
-                    { 'menu-item-active': isSubmenuOpen(groupIndex, index),
-                      'menu-item-inactive': !isSubmenuOpen(groupIndex, index),
-                    },
-                    !isExpanded && !isHovered ? 'lg:justify-center' : ''
-                  ]"
+  'menu-item group w-full flex items-center justify-between transition-colors duration-200 rounded-lg text-gray-800 dark:text-white',
+  'hover:bg-[#8B5CF6] hover:text-white',
+  !isExpanded && !isHovered ? 'lg:justify-center' : ''
+]"
+
+
                 >
                   <span
                     :class="[
@@ -87,11 +96,11 @@
                   v-else-if="item.path"
                   :to="item.path"
                   :class="[
-                    'menu-item group',
-                    { 'menu-item-active': isActive(item.path),
-                      'menu-item-inactive': !isActive(item.path),
-                    }
+                    'menu-item group transition-colors duration-200 rounded-lg text-gray-800 dark:text-white',
+                    'hover:bg-[#8B5CF6] hover:text-white'
                   ]"
+
+
                 >
                   <span
                     :class="[
@@ -112,11 +121,11 @@
                         <router-link
                           :to="subItem.path"
                           :class="[
-                            'menu-dropdown-item flex justify-between items-center ',
-                            { 'menu-dropdown-item-active': isActive(subItem.path),
-                              'menu-dropdown-item-inactive': !isActive(subItem.path),
-                            }
-                          ]"
+  'menu-dropdown-item flex justify-between items-center transition-colors duration-200 rounded-md px-3 py-2 text-gray-800 dark:text-white',
+  'hover:bg-[#AD8CF9] hover:text-white'
+]"
+
+
                         >
                           {{ subItem.name }}
                           <span class="flex items-center gap-1 ml-auto">
@@ -145,6 +154,8 @@
 // ton script est bon ! tu n'as pas besoin de changer.
 import { ref, computed } from "vue";
 import { useRoute } from "vue-router";
+const isDashboard = (path) => path === '/dashboard'
+
 
 import {
   UserSittings,
@@ -162,13 +173,25 @@ import { useSidebar } from "@/composables/useSidebar";
 const route = useRoute();
 const { isExpanded, isMobileOpen, isHovered, openSubmenu } = useSidebar();
 
+const isHighlightedGroup = (itemName) => {
+  const activePath = route.path
+
+  const groupPaths = {
+    'Dashboard': ['/dashboard'],
+    'UserManagement': ['/Student', '/Professor', '/Supervisor'],
+    'Evaluations': ['/GlobalOverview', '/Signals'],
+    'Institution Settings': ['/Group', '/Coach'],
+  }
+
+  return groupPaths[itemName]?.includes(activePath)
+}
+
 const menuGroups = [
   {
     title: "Menu",
     items: [
       { icon: GridIcon, name: "Dashboard", path: "/dashboard" },
       { icon: CalenderIcon, name: "Calendar", path: "/Calendar" },
-      { icon: UserCircleIcon, name: "Profile", path: "/UserProfile" },
       { 
         icon: UserAdd, 
         name: "UserManagement",

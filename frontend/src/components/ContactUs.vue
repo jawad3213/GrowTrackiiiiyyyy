@@ -111,7 +111,7 @@
 
 <script setup>
 import Header from './Header.vue'
-import { useContactStore } from '@/stores/contact'
+import { useContactStore } from '@/stores/contact' //fonction de Pinia pour accéder au store conta
 import { ref,watch,onMounted } from 'vue'
 
 const store = useContactStore()
@@ -131,7 +131,7 @@ watch(info , (newinfo)=> localStorage.setItem('tempinfo',JSON.stringify(newinfo)
 
 onMounted(() => {
     const saved = localStorage.getItem('tempinfo')
-    if (saved) {
+    if (saved) { //s’il existe des données sauvegardées dans localStorage
         info.value = JSON.parse(saved)
     }
 })

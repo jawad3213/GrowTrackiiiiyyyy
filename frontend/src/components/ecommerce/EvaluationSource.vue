@@ -1,7 +1,8 @@
 <template>
     <div class="rounded-xl border border-gray-200 p-6 bg-white shadow dark:border-gray-800 dark:bg-white/[0.03]">
 
-      <h3 class="text-lg font-semibold text-gray-800 mb-4">Evaluation Sources Overtime</h3>
+      <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">
+        Evaluation Sources Overtime</h3>
       <VueApexCharts
         type="bar"
         height="350"

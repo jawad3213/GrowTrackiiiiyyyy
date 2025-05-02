@@ -4,11 +4,16 @@
 
 <script setup lang="ts">
 import { ref, provide, onMounted, watch, computed } from 'vue'
+import { useRoute } from 'vue-router'
 
 type Theme = 'light' | 'dark'
-
 const theme = ref<Theme>('light')
 const isInitialized = ref(false)
+
+const route = useRoute()
+
+// Liste des routes où le dark mode est désactivé
+const excludedDarkRoutes = ['/', '/AboutUs', '/Teachers', '/Students']
 
 const isDarkMode = computed(() => theme.value === 'dark')
 
@@ -18,16 +23,18 @@ const toggleTheme = () => {
 
 onMounted(() => {
   const savedTheme = localStorage.getItem('theme') as Theme | null
-  const initialTheme = savedTheme || 'light' // Default to light theme
-
+  const initialTheme = savedTheme || 'light'
   theme.value = initialTheme
   isInitialized.value = true
 })
 
-watch([theme, isInitialized], ([newTheme, newIsInitialized]) => {
+watch([theme, isInitialized, route], ([newTheme, newIsInitialized, newRoute]) => {
   if (newIsInitialized) {
     localStorage.setItem('theme', newTheme)
-    if (newTheme === 'dark') {
+
+    const isExcluded = excludedDarkRoutes.includes(newRoute.path)
+
+    if (newTheme === 'dark' && !isExcluded) {
       document.documentElement.classList.add('dark')
     } else {
       document.documentElement.classList.remove('dark')

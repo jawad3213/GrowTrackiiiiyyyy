@@ -1,9 +1,9 @@
 
     <template>
-  <div class="w-full md:w-1/2 rounded-xl border border-gray-200 p-6 bg-white shadow dark:border-gray-800 dark:bg-white/[0.03]">
+  <div class="w-full md:w-full rounded-xl border border-gray-200 p-6 bg-white shadow dark:border-gray-800 dark:bg-white/[0.03]">
     <!-- Header -->
     <div class="flex justify-between items-center mb-4">
-      <h2 class="font-semibold text-gray-800 text-sm">User Distrubution by Role</h2>
+      <h2 class="font-semibold text-gray-800 text-sm ">User Distrubution by Role</h2>
       <button class="text-gray-400 hover:text-gray-600">
         <span>⋮</span>
       </button>
