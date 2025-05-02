@@ -112,11 +112,14 @@ exports.ResetPass =
         const {email} = req.body;
         try {
         const user = await authModel.FindUserByEmail(email);
+/*console.log(user);
+console.log(user.id);*/
+
             if(!user) {return res.status(400).json({ message: "User not found with this email ❌" });}
             else {
                 const Reset_Token = JWT.sign(
-                    { id: user.id_member, role: user.role, fullname: user.fullname},
-                    process.env.ACCESS_SECRET,
+                    { id: user.id_member},
+                    process.env.RESET_SECRET,
                     { expiresIn: '15m'})
             
                     const resetLink = `http://localhost:5173/resetpass?token=${Reset_Token}`;
@@ -138,9 +141,7 @@ exports.ResetPass =
                 return res.status(200).json({
                   message: "A password reset email has been sent. Please check your inbox or spam folder ✅",
                 });
-            } else {
-                return res.status(500).json({ message: "Failed to send reset email " });
-            }
+              }
         }
         }
          catch (error) {
