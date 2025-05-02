@@ -88,8 +88,8 @@ describe('Auth Store', () => {
   })
 
   it('Clearstatus clears error and loading', () => {
-    store.error = 'Some error';   // ✅ assign to ref
-    store.loading = true;         // ✅ assign to ref
+    store.error = 'Some error';   
+    store.loading = true;         
   
     store.Clearstatus();
   
