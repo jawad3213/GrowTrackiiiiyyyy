@@ -31,6 +31,13 @@ import AddSignal from "./components/AddSignal.vue";
 import Solution from "./components/Solution.vue";
 import ListeStudent from "./components/Formulaire/ListeStudent.vue";
 import DeleteStudent from "./components/DeleteStudent.vue";
+import DashboardProf from "./components/DashboardProf.vue";
+import ClassesEval from "./components/MenuProf/ClassesEval.vue";
+import ClassesSignal from "./components/MenuProf/ClassesSignal.vue";
+import HistoriqueEval from "./components/MenuProf/HistoriqueEval.vue";
+import HistoriqueSignal from "./components/MenuProf/HistoriqueSignal.vue";
+import ProjectMang from "./components/MenuProf/ProjectMang.vue";
+import Rapport from "./components/MenuProf/Rapport.vue";
 
 const routes = [
     {
@@ -194,7 +201,43 @@ const routes = [
         name : "DeleteStudent",
         component : DeleteStudent,
         path : "/DeleteStudent/:id"
-    }
+    },
+    {
+        name : "DashboardProf",
+        component : DashboardProf,
+        path : "/DashboardProf"
+    },
+    {
+        name : "ClassesEval",
+        component : ClassesEval,
+        path : "/ClassesEval"
+    },
+    {
+        name : "HistoriqueEval",
+        component : HistoriqueEval,
+        path : "/HistoriqueEval"
+    },
+    {
+        name : "ProjectMang",
+        component : ProjectMang,
+        path : "/ProjectMang"
+    },
+    {
+        name : "ClassesSignal",
+        component : ClassesSignal,
+        path : "/ClassesSignal"
+    },
+    {
+        name : "HistoriqueSignal",
+        component : HistoriqueSignal,
+        path : "/HistoriqueSignal"
+    },
+    
+    {
+        name : "Rapport",
+        component : Rapport,
+        path : "/Rapport"
+    },
     
 ];
 
