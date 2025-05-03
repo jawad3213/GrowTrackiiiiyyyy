@@ -1,9 +1,9 @@
 
 --PARTIE INTIALE : LES MEMBRES
 
---DONE--
+--DONEE--
 CREATE TABLE member ( 
-   id_member VARCHAR(100),
+   id_member VARCHAR(100) PRIMARY KEY,
    cin VARCHAR(50) UNIQUE,
    phone VARCHAR(50),
    password VARCHAR(255) NOT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE member (
 );
 
 --creation des fillieres par les admins
---DONE--
+--DONEE--
 CREATE TABLE sector (
    id_sector VARCHAR(100),
    description VARCHAR(2000), 
@@ -26,7 +26,7 @@ CREATE TABLE sector (
 );
 
 
---DONE--
+--DONEE--
 CREATE TABLE class (
   id_class VARCHAR(100),
   start_date DATE DEFAULT CURRENT_DATE,
@@ -35,7 +35,7 @@ CREATE TABLE class (
   FOREIGN KEY(sector_id) REFERENCES sector(id_sector)
 );
 
---DONE--
+--DONEE--
 CREATE TABLE student ( 
    id_member VARCHAR(100) PRIMARY KEY,
    cne VARCHAR(50) UNIQUE,
@@ -44,7 +44,7 @@ CREATE TABLE student (
    FOREIGN KEY (id_class) REFERENCES class(id_class)
 );
 
---DONE--
+--DONEE--
 CREATE TABLE professor (
    id_member VARCHAR(100) PRIMARY KEY,
    department VARCHAR(50),
@@ -52,7 +52,7 @@ CREATE TABLE professor (
    FOREIGN KEY (id_member) REFERENCES member(id_member)
 );
 
---DONE--
+--DONEE--
 CREATE TABLE supervisor (
    id_member VARCHAR(100) PRIMARY KEY,
    registration_number VARCHAR(50) UNIQUE,
@@ -61,14 +61,14 @@ CREATE TABLE supervisor (
    FOREIGN KEY (id_member) REFERENCES member(id_member)
 );
 
---DONE--
+--DONEE--
 CREATE TABLE coach (
    id_member VARCHAR(100) PRIMARY KEY,
    field VARCHAR(50),
    FOREIGN KEY (id_member) REFERENCES member(id_member)
 );
 
---DONE--
+--DONEE--
 CREATE TABLE admin (
    id_member VARCHAR(100) PRIMARY KEY,
    assigned_zone VARCHAR(50),
@@ -77,7 +77,7 @@ CREATE TABLE admin (
 
 
 -- TRAITEMENT SIGNIAL - SOLUTION - SUIVI
---DONE--
+--DONEE--
 CREATE TABLE solution (
    id_solution SERIAL,
    option_solution VARCHAR(100),
@@ -87,7 +87,7 @@ CREATE TABLE solution (
    PRIMARY KEY(id_solution)
 );
 
---DONE--
+--DONEE--
 CREATE TABLE report (
   id_reporter VARCHAR(100),   
   id_reported VARCHAR(100),
@@ -101,7 +101,7 @@ CREATE TABLE report (
 );
 
 
---DONE--
+--DONEE--
 CREATE TABLE signal (
    id_signal SERIAL PRIMARY KEY,
    approved BOOLEAN,
@@ -117,7 +117,7 @@ CREATE TABLE signal (
    FOREIGN KEY(id_member) REFERENCES member(id_member)
 );
 
---DONE--
+--DONEE--
 CREATE TABLE follow_up (
    id_coach VARCHAR(100),
    id_student VARCHAR(100),
@@ -133,7 +133,7 @@ CREATE TABLE follow_up (
 
 
 --l'ensemble de regroupement des etudiants : stage - groupe/projet - classe
---DONE--
+--DONEE--
 CREATE TABLE project (
    id_project SERIAL PRIMARY KEY,
    description_project VARCHAR(1000),
@@ -143,7 +143,7 @@ CREATE TABLE project (
    FOREIGN KEY(id_prof) REFERENCES professor(id_member)
 );
 
---DONE--
+--DONEE--
 CREATE TABLE internship (
    id_internship SERIAL PRIMARY KEY,
    date_start DATE,
@@ -151,7 +151,7 @@ CREATE TABLE internship (
    subject_internship VARCHAR(100)
 );
 
---DONE--
+--DONEE--
 CREATE TABLE team (
    id_team SERIAL PRIMARY KEY,
    note DOUBLE PRECISION,
@@ -161,9 +161,9 @@ CREATE TABLE team (
    FOREIGN KEY(id_project) REFERENCES project(id_project)
 );
 
---DONE--
+--DONEE--
 CREATE TABLE team_student (
-   id_team VARCHAR(100),
+   id_team INT,
    student_id VARCHAR(100),
    PRIMARY KEY(id_team, student_id),
    FOREIGN KEY(id_team) REFERENCES team(id_team),
@@ -172,7 +172,7 @@ CREATE TABLE team_student (
 
 
 --prof donne des formations dans quel class ?
---DONE--
+--DONEE--
 CREATE TABLE teach (
    id_member VARCHAR(100),
    id_class VARCHAR(100),
@@ -184,7 +184,7 @@ CREATE TABLE teach (
 
 
 -- superviseur avec quel etudiant (un seul)?
---DONE--
+--DONEE--
 CREATE TABLE supervise (
    id_supervisor VARCHAR(100), 
    id_student VARCHAR(100), 
@@ -196,7 +196,7 @@ CREATE TABLE supervise (
 );
 
 --traitement des skill prenant en compte evalusation est une evaluation d'une skill dans un concept
---DONE--
+--DONEE--
 CREATE TABLE skill (
    skill_name VARCHAR(100),
    description_skill VARCHAR(1000),
@@ -208,7 +208,7 @@ CREATE TABLE skill (
    FOREIGN KEY(id_admin) REFERENCES admin(id_member) 
 );
 
---DONE--
+--DONEE--
 CREATE TABLE skill_evaluation (
    id_evaluation SERIAL PRIMARY KEY,
    note_evaluation DOUBLE PRECISION,
@@ -231,7 +231,7 @@ CREATE TABLE skill_evaluation (
 
 
 -- Notifications
---DONE--
+--DONEE--
 CREATE TABLE notifications (
    id_notification SERIAL PRIMARY KEY,
    content_notification VARCHAR(100),
@@ -242,7 +242,7 @@ CREATE TABLE notifications (
 
 
 --rate
---DONE--
+--DONEE--
 CREATE TABLE rate (
    id_rate SERIAL,
    id_member VARCHAR(100),

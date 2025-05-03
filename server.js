@@ -44,6 +44,9 @@ app.use("/api/hash", hashRoute)
 const DashAdminRoute = require("./routes/adminRoutes/AdminDashboardRoute");
 app.use("/api/DashAdmin", DashAdminRoute)
 
+//PROFILE
+const ProfileAdminRoute = require("./routes/adminRoutes/AdminProfile");
+app.use("/api/ProfileAdmin", ProfileAdminRoute)
 
 //Global Over View
 const EvaluationAdminRoute = require("./routes/adminRoutes/GlobalOverView_Route");
@@ -53,6 +56,7 @@ app.use("/api/GlobalOverView", EvaluationAdminRoute)
 //Global Over View
 const contactus = require("./routes/contactusRoute");
 app.use("/api/contactus", contactus)
+
 
 
 app.listen(PORT, () => {
