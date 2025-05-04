@@ -47,3 +47,10 @@ exports.classes = async (id) =>{
     }
 }
   
+// exports.graphe = async (classe) =>{
+//     try{
+//         const result =await pool.query(
+//             ``
+//         )
+//     }
+// }

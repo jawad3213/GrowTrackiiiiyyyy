@@ -3,8 +3,9 @@ const router = express.Rourter();
 const dashboard= require("../../controllers/profControllers/dashController")
 
 
-router.get("/class/:id_prof",dashboard.getNumberOfClasses);
-// router.get("/class");
+router.get("/:id_prof",dashboard.getNumberOfClasses);
+router.get("/:id_prof",dashboard.getNumberOfStudents);
+router.get("/:id_prof",dashboard.getAllClasses);
 // router.post("/signal");
 // router.get("/nombredeclass");
 // router.get("/nombredesetudiant");

@@ -34,7 +34,7 @@ exports.getNumberOfClasses = async (req, res) => {
 exports.getNumberOfStudents = async (req,res) => {
     const { id_prof } = req.params;
     try{
-        const totalstudents = dash.totalstudent(id_prof);
+        const totalstudents = await dash.totalstudent(id_prof);
         return res.status(200).json({
             message:"Number of classes retrieved successfully",
             total: totalstudents
@@ -74,4 +74,13 @@ exports.getAllClasses = async (req, res) => {
       });
     }
   };
+
+//   exports.flaggedEvaluation = async (req,res) =>{
+//         const {classe} = req.query;
+//         try{
+//             const result = await dash.somme(classe);
+//         }
+//   }
+
+
   
