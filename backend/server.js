@@ -31,6 +31,9 @@ app.use(cors(corsOptions));
 const AuthRoute = require("./routes/AuthRoute");
 app.use("/api/auth", AuthRoute)
 
+const prof = require("./routes/profRoutes/dashRoute");
+app.use("/prof/dashboard", prof)
+
 app.use(limiter);
 
 app.post('/api/resetpass',verify.verifyToken, authController.ResetPassEmail);
