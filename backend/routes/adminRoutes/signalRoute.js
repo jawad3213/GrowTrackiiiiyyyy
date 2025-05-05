@@ -14,7 +14,7 @@ router.get("/review/:id_signal", signalController.getSignalById);
 
 router.post("/sendnotification/:id_signal", signalController.sendSolution);
 
-router.post("/send-alert/:id_signal", signalController.sendAlert);
+router.post("/send_alert/:id_signal", signalController.sendAlert);
 
 router.post("/rejected/:id_signal", signalController.deleteSignal);
 

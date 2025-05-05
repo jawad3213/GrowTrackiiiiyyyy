@@ -27,6 +27,9 @@ const skillRoute = require("./routes/adminRoutes/skillRoute");
 const classRoute = require("./routes/adminRoutes/classRoute");
 const coachRoute = require("./routes/adminRoutes/coachRoute");
 const signalRoute = require("./routes/adminRoutes/signalRoute");
+const profileRoute = require("./routes/adminRoutes/profileRoute");
+
+
 
 // Montage des routes
 app.use("/auth", AuthRoute);
@@ -37,6 +40,7 @@ app.use("/admin/skills", skillRoute);
 app.use("/admin/class", classRoute);
 app.use("/admin/coachs", coachRoute);
 app.use("/admin/signals", signalRoute);
+app.use("/admin/profile", profileRoute);
 
 // Lancement du serveur
 app.listen(PORT, () => {
