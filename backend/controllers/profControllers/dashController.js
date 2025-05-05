@@ -148,7 +148,9 @@ exports.getAllClasses = async (req, res) => {
 
 
 // genere un lien d'image 
-const 
+const genarateImageUrl =(path) => {
+    return path ? `http://localhost:8080/${path.replace(/\\/g, "/")}` : null;
+}
 
 
 
@@ -167,10 +169,15 @@ exports.getTopStudentsByClass = async (req, res) => {
     //   return res.status(404).json({ message: "Aucune classe trouvée pour ce professeur." });
     // }
 
+    const updatetopStudents = topStudents.map (student => ({
+        ...student,
+        profile_picture_url:genarateImageUrl(student.profile_picture),
+    }))
+
     // Renvoi du résultat
     return res.status(200).json({
       teacherId,
-      topByClass: topStudents
+      topByClass: updatetopStudents
     });
   } catch (err) {
     console.error('Erreur dans getTopStudentsByClass:', err);
