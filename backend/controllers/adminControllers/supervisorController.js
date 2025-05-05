@@ -18,7 +18,7 @@ exports.createSupervisor = async (req, res) => {
     const hashedPassword = await bcrypt.hash(pass, 10);
 
     const supervisors = await supervisorModel.createSupervisor(
-      id_user, name, cin_sepervisor, email, hashedPassword, company, number, position, cin_student, name_internship, date_start, date_done, subject, note, role, imagePath
+      id_user,name, cin_sepervisor, email, hashedPassword, company, number, position, cin_student, name_internship, date_start, date_done, subject, note, role, imagePath
     );
 
     res.status(201).json({

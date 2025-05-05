@@ -16,7 +16,7 @@ router.get("/search", classController.getClassByName);
 router.patch("/:id_field", classController.updateField);
 
 // Delete class
-router.delete("/:id_class", classController.deleteClass);
+router.delete("/delete/:id_class", classController.deleteClass);
 
 // Count total classes
 router.get("/total", classController.getTotalfield);

@@ -70,8 +70,7 @@ exports.getSignalById = async (id_signal) => {
             reported.role AS reported_role,
 
             s.date_add AS submitted_date,
-            s.option_signal AS reason,
-            s.prove
+            s.option_signal AS reason
 
             FROM report r
             JOIN signal s ON r.id_signal = s.id_signal
@@ -116,11 +115,17 @@ exports.solution = async (id_signal, option_solution, details, name_coach, start
       [solution.rows[0].id_solution, id_signal]
     );
 
+
     // 6. Mettre à jour le statut de la solution
     await pool.query(
       `UPDATE public.signal SET solution_state = 'in progress' WHERE id_signal = $1`,
       [id_signal]
     );
+
+    await pool.query(
+      `UPDATE public.signal SET approved = "TRUE" WHERE id_signal = $1`,
+      [id_signal]
+    )
 
     // 7. Insérer dans la table notifications
     await pool.query(
@@ -177,6 +182,11 @@ exports.sendAlert = async (id_signal, details) => {
 
 exports.deleteSignal = async (id) => {
     try {
+
+      await pool.query(
+        "DELETE FROM public.report WHERE id_siganl = $1",
+        [id]
+      );
 
       
   

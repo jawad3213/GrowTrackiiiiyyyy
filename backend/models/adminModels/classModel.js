@@ -8,7 +8,7 @@ exports.createClass = async (field, description, classes, id_admin) => {
 
     // 1. Insertion dans la table sector
     await client.query(
-      `INSERT INTO public.sector (id_sector, sector_name, id_admin) VALUES ($1, $2, $3)`,
+      `INSERT INTO public.sector (id_sector, description, id_admin) VALUES ($1, $2, $3)`,
       [field, description, id_admin]
     );
 
@@ -36,12 +36,12 @@ exports.getAllSectors = async () => {
   try {
     const result = await pool.query(
       `SELECT 
-         s.id_sector AS name_sector, 
-         s.sector_name AS description, 
+         s.id_sector AS field, 
+         s.description, 
          COUNT(c.id_class) AS "number of classes"
        FROM public.sector s
        JOIN public.class c ON s.id_sector = c.sector_id
-       GROUP BY s.id_sector, s.sector_name`
+       GROUP BY s.id_sector`
     );
     return result.rows;
   } catch (error) {

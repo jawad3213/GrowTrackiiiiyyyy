@@ -14,16 +14,16 @@ exports.createSupervisor = async (id_user, name, cin_sepervisor, email, pass, co
     await pool.query(
       `INSERT INTO public.supervisor (
          id_member, registration_number, company, position
-       ) VALUES ($1, $2, $3, $4)`,
+       ) VALUES ($1, $2, $3, $4) `,
       [id_user, number, company, position]
     );
 
     // Insert into the internship table
-    await pool.query(
+    const internship =await pool.query(
       `INSERT INTO public.internship (
-         id_internship, date_start, date_done, subject_internship
-       ) VALUES ($1, $2, $3, $4)`,
-      [name_internship, date_start, date_done, subject]
+          date_start, date_done, subject_internship
+       ) VALUES ($1, $2, $3 ) RETURNING *`,
+      [ date_start, date_done, subject]
     );
 
     // Retrieve the student id
@@ -37,7 +37,7 @@ exports.createSupervisor = async (id_user, name, cin_sepervisor, email, pass, co
       `INSERT INTO public.supervise (
          id_supervisor, id_student, id_internship
        ) VALUES ($1, $2, $3)`,
-      [id_user, student.rows[0].id_member, name_internship]
+      [id_user, student.rows[0].id_member, internship.rows[0].id_internship ]
     );
 
     return result.rows[0];
