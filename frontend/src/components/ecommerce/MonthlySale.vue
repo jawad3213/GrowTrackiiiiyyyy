@@ -6,6 +6,7 @@
       <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">Flagged Evaluations</h3>
 
       <div class="relative h-fit">
+        <!--pour les 3 points existent a droit haut-->
         <DropdownMenu :menu-items="menuItems">
           <template #icon>
             <svg
@@ -38,19 +39,32 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import DropdownMenu from '../common/DropdownMenu.vue'
+import VueApexCharts from 'vue3-apexcharts'
+
+import axios from 'axios'
+const series = ref([])
+
+
+//pour les trois points existent a droit haut
 const menuItems = [
   { label: 'View More', onClick: () => console.log('View More clicked') },
   { label: 'Delete', onClick: () => console.log('Delete clicked') },
 ]
 
-import VueApexCharts from 'vue3-apexcharts'
+onMounted(async () => {
+  try {
+    const res = await axios.get('http://localhost:3000/api/DashAdmin/flagged_evaluation')
 
-const series = ref([
-  {
-    name: 'Sales',
-    data: [168, 385, 201, 298, 187, 195, 291, 110, 215, 390, 280, 112],
-  },
-])
+    // Remplir les données de la série avec ce que l'API renvoie
+    series.value = [{
+      name: 'Flagged',
+      data: res.data.data, // tableau de nombres
+    }]
+  } catch (error) {
+    console.error('Erreur API flagged_evaluation :', error)
+  }
+})
+
 
 const chartOptions = ref({
   colors: ['#692CF3'],
@@ -79,18 +93,16 @@ const chartOptions = ref({
   },
   xaxis: {
     categories: [
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
       'Jan',
       'Feb',
       'Mar',
       'Apr',
       'May',
       'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
     ],
     axisBorder: {
       show: false,

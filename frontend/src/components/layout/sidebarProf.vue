@@ -236,7 +236,7 @@
           name: "Evaluation",
           subItems: [
             { name: "Classes", path: "/ClassesEval" },
-            { name: "Historique", path: "/HistoriqueEval" },
+            { name: "History", path: "/HistoriqueEval" },
           ],
         },
         { icon: UserSittings, name: "Project Management", path: "/ProjectMang" },
@@ -245,11 +245,13 @@
           icon: PageIcon,
           subItems: [
             { name: "Classes", path: "/ClassesSignal" },
-            { name: "Historique", path: "/HistoriqueSignal" },
+            { name: "History", path: "/HistoriqueSignal" },
           ]
         },
         { 
-          name: "Institution Settings", icon: PageIcon, path : "/Rapport" },
+          name: "Institution Settings", icon: PageIcon, path : "/Institution" },
+          { 
+            name: "Rapport", icon: PageIcon, path : "/Rapport" },
       ]
     }
   ];
