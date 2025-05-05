@@ -6,7 +6,7 @@
         <h1 class="text-xl font-bold text-gray-900">
           Signals
           <span class="bg-purple-100 text-purple-600 text-sm font-semibold px-3 py-1 rounded-full">
-            100 signals in months
+            {{ signals.length }} signals in months
           </span>
         </h1>
 
@@ -101,7 +101,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import axios from 'axios'
+import api from '@/services/api'
 import AdminLayout from '../layout/AdminLayout.vue'
 import SignalEvaluationModal from '@/components/SignalEvaluationModal.vue'
 
@@ -113,7 +113,7 @@ const showModal = ref(false)
 // Appel API direct
 onMounted(async () => {
   try {
-    const res = await axios.get('http://localhost:3001/signals') // adapte l’URL à ton backend
+    const res = await api.get('/signals') // adapte l’URL à ton backend
     signals.value = res.data
   } catch (error) {
     console.error('Erreur chargement signals :', error)
