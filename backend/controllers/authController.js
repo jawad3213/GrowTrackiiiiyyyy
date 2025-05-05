@@ -107,6 +107,7 @@ exports.RefreshToken = async (req, res) => {
       return res.status(401).json({ message: "Invalid or expired refresh token!" });
     }
   };
+
 exports.Logout=(req, res)=>{
     try {
         res.clearCookie("refresh_token", {
@@ -119,7 +120,7 @@ exports.Logout=(req, res)=>{
             secure: true,
             sameSite: "Strict"
           });;
-        return res.status(200).json({ message: "Logged out successfully." });
+        return res.status(200).json({ message: "Logout successful" });
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: "Internal Server Error" });
@@ -145,7 +146,6 @@ exports.ResetPass = [
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
-        console.log("hello");
         const {email} = req.body;
         try {
         const user = await authModel.FindUserByEmail(email);
