@@ -27,10 +27,11 @@ import AddStudentModal from "./components/AddStudentModal.vue";
 import AddSupervisorModal from "./components/AddSupervisorModal.vue";
 import Evaluation from "./components/Evaluation.vue";
 import Personalized from "./components/Personalized.vue";
-import AddSignal from "./components/AddSignal.vue";
+import AddSignal from "./components/SignalEvaluationModal.vue";
 import Solution from "./components/Solution.vue";
 import ListeStudent from "./components/Formulaire/ListeStudent.vue";
 import DeleteStudent from "./components/DeleteStudent.vue";
+import SignalEvaluationModal from "./components/SignalEvaluationModal.vue";
 
 const routes = [
     {
@@ -176,9 +177,9 @@ const routes = [
         path : "/Personalized",
     },
     {
-        name : "AddSignal",
-        component : AddSignal,
-        path : "/AddSignal",
+        name : "SignalModal",
+        component : SignalEvaluationModal,
+        path : "/SignalModal",
     },
     {
         name : "Solution",
