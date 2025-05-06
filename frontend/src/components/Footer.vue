@@ -3,9 +3,12 @@
       <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
         <!-- Logo & Copyright -->
         <div class="flex items-center space-x-4">
-          <a href="/" class="bg-white rounded-md p-2 hover:bg-gray-100 transition">
-            <img src="@/assets/logo3.jpg" alt="GrowTrack Logo" class="h-10 w-auto" />
-          </a>
+          <router-link
+        to="/"
+        class="flex items-center bg-white p-1 rounded-full shadow-md transform transition hover:scale-110"
+      >
+        <img src="@/assets/logo.png" alt="Logo" class="w-40 h-auto" />
+      </router-link>
           <span class="text-sm opacity-90">
             © Copyright {{ year }} GrowTrack
           </span>

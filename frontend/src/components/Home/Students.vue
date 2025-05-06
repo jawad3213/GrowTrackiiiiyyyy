@@ -15,7 +15,7 @@
 
   <div class="mt-4">
     <router-link to="/Login" 
-      class="inline-block px-8 py-4 text-white text-base text-xl font-semibold rounded-full"
+      class="inline-block px-8 py-4 text-white  text-xl font-semibold rounded-full"
       style="background: linear-gradient(to right, #692CF3, #F97316);">
       Start Now
     </router-link>
@@ -56,7 +56,7 @@
             <h3 class="text-3xl font-semibold text-gray-800 mb-1">
               Discovering Your Strengths
             </h3>
-            <p class="text-xl text-gray-600 text-sm">
+            <p class="text-xl text-gray-600 ">
               Begin with our quick self-assessment quizzes. They help you identify what you're good at and pinpoint areas for improvement.
             </p>
           </div>
@@ -69,7 +69,7 @@
             <h3 class="text-3xl font-semibold text-gray-800 mb-1">
               Gathering Honest Feedback
             </h3>
-            <p class=" text-xl text-gray-600 text-sm">
+            <p class=" text-xl text-gray-600 ">
               Receive constructive insights from your peers and teachers. This feedback shows you what to focus on, even when you feel you haven't accomplished much yet.
             </p>
           </div>
@@ -79,10 +79,10 @@
         <div class="flex items-start gap-4">
           <img src="@/assets/tracking.png" alt="Progress Icon" class="w-20 h-20 mt-1" />
           <div>
-            <h3 class="text-3xl text-3xl font-semibold text-gray-800 mb-1">
+            <h3 class="text-3xl  font-semibold text-gray-800 mb-1">
               Tracking Your Progress
             </h3>
-            <p class="text-xl text-gray-600 text-sm">
+            <p class="text-xl text-gray-600 ">
               Our dynamic dashboards display your growth clearly. Every small step is recorded, so you'll see real progress over time.
             </p>
           </div>
@@ -95,7 +95,7 @@
             <h3 class="text-3xl font-semibold text-gray-800 mb-1">
               Earning Recognition
             </h3>
-            <p class="text-xl text-gray-600 text-sm">
+            <p class="text-xl text-gray-600 ">
               As you improve, celebrate your achievements with shareable badges. Each badge is a milestone proving that even if you started with nothing, you're becoming the best version of yourself.
             </p>
           </div>
@@ -168,17 +168,18 @@
     
   </div>
 </section>
-<Footer />
-</div>
 
+</div>
+<Footer/>
 
 </template>
 
 <script>
 
 import axios from 'axios';
-import HeaderPage from './Header.vue';
-import Footer from './Footer.vue'
+import HeaderPage from '@/components/Header.vue';
+import Footer from '@/components/Footer.vue';
+
 
 export default{
   name : 'Students',
