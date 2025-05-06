@@ -4,7 +4,7 @@
   <h1 class="text-4xl font-bold text-gray-900 mb-7">
     Welcome to Your Admin Dashboard <span class="uppercase">SOUKAINA</span>,
     <span class="text-xl font-medium text-gray-500">
-      here’s what’s happening with your Dash this month
+      here’s what’s happening with your School this month 
     </span>
   </h1>
 

@@ -38,6 +38,9 @@ import HistoriqueEval from "./components/MenuProf/HistoriqueEval.vue";
 import HistoriqueSignal from "./components/MenuProf/HistoriqueSignal.vue";
 import ProjectMang from "./components/MenuProf/ProjectMang.vue";
 import Rapport from "./components/MenuProf/Rapport.vue";
+import Institution from "./components/MenuProf/Institution.vue";
+import AddProject from "./components/MenuProf/AddProject.vue";
+import AddMembers from "./components/MenuProf/AddMembers.vue";
 
 const routes = [
     {
@@ -238,6 +241,23 @@ const routes = [
         component : Rapport,
         path : "/Rapport"
     },
+    {
+        name : "Institution",
+        component : Institution,
+        path : "/Institution"
+    },
+    {
+        name : "AddProject",
+        component : AddProject,
+        path : "/AddProject"
+    },
+    {
+        name : "AddMembers",
+        component : AddMembers,
+        path : "/AddMembers"
+    },
+
+
     
 ];
 

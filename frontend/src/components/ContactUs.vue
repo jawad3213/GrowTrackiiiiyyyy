@@ -28,32 +28,32 @@
               <label class="block text-sm font-semibold text-gray-700 mb-1">First Name</label>
               <input
               class="w-full px-8 py-2 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
-              type="text" v-model="info.FirstN" placeholder="First name" required/>
+              type="text" v-model="info.FirstName" placeholder="First name" required/>
             </div>
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-1">Last Name</label>
               <input
               class="w-full px-8 py-2 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
-              type="text" v-model="info.LastN" placeholder="Last name" required/>
+              type="text" v-model="info.LastName" placeholder="Last name" required/>
             </div>
           </div>
 
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-1">Email</label>
             <input class="w-full px-8 py-2 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
-            type="emal" v-model="info.email" placeholder="you@company.com" required /> 
+            type="emal" v-model="info.Email" placeholder="you@company.com" required /> 
           </div>
 
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-1">Phone Number</label>
             <input class="w-full px-8 py-2 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
-            type="tel" v-model="info.phone" placeholder="Phone Number" required/> 
+            type="tel" v-model="info.Phone" placeholder="Phone Number" required/> 
           </div>
 
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-1">Message</label>
             <textarea  class="w-full px-8 py-2 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
-            type="text" v-model="info.msg" placeholder="your message here" required ></textarea>
+            type="text" v-model="info.Message" placeholder="your message here" required ></textarea>
           </div>
 
           <!-- Politique -->
@@ -117,11 +117,11 @@ import { ref,watch,onMounted } from 'vue'
 const store = useContactStore()
 
 const info = ref({
-    FirstN: '',
-    LastN: '',
-    email: '',
-    phone: '',
-    msg: '',
+    FirstName: '',
+    LastName: '',
+    Email: '',
+    Phone: '',
+    Message: '',
     agree: false
 })
 
@@ -142,12 +142,12 @@ async function contactUs() {
     if(store.successmsg){
         localStorage.removeItem('tempinfo')
         info.value ={ //nettoyer les inputs
-            FirstN: '',
-            LastN: '',
-            email: '',
-            phone: '',
-            msg: '',
-            agree: false
+          FirstName: '',
+          LastName: '',
+          Email: '',
+          Phone: '',
+          Message: '',
+          agree: false
         }
     }
 }

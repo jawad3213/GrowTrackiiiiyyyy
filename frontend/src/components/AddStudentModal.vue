@@ -143,6 +143,7 @@ async function submitForm() {
 
 function closeModal() {
   isOpen.value = false
+  router.push('/Student')
 }
 formStore.clearStatus()
 </script>

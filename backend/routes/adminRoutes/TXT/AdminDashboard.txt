@@ -1,0 +1,70 @@
+1-Function:   Total users (current month)
+  ROUTE:    http://localhost:3000/api/DashAdmin/Total_User
+  A DONNE PAR FRONT : rien
+  A DONNE PAR BACK : - La route retourne un integer : Total users
+  STATUT : 200 OK , 500 SERVER ERROR
+
+2-Function:   Total users trend (current month)
+  ROUTE:    http://localhost:3000/api/DashAdmin/Stat_User
+  A DONNE PAR FRONT : rien
+  A DONNE PAR BACK : - La route retourne 2 objets : percentage (pourcentage déja calculé) , trend (increased,decreased,no change)
+  STATUT : 200 OK , 500 SERVER ERROR
+
+3-Function:   Total evaluations (current month)
+  ROUTE:    http://localhost:3000/api/DashAdmin/Total_Evaluation
+  A DONNE PAR FRONT : rien
+  A DONNE PAR BACK : - La route retourne un integer : Total evaluations
+  STATUT : 200 OK , 500 SERVER ERROR
+
+4-Function:   Total evaluations trend (current month)
+  ROUTE:    http://localhost:3000/api/DashAdmin/Stat_Evaluation
+  A DONNE PAR FRONT : rien
+  A DONNE PAR BACK : - La route retourne 2 objets : percentage (pourcentage déja calculé) , trend (increased,decreased,no change)
+  STATUT : 200 OK , 500 SERVER ERROR
+
+5-Graphe: User involvement rate (current month)
+  ROUTE:    http://localhost:3000/api/DashAdmin/Stat_Involvement
+  A DONNE PAR FRONT : rien
+  A DONNE PAR BACK : - La route retourne 2 objets : percentage (pourcentage déja calculé) .
+  STATUT : 200 OK , 500 SERVER ERROR
+
+6-Function: User involvement target (current month)
+  ROUTE:    http://localhost:3000/api/DashAdmin/Stat_Involvement_target
+  A DONNE PAR FRONT : rien
+  A DONNE PAR BACK : - La route retourne 2 objets : percentage (pourcentage déja calculé) , trend (increased,decreased,no change).
+  STATUT : 200 OK , 500 SERVER ERROR
+
+7-Function: flagged evaluation 
+  ROUTE:    http://localhost:3000/api/DashAdmin/flagged_evaluation
+  A DONNE PAR FRONT : rien
+  A DONNE PAR BACK : - La route retourne un objet (data) 
+                     - data : est une liste de 10 nombres (integer)
+                     - Chaque nombre correspond au nombre des signales soumises dans un mois précis.
+                     - Ordre exacte : Septembre (9), Octobre (10), Novembre (11), Décembre (12), Janvier (1), Février (2), Mars (3), Avril (4), Mai (5), Juin (6)
+  STATUT : 200 OK , 500 SERVER ERROR
+
+8-Function: evaluation source overtime 
+  ROUTE:    http://localhost:3000/api/DashAdmin/evaluation_source_overtime
+  A DONNE PAR FRONT : rien
+  A DONNE PAR BACK : - La route retourne un objet (data) 
+                     - data : est une liste de 10 lignes.
+                     -chaque ligne a 4 ligne : 1ere ligne (Pair) , 2eme (Self), 3eme (Supervisor), 4eme (Professor) 
+                     - Chaque nombre(integer) correspond au nombre des signales soumises dans un mois précis.
+                     - Ordre exacte : Septembre (9), Octobre (10), Novembre (11), Décembre (12), Janvier (1), Février (2), Mars (3), Avril (4), Mai (5), Juin (6)
+  STATUT : 200 OK , 500 SERVER ERROR
+
+9-Function: user distribution by role 
+  ROUTE:    http://localhost:3000/api/DashAdmin/user_distribution_by_role
+  A DONNE PAR FRONT : rien
+  A DONNE PAR BACK : -Elle renvoie trois pourcentages : (student,Supervisor,Professor).
+  STATUT : 200 OK , 500 SERVER ERROR
+
+10-Function: total evaluation 
+  ROUTE:    http://localhost:3000/api/DashAdmin/total_evaluation
+  A DONNE PAR FRONT : rien
+  A DONNE PAR BACK : - La route retourne un objet (data) 
+                     - data : est une liste de 10 lignes.
+                     -chaque ligne a 4 ligne : 1ere ligne (Pair) , 2eme (Self), 3eme (Supervisor), 4eme (Professor) 
+                     - Chaque nombre(integer) correspond au nombre des signales soumises dans un mois précis.
+                     - Ordre exacte : Septembre (9), Octobre (10), Novembre (11), Décembre (12), Janvier (1), Février (2), Mars (3), Avril (4), Mai (5), Juin (6)
+  STATUT : 200 OK , 500 SERVER ERROR
