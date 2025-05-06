@@ -55,8 +55,8 @@
         <!-- Remember Me & Forgot Password -->
         <div class="flex justify-between items-center mb-6 text-sm">
           <label class="flex items-center space-x-2">
-            <input type="checkbox" class="form-checkbox text-purple-600" />
-            <span class="text-gray-600">Remember me</span>
+            <input v-model="RememberMe" type="checkbox" class="form-checkbox text-purple-600" />
+            <span  class="text-gray-600">Remember me</span>
           </label>
           <router-link to="/forgotpass" class="text-orange-500 hover:underline">
             Forgot Password?
@@ -102,6 +102,7 @@ const router = useRouter()
 const email = ref('')
 const password = ref('')
 const showPassword = ref(false)
+const RememberMe = ref(false)
 
 const togglePassword = () => {
   showPassword.value = !showPassword.value
@@ -109,7 +110,7 @@ const togglePassword = () => {
 
 const handlelogin = async () => {
   try {
-    await store.Login(email.value, password.value)
+    await store.Login(email.value, password.value, RememberMe.value)
     if (!store.errorMsg) {
       router.push('/dashboard')
     }

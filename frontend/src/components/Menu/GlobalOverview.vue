@@ -1,3 +1,134 @@
 <template>
-    <h1>GlobalOverview</h1>
+  <admin-layout>
+    <div class="relative min-h-screen bg-gray-50 p-6 font-inter">
+      <div :class="{ 'blur-sm pointer-events-none': showModal }">
+
+        <!-- Graphique -->
+        <div class="mb-6">
+          <StatisticsChart />
+        </div>
+
+        <!-- Header tableau -->
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-bold text-gray-800">
+            Evaluations
+            <span class="text-sm text-gray-500">{{ evaluations.length }} evaluations</span>
+          </h2>
+          <div class="flex gap-2">
+            <input v-model="search" type="text" placeholder="Search"
+              class="px-4 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-purple-500" />
+            <button class="px-4 py-2 border border-gray-300 rounded-md text-sm">Filters</button>
+          </div>
+        </div>
+
+        <!-- Tableau -->
+        <div class="bg-white shadow rounded-lg overflow-auto">
+          <table class="min-w-full text-sm text-left">
+            <thead class="bg-gray-100">
+              <tr>
+                <th class="px-6 py-3 font-semibold">Evaluation ID</th>
+                <th class="px-6 py-3 font-semibold">Evaluator name</th>
+                <th class="px-6 py-3 font-semibold">Evaluated name</th>
+                <th class="px-6 py-3 font-semibold">Submitted date</th>
+                <th class="px-6 py-3 font-semibold">Type</th>
+                <th class="px-6 py-3 font-semibold">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="evaluation in filteredEvaluations" :key="evaluation.id" class="border-b">
+                <td class="px-6 py-4">{{ evaluation.id }}</td>
+                <td class="px-6 py-4">{{ evaluation.evaluatorName }}</td>
+                <td class="px-6 py-4">{{ evaluation.evaluatedName }}</td>
+                <td class="px-6 py-4">{{ evaluation.submittedDate }}</td>
+                <td class="px-6 py-4">{{ evaluation.type }}</td>
+                <td class="px-6 py-4">
+                  <button @click="openEvaluation(evaluation)" class="text-purple-600 hover:text-purple-800">
+  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+    <path d="M10 3C5 3 1 10 1 10s4 7 9 7 9-7 9-7-4-7-9-7zm0 12a5 5 0 110-10 5 5 0 010 10zm0-8a3 3 0 100 6 3 3 0 000-6z"/>
+  </svg>
+</button>
+
+
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="flex justify-between items-center mt-6 text-gray-600">
+          <p>Page 1 of 10</p>
+          <div class="flex gap-2">
+            <button class="px-4 py-2 border rounded-md text-sm">Previous</button>
+            <button class="px-4 py-2 border rounded-md text-sm">Next</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Overlay sombre -->
+      <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-40 z-40"></div>
+
+      <EvaluationModal
+  v-if="showModal"
+  :id="selectedEvaluation"
+  @fermer="showModal = false"
+  class="fixed inset-0 z-50 flex items-center justify-center"
+/>
+
+
+      <!-- État -->
+      <p v-if="loading" class="text-gray-500 mt-4">Loading evaluations...</p>
+      <p v-if="error" class="text-red-500 mt-4">{{ error }}</p>
+    </div>
+  </admin-layout>
 </template>
+
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import StatisticsChart from '../ecommerce/StatisticsChart.vue'
+import EvaluationModal from '@/components/Evaluation.vue'
+import api from '@/services/api'
+import AdminLayout from '@/components/layout/AdminLayout.vue'
+
+const loading = ref(false)
+const error = ref(null)
+const search = ref('')
+const showModal = ref(false)
+const selectedEvaluation = ref(null)
+
+// Données statiques pour tester
+const evaluations = ref([
+  { id: 1, evaluatorName: 'Dr. Sarah Ali', evaluatedName: 'Amine B.', submittedDate: '2024-01-15', type: 'Soft Skill' },
+  { id: 2, evaluatorName: 'Mohamed L.', evaluatedName: 'Yasmine K.', submittedDate: '2024-02-10', type: 'Technical' }
+])
+
+// Pour tester le filtre dynamique
+const filteredEvaluations = computed(() => {
+  return evaluations.value.filter(evaluation =>
+    evaluation.evaluatorName.toLowerCase().includes(search.value.toLowerCase()) ||
+    evaluation.evaluatedName.toLowerCase().includes(search.value.toLowerCase())
+  )
+})
+
+// Afficher modal
+function openEvaluation(evaluation) {
+  selectedEvaluation.value = evaluation.id;
+  showModal.value = true;
+}
+
+// Appel API (futur)
+async function fetchEvaluations() {
+  loading.value = true
+  try {
+    const res = await api.get('/evaluations')
+    evaluations.value = res.data
+  } catch (err) {
+    error.value = err.message || 'An error occurred'
+  } finally {
+    loading.value = false
+  }
+}
+
+// onMounted(fetchEvaluations)  // décommente quand l'API est prête
+</script>
