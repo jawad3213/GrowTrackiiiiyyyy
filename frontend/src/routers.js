@@ -34,15 +34,18 @@ import SignalEvaluationModal from "./components/SignalEvaluationModal.vue";
 
 import DashboardProf from "./components/DashboardProf.vue";
 import ClassesEval from "./components/MenuProf/ClassesEval.vue";
-import ClassesSignal from "./components/MenuProf/ClassesSignal.vue";
+import ClassesSignal from "./components/MenuProf/signal/ClassesSignal.vue";
 import HistoriqueEval from "./components/MenuProf/HistoriqueEval.vue";
-import HistoriqueSignal from "./components/MenuProf/HistoriqueSignal.vue";
+import HistoriqueSignal from "./components/MenuProf/signal/HistoriqueSignal.vue";
 import ProjectMang from "./components/MenuProf/ProjectMang.vue";
 import Rapport from "./components/MenuProf/Rapport.vue";
 import Institution from "./components/MenuProf/Institution.vue";
 import AddProject from "./components/MenuProf/AddProject.vue";
 import AddMembers from "./components/MenuProf/AddMembers.vue";
-
+import NewSignal from "./components/MenuProf/signal/NewSignal.vue";
+import ViewHistory from "./components/MenuProf/signal/ViewHistory.vue";
+import SolutionSignal from "./components/MenuProf/signal/SolutionSignal.vue";
+import SolutionErrror from "./components/MenuProf/signal/SolutionErrror.vue";
 
 const routes = [
     {
@@ -254,6 +257,27 @@ const routes = [
         component : AddMembers,
         path : "/AddMembers"
     },
+    {
+        name : "NewSignal",
+        component : NewSignal,
+        path : "/NewSignal"
+    },
+    {
+        name : "ViewHistory",
+        component : ViewHistory,
+        path : "/ViewHistory"
+    },
+    {
+        name : "SolutionSignal",
+        component : SolutionSignal,
+        path : "/SolutionSignal"
+    },
+    {
+        name : "SolutionError",
+        component : SolutionErrror,
+        path : "/SolutionError"
+    },
+
 
 
     
