@@ -13,12 +13,10 @@
         <h1
           style="font-weight: bold; font-size: 60px; color: #212121; font-family: 'Inter', sans-serif;"
         >
-          <span class="block w-full">Grow Your Skills  Shape Your Future</span>
+          <span class="block w-full">Grow Your Skills &nbsp; Shape Your Future</span>
           It Starts Today
         </h1>
-        <p
-          class="text-[20px] font-normal text-[#231B00] font-inter py-4 2xl:py-8 md:py-6 2xl:pr-5"
-        >
+        <p class="text-[20px] font-normal text-[#231B00] font-inter py-4 2xl:py-8 md:py-6 2xl:pr-5">
           The skills you grow today unlock the opportunities of tomorrow. Your
           future begins with what you choose to learn now
         </p>
@@ -44,56 +42,47 @@
       </div>
     </div>
 
-   <!-- Sponsors slider -->
-<<!-- Sponsors slider (smaller) -->
-<div class="bg-[#DAD1EE] py-4 overflow-hidden">
-  <div class="relative w-full">
-    <div class="flex animate-slide gap-8 items-center">
-      <img
-        class="w-30 h-30 md:w-30 md:h-20 object-contain"
-        src="@/assets/sponss7.png"
-        alt="Transistor"
-      />
-      <img
-        class="w-30 h-30 md:w-30 md:h-30 object-contain"
-        src="@/assets/sponss2.png"
-        alt="Reform"
-      />
-      <img
-        class="w-30 h-30 md:w-30 md:h-30 object-contain"
-        src="@/assets/sponss6.png"
-        alt="Reform"
-      />
-      <img
-        class="w-30 h-30 md:w-30 md:h-30 object-contain"
-        src="@/assets/sponss3.png"
-        alt="Tuple"
-      />
-      <img
-        class="w-30 h-30 md:w-30 md:h-30 object-contain"
-        src="@/assets/sponss1.png"
-        alt="Ensa"
-      />
-      <img
-        class="w-30 h-30 md:w-30 md:h-30 object-contain"
-        src="@/assets/sponss4.png"
-        alt="SavvyCal"
-      />
-      <img
-        class="w/30 h-30 md:w-30 md:h-30 object-contain"
-        src="@/assets/sponss5.png"
-        alt="Statamic"
-      />
-      <!-- duplicate as needed -->
-      <img
-        class="w-30 h-30 md:w-20 md:h-20 object-contain"
-        src="@/assets/sponss7.png"
-        alt="Transistor"
-      />
+    <!-- Sponsors slider -->
+    <div class="bg-[#DAD1EE] overflow-hidden">
+      <div ref="marquee" class="flex items-center space-x-12 will-change-transform">
+        <!-- Vos 7 logos initiaux -->
+        <img
+          src="@/assets/spons1.png"
+          alt="Sponsor 1"
+          class="marquee-item w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 object-contain"
+        />
+        <img
+          src="@/assets/spons2.png"
+          alt="Sponsor 2"
+          class="marquee-item w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 object-contain"
+        />
+        <img
+          src="@/assets/sponso3.png"
+          alt="Sponsor 3"
+          class="marquee-item w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 object-contain"
+        />
+        <img
+          src="@/assets/sponso4.png"
+          alt="Sponsor 4"
+          class="marquee-item w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 object-contain"
+        />
+        <img
+          src="@/assets/sponso5.png"
+          alt="Sponsor 5"
+          class="marquee-item w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 object-contain"
+        />
+        <img
+          src="@/assets/sponso6.png"
+          alt="Sponsor 6"
+          class="marquee-item w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 object-contain"
+        />
+        <img
+          src="@/assets/sponso7.png"
+          alt="Sponsor 7"
+          class="marquee-item w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 object-contain"
+        />
+      </div>
     </div>
-  </div>
-</div>
-
 
     <!-- Features -->
     <section class="bg-white py-16 px-6">
@@ -298,29 +287,43 @@
 </template>
 
 <script>
-import axios from 'axios'
 import HeaderPage from '@/components/Header.vue'
-import Footer from '@/components/Footer.vue';
+import Footer from '@/components/Footer.vue'
 
 export default {
   name: 'LoadingPage',
-  components: {
-    HeaderPage,
-    Footer,
+  components: { HeaderPage, Footer },
+  data() {
+    return {
+      // Vitesse en pixels par frame (plus haut = plus rapide)
+      marqueeSpeed: 1
+    }
   },
-}
+  mounted() {
+    const marquee = this.$refs.marquee;
+    const originals = Array.from(marquee.children);
+    const clones = originals.map(el => el.cloneNode(true));
+    // Clone avant pour boucle fluide
+    clones.reverse().forEach(clone => marquee.insertBefore(clone, marquee.firstChild));
+
+    const resetPoint = marquee.scrollWidth / 2;
+    let pos = -resetPoint;
+
+    const animate = () => {
+      pos += this.marqueeSpeed;
+      if (pos >= 0) pos = -resetPoint;
+      marquee.style.transform = `translateX(${pos}px)`;
+      requestAnimationFrame(animate);
+    };
+
+    animate();
+  }
+};
 </script>
 
 <style scoped>
-@keyframes slide {
-  0% {
-    transform: translateX(0%)
-  }
-  100% {
-    transform: translateX(-50%)
-  }
-}
-.animate-slide {
-  animation: slide 20s linear infinite;
+/* Optionnel: ajuster l’espace entre logos */
+.marquee-item + .marquee-item {
+  margin-left: 3rem;
 }
 </style>
