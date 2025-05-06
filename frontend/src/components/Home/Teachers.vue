@@ -1,175 +1,163 @@
 <template>
-  <div>
-    <HeaderPage />
+  <HeaderPage />
+  <div class="items-center w-10/12 grid-cols-2 mx-auto overflow-x-hidden lg:grid md:py-14 lg:py-24 xl:py-14 lg:mt-3 xl:mt-5" data-aos="fade-right" data-aos-duration="800">
+     <div class="pr-2 md:mb-14 py-14 md:py-0">
+       <h1 style="font-weight: bold; font-size: 60px; color: #212121; font-family: 'Inter', sans-serif;">
+          <span class="block ">Empower Your Teaching Journey </span> 
+          
+       </h1>
+        <p class="text-[20px] font-normal text-[#231B00] font-inter py-4 2xl:py-8 md:py-6 2xl:pr-5">
+          Innovative tools and actionable insights designed to elevate student performance and revolutionize your educational environment. 
+          Leverage state of the art resources that empower educators to personalize learning experiences, 
+          track progress in real time, and implement data-driven strategies.       
+       </p>
 
-<div class="items-center w-10/12 grid-cols-2 mx-auto overflow-x-hidden lg:grid md:py-14 lg:py-24 xl:py-14 lg:mt-3 xl:mt-5" data-aos="fade-right" data-aos-duration="800">
-       <div class="pr-2 md:mb-14 py-14 md:py-0">
-         <h1 style="font-weight: bold; font-size: 60px; color: #212121; font-family: 'Inter', sans-serif;">
-            <span class="block w-full">Join the GrowTrack</span> 
-            Community
-         </h1>
-          <p class="text-[20px] font-normal text-[#231B00] font-inter py-4 2xl:py-8 md:py-6 2xl:pr-5">
-            Thousands of students already trust GrowTrack to help them thrive. Whether you’re exploring career paths or building teamwork skills, 
-            GrowTrack gives you the tools and support to confidently move forward.        
-         </p>
-
-  <div class="mt-4">
-    <router-link to="/Login" 
-      class="inline-block px-8 py-4 text-white  text-xl font-semibold rounded-full"
-      style="background: linear-gradient(to right, #692CF3, #F97316);">
-      Start Now
-    </router-link>
-  </div>
+<div class="mt-4">
+  <router-link to="/ContactUs" 
+    class="inline-block px-8 py-4 text-white text-base  font-semibold rounded-full"
+    style="background: linear-gradient(to right, #692CF3, #F97316);">
+    Start Now
+  </router-link>
+</div>
 
 
 </div>
+
+<div class="pb-0 overflow-hidden md:p-10 lg:p-0 sm:pb-0">
+  <img id="heroImg1" class="transition-all duration-300 ease-in-out hover:scale-105 lg:w-5/6 sm:mx-auto sm:w-5/6 sm:pb-12 lg:pb-0" src="@/assets/LoadingPage.jpg" alt="Awesome hero page image" width="500" height="888"/>
+</div>
+</div>
+
+
+<section style="background-color: #FDC096" class="py-16">
+<div>
   
-  <div class="pb-0 overflow-hidden md:p-10 lg:p-0 sm:pb-0">
-    <img id="heroImg1" class="transition-all duration-300 ease-in-out hover:scale-105 lg:w-5/6 sm:mx-auto sm:w-5/6 sm:pb-12 lg:pb-0" src="@/assets/students.jpg" alt="Awesome hero page image" width="500" height="888"/>
-  </div>
-</div>
-
-
-
-<section class="bg-[#DAD1EE] py-16">
-  <div>
-    
-    <!-- Titre centré -->
-    <div class="text-center">
-      <h2 class="text-6xl font-bold text-gray-900">
-        Start From Scratch, Build Your Future
-      </h2>
-      <p class="text-[20px] font-normal text-[#000000] font-inter  mt-4">
-        With GrowTrack, You Can Kick-Start Your Journey By
-      </p>
-    </div>
-
-    <!-- Contenu grille -->
-    <div class="w-10/12 mx-auto overflow-x-hidden grid grid-cols-1 lg:grid-cols-2 gap-12 items-center" data-aos="fade-right" data-aos-duration="800">
-
-      <!-- Liste des fonctionnalités -->
-      <div class="space-y-8">
-        <!-- Bloc 1 -->
-        <div class="flex items-start gap-4">
-          <img src="@/assets/strengh.png" alt="Strength Icon" class="w-20 h-20 mt-1" />
-          <div>
-            <h3 class="text-3xl font-semibold text-gray-800 mb-1">
-              Discovering Your Strengths
-            </h3>
-            <p class="text-xl text-gray-600 ">
-              Begin with our quick self-assessment quizzes. They help you identify what you're good at and pinpoint areas for improvement.
-            </p>
-          </div>
-        </div>
-
-        <!-- Bloc 2 -->
-        <div class="flex items-start gap-4">
-          <img src="@/assets/gathering.png" alt="Feedback Icon" class="w-20 h-20 mt-1" />
-          <div>
-            <h3 class="text-3xl font-semibold text-gray-800 mb-1">
-              Gathering Honest Feedback
-            </h3>
-            <p class=" text-xl text-gray-600 ">
-              Receive constructive insights from your peers and teachers. This feedback shows you what to focus on, even when you feel you haven't accomplished much yet.
-            </p>
-          </div>
-        </div>
-
-        <!-- Bloc 3 -->
-        <div class="flex items-start gap-4">
-          <img src="@/assets/tracking.png" alt="Progress Icon" class="w-20 h-20 mt-1" />
-          <div>
-            <h3 class="text-3xl  font-semibold text-gray-800 mb-1">
-              Tracking Your Progress
-            </h3>
-            <p class="text-xl text-gray-600 ">
-              Our dynamic dashboards display your growth clearly. Every small step is recorded, so you'll see real progress over time.
-            </p>
-          </div>
-        </div>
-
-        <!-- Bloc 4 -->
-        <div class="flex items-start gap-4">
-          <img src="@/assets/earning.png" alt="Recognition Icon" class="w-20 h-20 mt-1" />
-          <div>
-            <h3 class="text-3xl font-semibold text-gray-800 mb-1">
-              Earning Recognition
-            </h3>
-            <p class="text-xl text-gray-600 ">
-              As you improve, celebrate your achievements with shareable badges. Each badge is a milestone proving that even if you started with nothing, you're becoming the best version of yourself.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Illustration (dans la même grille) -->
-      <div class="flex justify-center">
-        <img src="@/assets/students1.png" alt="Success Illustration" class="w-11/12 " />
-      </div>
-
-    </div>
-  </div>
-</section>
-
-
-
-
-
-
-
-
-<section class="bg-white py-33 px-6">
-  <div class="max-w-6xl mx-auto text-center">
-    <!-- Title -->
+  <!-- Titre centré -->
+  <div class="text-center">
     <h2 class="text-6xl font-bold text-gray-900">
-      What Our Students Say
+      Start From Scratch, Build Your Future
     </h2>
     <p class="text-[20px] font-normal text-[#000000] font-inter  mt-4">
-      Real Feedback From Students Using GrowTrack To Empower Student Success.    </p>
+      With GrowTrack, You Can Kick-Start Your Journey By
+    </p>
+  </div>
 
-    <!-- Testimonials container -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-1 items-center mt-20">
+  <!-- Contenu grille -->
+  <div class="w-10/12 mx-auto overflow-x-hidden grid grid-cols-1 lg:grid-cols-2 gap-12 items-center" data-aos="fade-right" data-aos-duration="800">
 
-      <!-- Testimonial 1 -->
-      <div class="flex flex-col items-center text-center px-6">
-        <!-- Stars -->
-        <div class="flex justify-center mb-3 text-orange-500 text-xl">
-          <span>★</span><span>★</span><span>★</span><span>★</span><span class="text-gray-400">★</span>
+    <!-- Liste des fonctionnalités -->
+    <div class="space-y-8">
+      <!-- Bloc 1 -->
+      <div class="flex items-start gap-4">
+        <img src="@/assets/strengh.png" alt="Strength Icon" class="w-20 h-20 mt-1" />
+        <div>
+          <h3 class="text-3xl font-semibold text-gray-800 mb-1">
+              Pinpointing Student Strengths
+          </h3>
+          <p class="text-xl text-gray-600 ">
+              Assess your students’ soft skills to identify where each individual excels or needs support. Tailor lesson plans to guide them toward meaningful growth.            </p>
         </div>
-
-        <!-- Quote -->
-        <p class=" class=text-[20px] font-medium text-[#424242] font-inter mb-6 w-[300px] italic">
-          "GrowTrack really helped me understand my strengths and areas to improve. The platform is easy to use and the feedback from my peers was incredibly valuable. I would love to see even more features in the future!”
-        </p>
-
-        <!-- Logo + name -->
-        <img src="@/assets/photo1.png" alt="photo1" class="w-12 h-12 object-contain mb-2">
-        <p class="text-sm text-gray-700 font-medium">Sarah LA</p>
       </div>
 
-      <!-- Testimonial 2 -->
-      <div class="flex flex-col items-center text-center px-6">
-        <!-- Stars -->
-        <div class="flex justify-center mb-3 text-orange-500 text-xl">
-          <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+      <!-- Bloc 2 -->
+      <div class="flex items-start gap-4">
+        <img src="@/assets/gathering.png" alt="Feedback Icon" class="w-20 h-20 mt-1" />
+        <div>
+          <h3 class="text-3xl font-semibold text-gray-800 mb-1">
+              Gathering Comprehensive Feedback
+          </h3>
+          <p class=" text-xl text-gray-600 ">
+              Collect insights from colleagues, administrators, and the students themselves. This multi-source feedback highlights what’s working and reveals areas to improve.            </p>
         </div>
+      </div>
 
-        <!-- Quote -->
-        <p class=" class=text-[20px] font-medium text-[#424242] font-inter mb-6 w-[300px] italic">
-          "Using GrowTrack was an amazing experience! It made me much more aware of my soft skills and how to develop them. The dashboard is clear, the feedback is motivating, and I genuinely feel more confident in my teamwork and communication skills."
-        </p>
+      <!-- Bloc 3 -->
+      <div class="flex items-start gap-4">
+        <img src="@/assets/cahier.png" alt="Progress Icon" class="w-20 h-20 mt-1" />
+        <div>
+          <h3 class="text-3xl  font-semibold text-gray-800 mb-1">
+              Tracking Classroom Progress            </h3>
+          <p class="text-xl text-gray-600 ">
+              Use real-time dashboards to monitor overall performance and spot emerging patterns. Respond quickly and effectively to keep your students on the right track.            </p>
+        </div>
+      </div>
 
-        <!-- Logo + name -->
-        <img src="@/assets/photo2.webp" alt="photo2" class="w-12 h-12 object-contain mb-2">
-        <p class="text-sm text-gray-700 font-medium">Soukaina EL</p>
+      <!-- Bloc 4 -->
+      <div class="flex items-start gap-4">
+        <img src="@/assets/person.png" alt="Recognition Icon" class="w-20 h-20 mt-1" />
+        <div>
+          <h3 class="text-3xl font-semibold text-gray-800 mb-1">
+              Celebrating Milestones            </h3>
+          <p class="text-xl text-gray-600 ">
+Acknowledge achievements at individual and group levels. By spotlighting progress, you cultivate a classroom culture that inspires and motivates everyone to aim higher.            </p>
+        </div>
       </div>
     </div>
 
-    
+    <!-- Illustration (dans la même grille) -->
+    <div class="flex justify-center">
+      <img src="@/assets/Professor-pana.svg" alt="Success Illustration" class="w-11/12 " />
+    </div>
+
   </div>
-</section>
-<Footer />
 </div>
+</section>
+
+
+
+
+      <section class="bg-white py-33 px-6">
+<div class="max-w-6xl mx-auto text-center">
+  <!-- Title -->
+  <h2 class="text-6xl font-bold text-gray-900">
+    What Our Professors Say
+  </h2>
+  <p class="text-[20px] font-normal text-[#000000] font-inter  mt-4">
+    Real Feedback From Professors Using GrowTrack To Empower Student Success.    </p>
+
+  <!-- Testimonials container -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-1 items-center mt-20">
+
+    <!-- Testimonial 1 -->
+    <div class="flex flex-col items-center text-center px-6">
+      <!-- Stars -->
+      <div class="flex justify-center mb-3 text-orange-500 text-xl">
+        <span>★</span><span>★</span><span>★</span><span>★</span><span class="text-gray-400">★</span>
+      </div>
+
+      <!-- Quote -->
+      <p class=" class=text-[20px] font-medium text-[#424242] font-inter mb-6 w-[300px] italic">
+        "GrowTrack is an excellent tool for evaluating students' soft skills. It allows clear tracking of skills that are often difficult to measure. I especially appreciate the quality of the feedback and how it encourages student autonomy. Some small visual improvements could make the platform even smoother to use!”
+      </p>
+
+      <!-- Logo + name -->
+      <img src="@/assets/prof1.png" alt="photo1" class="w-12 h-12 object-contain mb-2">
+      <p class="text-sm text-gray-700 font-medium">Mr.John</p>
+    </div>
+
+    <!-- Testimonial 2 -->
+    <div class="flex flex-col items-center text-center px-6">
+      <!-- Stars -->
+      <div class="flex justify-center mb-3 text-orange-500 text-xl">
+        <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+      </div>
+
+      <!-- Quote -->
+      <p class=" class=text-[20px] font-medium text-[#424242] font-inter mb-6 w-[300px] italic">
+        "GrowTrack has greatly helped me guide my students in developing their soft skills. The assessments are well-structured, the dashboards are clear, and the personalized feedback is highly valuable. It’s a complete and motivating platform, both for teachers and for students!"
+      </p>
+
+      <!-- Logo + name -->
+      <img src="@/assets/prof3.jpg" alt="photo2" class="w-12 h-12 object-contain mb-2">
+      <p class="text-sm text-gray-700 font-medium">Ms.Sara</p>
+    </div>
+  </div>
+  
+</div>
+</section>
+
+  <Footer />
+
 
 
 </template>
@@ -177,15 +165,14 @@
 <script>
 
 import axios from 'axios';
-import HeaderPage from '@/components/Header.vue';
-import Footer from '@/components/Footer.vue';
-
+import HeaderPage from "@/components/Header.vue";
+import Footer from "@/components/Footer.vue";
 
 export default{
-  name : 'Students',
-  components :{
-        HeaderPage,
-        Footer
-    }
+name : 'Teachers',
+components :{
+      HeaderPage,
+      Footer
+  }
 }
 </script>

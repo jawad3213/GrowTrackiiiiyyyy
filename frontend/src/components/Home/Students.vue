@@ -112,12 +112,6 @@
 </section>
 
 
-
-
-
-
-
-
 <section class="bg-white py-33 px-6">
   <div class="max-w-6xl mx-auto text-center">
     <!-- Title -->
@@ -169,6 +163,7 @@
   </div>
 </section>
 
+
 </div>
 <Footer/>
 
@@ -188,4 +183,5 @@ export default{
         Footer
     }
 }
+
 </script>
