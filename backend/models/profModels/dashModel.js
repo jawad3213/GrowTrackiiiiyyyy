@@ -166,3 +166,39 @@ exports.classes = async (id) =>{
     }
   };
   
+
+exports.profile = async (id_prof) => {
+    try{
+        const result = await pool.query(
+            `SELECT m.profile_picture, m.full_name, m.cin, m.email, p.code, p.department
+                FROM public.member m
+                JOIN public.professor p ON m.id_member = p.id_member 
+                    WHERE m.id_member =  $1`,
+                    [id_prof]
+        )
+        if(!result){
+            return ("le prof n'existe pas !")
+        }
+        return result.rows[0];
+    }catch(error){
+        console.error("le probleme dans profile :",error);
+        throw error;
+    }
+}
+
+exports.totalEvaluation = async (id) => {
+    try{
+        const result = await pool.query(
+            `SELECT COUNT(id_evaluation) AS "LES EVALUATIONS DE CE MOIS-CI" 
+            FROM public.skill_evaluation 
+             WHERE id_evaluator = $1
+             AND date_add >= CURRENT_DATE - INTERVAL '1 MONTH' `,
+             [id]
+        )
+
+        return result.rows[0];
+    }catch(error){
+        console.error("le probleme dans totalEvaluation :",error)
+        throw error;
+    }
+}

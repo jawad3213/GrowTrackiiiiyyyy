@@ -186,3 +186,53 @@ exports.getTopStudentsByClass = async (req, res) => {
     });
   }
 };
+
+
+// Controller pour récupérer et formater le profil d’un professeur
+exports.getProfessorProfile = async (req, res) => {
+    const { id_prof } = req.params;
+  
+    try {
+      // 1) Récupération du profil en base
+      const profile = await dash.profile(id_prof);
+  
+      // 2) Vérification que le profil existe
+      if (!profile) {
+        return res
+          .status(404)
+          .json({ message: "Professeur introuvable." });
+      }
+  
+      // 3) Construction d’un nouvel objet avec l’URL complète de l’image
+      const updatedProfile = {
+        ...profile,
+        profile_picture_url: genarateImageUrl(profile.profile_picture),
+      };
+  
+      // 4) Envoi de la réponse
+      return res.status(200).json(updatedProfile);
+  
+    } catch (error) {
+      console.error("Erreur dans getProfessorProfile :", error);
+      return res
+        .status(500)
+        .json({ message: "Erreur interne du serveur." });
+    }
+  };
+  
+
+  exports.totalEvaluation = async (req,res) => {
+    const {id_prof } = req.params;
+    try{
+        const total = await dash.totalEvaluation(id_prof);
+
+        return res.status(200).json({
+            message: "la requete a ete reussi !",
+            total
+        })
+    }catch(error){
+        return res.status(500).json({
+            message: "Internal server error "
+        })
+    }
+  }

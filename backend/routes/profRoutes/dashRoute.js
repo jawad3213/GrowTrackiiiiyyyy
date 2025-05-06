@@ -9,6 +9,8 @@ router.get("/nameclass/:id_prof",dashboard.getAllClasses);
 router.get("/graphe",dashboard.flaggedEvaluations);
 router.get("/dailyevaluation",dashboard.dailyEvaluation);
 router.get("/classement/:id_prof",dashboard.getTopStudentsByClass);
+router.get("/profile/:id_prof",dashboard.getProfessorProfile);
+router.get("/evaluationprof/:id_prof",dashboard.totalEvaluation);
 
 
 module.exports= router;
