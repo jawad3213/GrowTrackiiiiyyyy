@@ -151,6 +151,7 @@ async function submitForm() {
 }
 
 function closeModal() {
+
   emit('fermer')
 }
 formStore.clearStatus()

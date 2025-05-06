@@ -30,7 +30,20 @@ import Personalized from "./components/Personalized.vue";
 import Solution from "./components/Solution.vue";
 import ListeStudent from "./components/Formulaire/ListeStudent.vue";
 import DeleteStudent from "./components/DeleteStudent.vue";
+
 import SignalEvaluationModal from "./components/SignalEvaluationModal.vue";
+
+import DashboardProf from "./components/DashboardProf.vue";
+import ClassesEval from "./components/MenuProf/ClassesEval.vue";
+import ClassesSignal from "./components/MenuProf/ClassesSignal.vue";
+import HistoriqueEval from "./components/MenuProf/HistoriqueEval.vue";
+import HistoriqueSignal from "./components/MenuProf/HistoriqueSignal.vue";
+import ProjectMang from "./components/MenuProf/ProjectMang.vue";
+import Rapport from "./components/MenuProf/Rapport.vue";
+import Institution from "./components/MenuProf/Institution.vue";
+import AddProject from "./components/MenuProf/AddProject.vue";
+import AddMembers from "./components/MenuProf/AddMembers.vue";
+
 
 const routes = [
     {
@@ -194,7 +207,60 @@ const routes = [
         name : "DeleteStudent",
         component : DeleteStudent,
         path : "/DeleteStudent/:id"
-    }
+    },
+    {
+        name : "DashboardProf",
+        component : DashboardProf,
+        path : "/DashboardProf"
+    },
+    {
+        name : "ClassesEval",
+        component : ClassesEval,
+        path : "/ClassesEval"
+    },
+    {
+        name : "HistoriqueEval",
+        component : HistoriqueEval,
+        path : "/HistoriqueEval"
+    },
+    {
+        name : "ProjectMang",
+        component : ProjectMang,
+        path : "/ProjectMang"
+    },
+    {
+        name : "ClassesSignal",
+        component : ClassesSignal,
+        path : "/ClassesSignal"
+    },
+    {
+        name : "HistoriqueSignal",
+        component : HistoriqueSignal,
+        path : "/HistoriqueSignal"
+    },
+    
+    {
+        name : "Rapport",
+        component : Rapport,
+        path : "/Rapport"
+    },
+    {
+        name : "Institution",
+        component : Institution,
+        path : "/Institution"
+    },
+    {
+        name : "AddProject",
+        component : AddProject,
+        path : "/AddProject"
+    },
+    {
+        name : "AddMembers",
+        component : AddMembers,
+        path : "/AddMembers"
+    },
+
+
     
 ];
 

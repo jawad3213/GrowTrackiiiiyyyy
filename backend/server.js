@@ -35,12 +35,38 @@ app.use(limiter);
 
 app.post('/api/resetpass',verify.verifyToken, authController.ResetPassEmail);
 
+//route hachage
+const hashRoute = require("./routes/HashRoute");
+app.use("/api/hash", hashRoute)
+
+
+//route DashBaordAdmin
+const DashAdminRoute = require("./routes/adminRoutes/AdminDashboardRoute");
+app.use("/api/DashAdmin", DashAdminRoute)
+
+//PROFILE
+const ProfileAdminRoute = require("./routes/adminRoutes/AdminProfile");
+app.use("/api/ProfileAdmin", ProfileAdminRoute)
+
+//Global Over View
+const EvaluationAdminRoute = require("./routes/adminRoutes/GlobalOverView_Route");
+app.use("/api/GlobalOverView", EvaluationAdminRoute)
+
+
+//Global Over View
+const contactus = require("./routes/contactusRoute");
+app.use("/api/contactus", contactus)
+
+
+
 app.listen(PORT, () => {
     console.log(`Server Running on http://localhost:${PORT}`);
 });
 
-const pool = require('./db');
+const pool = require('./config/db');
 
 app.get('/testbackend',(req,res)=>{
     res.send('connexion reussie to backend !! ');
 })
+
+

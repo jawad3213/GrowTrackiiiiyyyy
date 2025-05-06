@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import api from '@/services/api'
 
-export const useContactStore = defineStore('contact', () => {
+export const useContactStore = defineStore('contact', () => { //creer un store appelé contact
 
     const error = ref(null)
     const success = ref(null)
@@ -16,7 +16,7 @@ export const useContactStore = defineStore('contact', () => {
         sending.value = true
 
         try {
-            const response = await api.post('/contact', payload)
+            const response = await api.post('/api/contactus/', payload)
             success.value = 'Message sent successfully!'
         } catch (err) {
             error.value = err.response?.data?.message || 'Error while sending. Please try again.'
