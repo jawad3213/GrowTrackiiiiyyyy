@@ -107,7 +107,7 @@ const handlelogin = async () => {
   isSubmitting.value = true;
   try {
     await store.Login(email.value, password.value);
-    if (!store.errorMsg) router.push('/');
+    if (!store.errorMsg) router.push('/dashboard');
   } catch (err) {
     console.error('Login error:', err);
   } finally {
