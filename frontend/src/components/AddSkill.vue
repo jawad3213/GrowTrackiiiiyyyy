@@ -1,6 +1,6 @@
 <template>
   <!-- Fond flou et gris clair -->
-  <div class="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-gray-200/60 px-4 py-8 overflow-auto">
+  <div v-if="isOpen" class="fixed inset-0 bg-gray-800/70 backdrop-blur-sm flex items-center justify-center z-50 font-inter">
     
     <!-- Conteneur du formulaire -->
     <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl p-8 relative">
@@ -73,9 +73,12 @@
 <script setup>
 import { ref } from 'vue'
 import { useFormStore } from '@/stores/form'
+import { useRouter } from 'vue-router'
 
 const formStore = useFormStore()
-const emit = defineEmits(['fermer'])
+const router = useRouter()
+
+const isOpen = ref(true)
 
 const skill = ref({
   name: '',
@@ -88,7 +91,8 @@ const skill = ref({
 const errors = ref({})
 
 function closeModal() {
-  emit('fermer')
+  isOpen.value = false
+  router.push('/Skills')
 }
 
 async function submitForm() {

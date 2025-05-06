@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed inset-0 bg-gray-900 bg-opacity-60 flex items-center justify-center z-50 font-inter">
+  <div v-if="isOpen" class="fixed inset-0 bg-gray-800/70 backdrop-blur-sm flex items-center justify-center z-50 font-inter">
     <div class="bg-white border-2 border-purple-500 rounded-2xl shadow-xl w-full max-w-2xl p-6 sm:p-8">
 
       <!-- Header -->
@@ -103,9 +103,12 @@
 <script setup>
 import { ref } from 'vue'
 import { useFormStore } from '@/stores/form'
+import { useRouter } from 'vue-router'
 
 const formStore = useFormStore()
-const emit = defineEmits(['fermer'])
+const router = useRouter()
+
+const isOpen = ref(true)
 
 const supervisor = ref({
   fullName: '',
@@ -122,7 +125,8 @@ const supervisor = ref({
 const errors = ref({})
 
 function closeModal() {
-  emit('fermer')
+  isOpen.value = false
+  router.push('/Supervisor')
 }
 
 async function submitForm() {

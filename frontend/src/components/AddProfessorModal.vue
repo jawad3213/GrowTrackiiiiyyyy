@@ -1,17 +1,16 @@
 <template>
-  <!-- FOND FLOU -->
-  <div class="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-gray-200/60 px-4 py-8 overflow-auto">
+  <!-- Fond flou et sombre comme Add Student -->
+  <div v-if="isOpen" class="fixed inset-0 bg-gray-800/70 backdrop-blur-sm flex items-center justify-center z-50 font-inter">
     
-    <!-- FORMULAIRE CENTRÉ -->
-    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl p-8 relative">
-      
-      <!-- Bouton Fermer -->
-      <button @click="closeModal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl font-bold">
-        &times;
-      </button>
+    <!-- Carte formulaire -->
+    <div class="bg-white border-2 rounded-2xl shadow-xl w-full max-w-3xl p-6 sm:p-8 border-t-2 border-purple-500 relative">
 
-      <!-- Titre -->
-      <h2 class="text-2xl font-bold mb-1 text-center">Add Professor</h2>
+      <!-- Header avec bouton fermer -->
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-2xl font-bold text-gray-900">Add Professor</h2>
+        <button @click="closeModal" class="text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
+      </div>
+
       <p class="text-sm text-gray-600 mb-6 text-center">Please fill in the professor's information</p>
 
       <!-- FORM -->
@@ -49,7 +48,7 @@
           </div>
         </div>
 
-        <!-- Department + Code -->
+        <!-- Département + code -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label class="font-semibold">Department*</label>
@@ -70,7 +69,7 @@
           </div>
         </div>
 
-        <!-- GROUPS -->
+        <!-- Groupes -->
         <div>
           <label class="font-semibold">Assigned Groups*</label>
           <div v-for="(group, index) in prof.groups" :key="index" class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
@@ -114,12 +113,14 @@
         <p v-if="formStore.success" class="text-green-500 text-sm mt-2 animate-pulse">{{ formStore.success }}</p>
 
         <!-- Boutons -->
-        <div class="flex justify-end gap-4 pt-4">
+        <div class="flex justify-between pt-4">
           <button type="button" @click="closeModal"
-            class="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100">Cancel</button>
+            class="w-full py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100">
+            Cancel
+          </button>
           <button type="submit"
-            class="px-6 py-2 text-white font-semibold bg-purple-600 hover:bg-purple-700 rounded-md shadow-md">
-            Save
+            class="w-full py-2 font-semibold text-white rounded-md bg-gradient-to-r from-purple-600 to-orange-400 hover:from-purple-700 hover:to-orange-500 transition-all duration-300 transform hover:scale-105">
+            Confirm
           </button>
         </div>
       </form>
@@ -127,12 +128,16 @@
   </div>
 </template>
 
+
 <script setup>
 import { ref } from 'vue'
 import { useFormStore } from '@/stores/form'
+import { useRouter } from 'vue-router'
 
 const formStore = useFormStore()
-const emit = defineEmits(['fermer'])
+const router = useRouter()
+
+const isOpen = ref(true)
 
 const fieldsByLevel = {
   AP: ['TD1', 'TD2', 'TD3'],
@@ -158,8 +163,11 @@ function addgrp() {
   prof.value.groups.push({ level: 'AP1', field: 'GINF', module: '' })
 }
 
+
+
 function closeModal() {
-  emit('fermer')
+  isOpen.value = false
+  router.push('/Professor')
 }
 
 const errors = ref({})

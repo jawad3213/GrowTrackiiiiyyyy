@@ -12,13 +12,12 @@
             </span>
           </h1>
 
-
-      <button @click="showForm=true"
-            class="bg-[#F97316] hover:bg-[#FA9148] text-white font-bold px-6 py-2 rounded-lg inline-block">
-            {{ studentStore.students.length > 0 ? '+ Create' : '+ Add a student' }}
-      </button>
-      <AddStudentModal v-if="showForm" @fermer="showForm=false"/>
-
+          <router-link
+            to="/AddStudent"
+            class="bg-[#F97316] hover:bg-[#FA9148] text-white font-bold px-6 py-2 rounded-lg inline-block"
+          >
+            {{ students.length > 0 ? '+ Create' : '+ Add a student' }}
+          </router-link>
         </div>
 
         <!-- Table -->
@@ -69,8 +68,6 @@
 </template>
 
 <script setup>
-
-
 import { ref, onMounted } from 'vue'
 import AdminLayout from '../layout/AdminLayout.vue'
 import axios from 'axios'
@@ -81,7 +78,6 @@ const fetchStudents = async () => {
   const res = await axios.get('http://localhost:3001/students')
   students.value = res.data
 }
-
 
 onMounted(() => {
   fetchStudents()

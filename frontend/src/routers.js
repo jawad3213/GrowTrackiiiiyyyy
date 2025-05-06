@@ -28,7 +28,6 @@ import AddSupervisorModal from "./components/AddSupervisorModal.vue";
 import Evaluation from "./components/Evaluation.vue";
 import Personalized from "./components/Personalized.vue";
 import Solution from "./components/Solution.vue";
-import ListeStudent from "./components/Formulaire/ListeStudent.vue";
 import DeleteStudent from "./components/DeleteStudent.vue";
 
 import SignalEvaluationModal from "./components/SignalEvaluationModal.vue";
@@ -198,11 +197,7 @@ const routes = [
         component : Solution,
         path : "/Solution",
     },
-    {
-        name : "ListeStudent",
-        component : ListeStudent,
-        path : "/ListeStudent"
-    },
+
     {
         name : "DeleteStudent",
         component : DeleteStudent,
