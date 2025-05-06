@@ -1,5 +1,4 @@
 <template>
-  <div>
     <HeaderPage />
 
 <div class="items-center w-10/12 grid-cols-2 mx-auto overflow-x-hidden lg:grid md:py-14 lg:py-24 xl:py-14 lg:mt-3 xl:mt-5" data-aos="fade-right" data-aos-duration="800">
@@ -51,7 +50,7 @@
       <div class="space-y-8">
         <!-- Bloc 1 -->
         <div class="flex items-start gap-4">
-          <img src="@/assets/strengh.png" alt="Strength Icon" class="w-20 h-20 mt-1" />
+          <img src="@/assets/strengh.jpg" alt="Strength Icon" class="w-20 h-20 mt-1" />
           <div>
             <h3 class="text-3xl font-semibold text-gray-800 mb-1">
               Discovering Your Strengths
@@ -64,7 +63,7 @@
 
         <!-- Bloc 2 -->
         <div class="flex items-start gap-4">
-          <img src="@/assets/gathering.png" alt="Feedback Icon" class="w-20 h-20 mt-1" />
+          <img src="@/assets/gathering.jpg" alt="Feedback Icon" class="w-20 h-20 mt-1" />
           <div>
             <h3 class="text-3xl font-semibold text-gray-800 mb-1">
               Gathering Honest Feedback
@@ -77,7 +76,7 @@
 
         <!-- Bloc 3 -->
         <div class="flex items-start gap-4">
-          <img src="@/assets/tracking.png" alt="Progress Icon" class="w-20 h-20 mt-1" />
+          <img src="@/assets/tracking.jpg" alt="Progress Icon" class="w-20 h-20 mt-1" />
           <div>
             <h3 class="text-3xl text-3xl font-semibold text-gray-800 mb-1">
               Tracking Your Progress
@@ -90,7 +89,7 @@
 
         <!-- Bloc 4 -->
         <div class="flex items-start gap-4">
-          <img src="@/assets/earning.png" alt="Recognition Icon" class="w-20 h-20 mt-1" />
+          <img src="@/assets/earning.jpg" alt="Recognition Icon" class="w-20 h-20 mt-1" />
           <div>
             <h3 class="text-3xl font-semibold text-gray-800 mb-1">
               Earning Recognition
@@ -168,23 +167,45 @@
     
   </div>
 </section>
-<Footer />
-</div>
+<footer class="bg-gradient-to-r from-[#692CF3] to-[#F97316] text-white py-6 px-4">
+  <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+    
+    <!-- Logo -->
+    <div class="flex items-center space-x-2">
+      <img src="@/assets/logo3.jpg" alt="Logo" class="w-50 h-10 object-contain" />
 
+    </div>
 
+    
+    <div class="flex space-x-8 justify-center gap-4 text-lg font-medium">
+      <span>© Copyright 2025 GrowTrack</span>
+      <router-link to="/AboutUs" class="hover:underline">About Us</router-link>
+      <router-link to="/ContactUs" class="hover:underline">Contact Us</router-link>
+      <router-link to="/Teachers" class="hover:underline">Teachers</router-link>
+      <router-link to="/Students" class="hover:underline">Students</router-link>
+      <router-link to="/" class="hover:underline">Home</router-link>
+    </div>
+
+    
+    <div class="flex space-x-4">
+      <a href="https://x.com/i/flow/login"><img src="@/assets/twitter.png" alt="Twitter" class="w-6 h-6" /></a>
+      <a href="https://fr-fr.facebook.com/login/web/"><img src="@/assets/facebook.png" alt="Facebook" class="w-6 h-6" /></a>
+      <a href="https://www.instagram.com/?flo=true"><img src="@/assets/instagram.png" alt="Instagram" class="w-6 h-6" /></a>
+    </div>
+
+  </div>
+</footer>
 </template>
 
 <script>
 
 import axios from 'axios';
-import HeaderPage from './Header.vue';
-import Footer from './Footer.vue'
+import HeaderPage from "@/components/Header.vue";
 
 export default{
   name : 'Students',
   components :{
-        HeaderPage,
-        Footer
+        HeaderPage
     }
 }
 </script>

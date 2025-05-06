@@ -13,13 +13,36 @@ import Supervisor from "./components/Menu/Supervisor.vue";
 import Group from "./components/Menu/Group.vue";
 import Professor from "./components/Menu/Professor.vue";
 import Student from "./components/Menu/Student.vue";
-import AddStudentModal from "./components/AddStudentModal.vue";
 import dashboard from "./components/dashboard.vue";
 import Calendar from "./components/Menu/Calendar.vue";
 import UserProfile from "./components/Menu/UserProfile.vue";
 import GlobalOverview from "./components/Menu/GlobalOverview.vue";
 import Signals from "./components/Menu/Signals.vue";
 import Coach from "./components/Menu/Coach.vue";
+import AddCoach from "./components/AddCoach.vue";
+import AddField from "./components/AddField.vue";
+import AddProfessorModal from "./components/AddProfessorModal.vue";
+import AddSkill from "./components/AddSkill.vue";
+import AddStudentModal from "./components/AddStudentModal.vue";
+import AddSupervisorModal from "./components/AddSupervisorModal.vue";
+import Evaluation from "./components/Evaluation.vue";
+import Personalized from "./components/Personalized.vue";
+import Solution from "./components/Solution.vue";
+import DeleteStudent from "./components/DeleteStudent.vue";
+
+import SignalEvaluationModal from "./components/SignalEvaluationModal.vue";
+
+import DashboardProf from "./components/DashboardProf.vue";
+import ClassesEval from "./components/MenuProf/ClassesEval.vue";
+import ClassesSignal from "./components/MenuProf/ClassesSignal.vue";
+import HistoriqueEval from "./components/MenuProf/HistoriqueEval.vue";
+import HistoriqueSignal from "./components/MenuProf/HistoriqueSignal.vue";
+import ProjectMang from "./components/MenuProf/ProjectMang.vue";
+import Rapport from "./components/MenuProf/Rapport.vue";
+import Institution from "./components/MenuProf/Institution.vue";
+import AddProject from "./components/MenuProf/AddProject.vue";
+import AddMembers from "./components/MenuProf/AddMembers.vue";
+
 
 const routes = [
     {
@@ -94,11 +117,6 @@ const routes = [
         path:"/Student",
     },
     {
-        name: "AddStudentModal",
-        component: AddStudentModal,
-        path:"/AddStudent",
-    },
-    {
         name : "dashboard",
         component : dashboard,
         path : "/dashboard",
@@ -129,10 +147,116 @@ const routes = [
         path : "/Coach",
     },
     {
-        path: '/reset-pass-email',
-        name: 'ResetPassword',
-        component: resetPassword,
+        name : "AddCoach",
+        component : AddCoach,
+        path : "/AddCoach",
     },
+    
+    {
+        name : "AddField",
+        component : AddField,
+        path : "/AddField",
+    },
+    {
+        name : "AddProfessorModal",
+        component : AddProfessorModal,
+        path : "/AddProfessor",
+    },
+    {
+        name : "AddSkill",
+        component : AddSkill,
+        path : "/AddSkill",
+    },
+    {
+        name : "AddStudentModal",
+        component : AddStudentModal,
+        path : "/AddStudent",
+    },
+    {
+        name : "AddSupervisorModal",
+        component : AddSupervisorModal,
+        path : "/AddSupervisor",
+    },
+    {
+        name : "Evaluation",
+        component : Evaluation,
+        path : "/Evaluation",
+    },
+    {
+        name : "Personalized",
+        component : Personalized,
+        path : "/Personalized",
+    },
+    {
+        name : "SignalModal",
+        component : SignalEvaluationModal,
+        path : "/SignalModal",
+    },
+    {
+        name : "Solution",
+        component : Solution,
+        path : "/Solution",
+    },
+
+    {
+        name : "DeleteStudent",
+        component : DeleteStudent,
+        path : "/DeleteStudent/:id"
+    },
+    {
+        name : "DashboardProf",
+        component : DashboardProf,
+        path : "/DashboardProf"
+    },
+    {
+        name : "ClassesEval",
+        component : ClassesEval,
+        path : "/ClassesEval"
+    },
+    {
+        name : "HistoriqueEval",
+        component : HistoriqueEval,
+        path : "/HistoriqueEval"
+    },
+    {
+        name : "ProjectMang",
+        component : ProjectMang,
+        path : "/ProjectMang"
+    },
+    {
+        name : "ClassesSignal",
+        component : ClassesSignal,
+        path : "/ClassesSignal"
+    },
+    {
+        name : "HistoriqueSignal",
+        component : HistoriqueSignal,
+        path : "/HistoriqueSignal"
+    },
+    
+    {
+        name : "Rapport",
+        component : Rapport,
+        path : "/Rapport"
+    },
+    {
+        name : "Institution",
+        component : Institution,
+        path : "/Institution"
+    },
+    {
+        name : "AddProject",
+        component : AddProject,
+        path : "/AddProject"
+    },
+    {
+        name : "AddMembers",
+        component : AddMembers,
+        path : "/AddMembers"
+    },
+
+
+    
 ];
 
 const router =createRouter({

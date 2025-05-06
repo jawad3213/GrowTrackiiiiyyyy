@@ -1,5 +1,10 @@
 <template>
-  <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v6m3-3h-6m-4 3a4 4 0 100-8 4 4 0 000 8zm0 0c-4 0-7 2-7 4v1h7.5" />
-  </svg>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"
+  stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+  <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+  <circle cx="9" cy="7" r="4" />
+  <line x1="20" y1="8" x2="20" y2="14" />
+  <line x1="17" y1="11" x2="23" y2="11" />
+</svg>
+
 </template>

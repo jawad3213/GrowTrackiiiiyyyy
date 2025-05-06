@@ -1,132 +1,127 @@
 <template>
-  <div class="min-h-screen bg-gray-50 font-inter flex flex-col">
-    <!-- Header -->
+  <div class="min-h-screen bg-white font-inter">
     <Header />
 
-    <!-- Main Container -->
-    <div class="flex-1 max-w-6xl mx-auto px-6 py-12">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-        <!-- Animated Illustration Card -->
-        <div class="hidden lg:block animate-slide-in-left">
-          <div class="bg-white p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-shadow duration-300 transform hover:scale-105">
-            <img src="@/assets/Contact us-amico.svg" alt="Contact illustration" class="w-full h-auto" />
+    <div class="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center font-inter">
+      
+      <!-- Illustration -->
+      <div class="flex-1 bg-purple-100 text-center hidden lg:flex">
+  <div class="m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat">
+    <img src="@\assets\Contact us-amico.svg" alt="login illustration" />
+  </div>
+</div>
+
+      <!-- Formulaire -->
+      <div>
+        <h2 class="text-4xl font-bold text-gray-900 mb-2">Get In Touch</h2>
+        <p class="text-gray-600 mb-6 text-lg">Our friendly team would love to hear from you.</p>
+
+        <!-- Messages -->
+        <p v-if="store.successmsg" class="text-green-600 italic mb-3">{{ store.successmsg }}</p>
+        <p v-if="store.errormsg" class="text-red-600 italic mb-3">{{ store.errormsg }}</p>
+
+        <!-- Form -->
+        <form @submit.prevent="contactUs" class="space-y-4">
+          <!-- Prénom + Nom -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">First Name</label>
+              <input
+              class="w-full px-8 py-2 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
+              type="text" v-model="info.FirstName" placeholder="First name" required/>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Last Name</label>
+              <input
+              class="w-full px-8 py-2 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
+              type="text" v-model="info.LastName" placeholder="Last name" required/>
+            </div>
           </div>
-        </div>
 
-        <!-- Form Card -->
-        <div class="bg-white p-10 rounded-3xl shadow-2xl animate-fade-in-up">
-          <h2 class="text-3xl font-extrabold text-gray-900 mb-4">Get in Touch</h2>
-          <p class="text-gray-600 mb-8">Our friendly team would love to hear from you. Fill out the form and we’ll be in touch!</p>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Email</label>
+            <input class="w-full px-8 py-2 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
+            type="emal" v-model="info.Email" placeholder="you@company.com" required /> 
+          </div>
 
-          <!-- Feedback Messages -->
-          <transition name="fade">
-            <p v-if="store.successmsg" class="mb-6 p-4 bg-green-50 border-l-4 border-green-400 text-green-800 italic rounded-lg">
-              {{ store.successmsg }}
-            </p>
-          </transition>
-          <transition name="fade">
-            <p v-if="store.errormsg" class="mb-6 p-4 bg-red-50 border-l-4 border-red-400 text-red-800 italic rounded-lg">
-              {{ store.errormsg }}
-            </p>
-          </transition>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Phone Number</label>
+            <input class="w-full px-8 py-2 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
+            type="tel" v-model="info.Phone" placeholder="Phone Number" required/> 
+          </div>
 
-          <form @submit.prevent="contactUs" class="space-y-6">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div class="relative">
-                <input
-                  v-model="info.FirstN"
-                  type="text"
-                  required
-                  class="peer w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-purple-400 transition"
-                  placeholder="First Name"
-                />
-                <span class="absolute left-3 -top-2 bg-white px-1 text-xs text-gray-500 peer-focus:text-purple-600 transition-all">First Name</span>
-              </div>
-              <div class="relative">
-                <input
-                  v-model="info.LastN"
-                  type="text"
-                  required
-                  class="peer w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-purple-400 transition"
-                  placeholder="Last Name"
-                />
-                <span class="absolute left-3 -top-2 bg-white px-1 text-xs text-gray-500 peer-focus:text-purple-600 transition-all">Last Name</span>
-              </div>
-            </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Message</label>
+            <textarea  class="w-full px-8 py-2 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
+            type="text" v-model="info.Message" placeholder="your message here" required ></textarea>
+          </div>
 
-            <div class="relative">
-              <input
-                v-model="info.email"
-                type="email"
-                required
-                class="peer w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-purple-400 transition"
-                placeholder="Email Address"
-              />
-              <span class="absolute left-3 -top-2 bg-white px-1 text-xs text-gray-500 peer-focus:text-purple-600 transition-all">Email Address</span>
-            </div>
-
-            <div class="relative">
-              <input
-                v-model="info.phone"
-                type="tel"
-                required
-                class="peer w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-purple-400 transition"
-                placeholder="Phone Number"
-              />
-              <span class="absolute left-3 -top-2 bg-white px-1 text-xs text-gray-500 peer-focus:text-purple-600 transition-all">Phone Number</span>
-            </div>
-
-            <div class="relative">
-              <textarea
-                v-model="info.msg"
-                rows="4"
-                required
-                class="peer w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-purple-400 transition resize-none"
-                placeholder="Your Message"
-              ></textarea>
-              <span class="absolute left-3 -top-2 bg-white px-1 text-xs text-gray-500 peer-focus:text-purple-600 transition-all">Your Message</span>
-            </div>
-
-            <label class="flex items-center space-x-2 text-sm">
-              <input
-                v-model="info.agree"
-                type="checkbox"
-                required
-                class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
-              />
-              <span class="text-gray-700 hover:text-purple-600 transition-colors">I agree to the privacy policy</span>
+          <!-- Politique -->
+          <div class="flex items-start text-sm text-gray-700 mt-4">
+            <input type="checkbox" id="policy" v-model="info.agree" class="mt-1 mr-2" />
+            <label for="policy" class="text-sm text-blue-600 hover:underline cursor-pointer">
+              You agree to our friendly privacy policy
             </label>
+          </div>
 
-            <button
-              type="submit"
-              class="w-full py-3 bg-gradient-to-r from-purple-600 to-orange-400 text-white font-semibold rounded-full shadow-lg transform hover:scale-105 transition"
-            >
-              Send Message
-            </button>
-          </form>
-        </div>
+          <!-- Bouton -->
+          <button
+            type="submit"
+            class="w-full py-3 mt-4 font-semibold text-white rounded-md bg-gradient-to-r from-purple-600 to-orange-400 hover:from-purple-700 hover:to-orange-500 transition text-lg">
+            Send message
+          </button>
+        </form>
       </div>
     </div>
-
-    <!-- Footer -->
-    <Footer />
   </div>
+
+
+  <footer class="bg-gradient-to-r from-[#692CF3] to-[#F97316] text-white py-6 px-4">
+  <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+    
+    <!-- Logo -->
+    <div class="flex items-center space-x-2">
+      <img src="../assets/logo3.jpg" alt="Logo" class="w-50 h-10 object-contain" />
+
+    </div>
+
+    
+    <div class="flex space-x-8 justify-center gap-4 text-lg font-medium">
+      <span>© Copyright 2025 GrowTrack</span>
+      <router-link to="/AboutUs" class="hover:underline">About Us</router-link>
+      <router-link to="/ContactUs" class="hover:underline">Contact Us</router-link>
+      <router-link to="/Teachers" class="hover:underline">Teachers</router-link>
+      <router-link to="/Students" class="hover:underline">Students</router-link>
+      <router-link to="/" class="hover:underline">Home</router-link>
+    </div>
+
+    
+    <div class="flex space-x-4">
+      <a href="https://x.com/i/flow/login"><img src="../assets/twitter.png" alt="Twitter" class="w-6 h-6" /></a>
+      <a href="https://fr-fr.facebook.com/login/web/"><img src="../assets/facebook.png" alt="Facebook" class="w-6 h-6" /></a>
+      <a href="https://www.instagram.com/?flo=true"><img src="../assets/instagram.png" alt="Instagram" class="w-6 h-6" /></a>
+    </div>
+
+  </div>
+</footer>
+
 </template>
+
+
 
 <script setup>
 import Header from './Header.vue'
-import Footer from './Footer.vue'
-import { useContactStore } from '@/stores/contact'
+import { useContactStore } from '@/stores/contact' //fonction de Pinia pour accéder au store conta
 import { ref,watch,onMounted } from 'vue'
 
 const store = useContactStore()
 
 const info = ref({
-    FirstN: '',
-    LastN: '',
-    email: '',
-    phone: '',
-    msg: '',
+    FirstName: '',
+    LastName: '',
+    Email: '',
+    Phone: '',
+    Message: '',
     agree: false
 })
 
@@ -136,7 +131,7 @@ watch(info , (newinfo)=> localStorage.setItem('tempinfo',JSON.stringify(newinfo)
 
 onMounted(() => {
     const saved = localStorage.getItem('tempinfo')
-    if (saved) {
+    if (saved) { //s’il existe des données sauvegardées dans localStorage
         info.value = JSON.parse(saved)
     }
 })
@@ -147,31 +142,13 @@ async function contactUs() {
     if(store.successmsg){
         localStorage.removeItem('tempinfo')
         info.value ={ //nettoyer les inputs
-            FirstN: '',
-            LastN: '',
-            email: '',
-            phone: '',
-            msg: '',
-            agree: false
+          FirstName: '',
+          LastName: '',
+          Email: '',
+          Phone: '',
+          Message: '',
+          agree: false
         }
     }
 }
 </script>
-
-
-<style scoped>
-@keyframes slideInLeft {
-  0% { opacity: 0; transform: translateX(-50px); }
-  100% { opacity: 1; transform: translateX(0); }
-}
-.animate-slide-in-left { animation: slideInLeft 0.8s ease-out both; }
-
-@keyframes fadeInUp {
-  0% { opacity: 0; transform: translateY(20px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-.animate-fade-in-up { animation: fadeInUp 0.8s ease-out both; }
-
-.fade-enter-active, .fade-leave-active { transition: opacity 0.3s; }
-.fade-enter-from, .fade-leave-to { opacity: 0; }
-</style>

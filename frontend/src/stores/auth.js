@@ -14,10 +14,10 @@ export const useAuthStore = defineStore('auth',() =>
         /*
         actions
         */
-        async function Login(email , password){
+        async function Login(email , password, RememberMe){
             loading.value = true
             try {
-                const response = await api.post('/api/auth/login', {email , password}); //api url !! //envoi de l'objet 
+                const response = await api.post('/api/auth/login', {email , password, RememberMe}); //api url !! //envoi de l'objet 
                 user.value = response.data?.user;
             } catch (err) {
                 error.value = err.response?.data?.message || 'Email or password incorrect'; // vérifier que l'api envoie un message
