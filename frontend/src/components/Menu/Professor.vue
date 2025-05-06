@@ -27,9 +27,11 @@
           <div class="text-5xl mb-4">🔍</div>
           <p class="text-lg font-semibold mb-2">No professors available</p>
           <p class="mb-6">You haven’t added any professors to the platform yet.<br />Professors are essential for guiding evaluations and reviewing student progress.</p>
+          <router-link to="/AddProfessor">
           <button class="bg-[#F97316] hover:bg-[#FA9148] text-white font-bold py-3 px-20 rounded-md">
             + Add Professor
           </button>
+          </router-link>
         </div>
   
         <!-- Pagination -->

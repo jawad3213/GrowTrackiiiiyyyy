@@ -22,9 +22,13 @@
           <div class="text-5xl mb-4">🔍</div>
           <p class="text-lg font-semibold mb-2">No skills defined</p>
           <p class="mb-6">You haven’t set up any soft skills yet.<br />Create skills and indicators to build your custom evaluation framework.</p>
-          <button class="bg-[#F97316] hover:bg-[#FA9148] text-white font-bold py-3 px-20 rounded-md">
-            + Add Skill
-          </button>
+          <router-link
+  to="/AddSkill"
+  class="bg-[#F97316] hover:bg-[#FA9148] text-white font-bold py-3 px-20 rounded-md inline-block text-center"
+>
+  + Add Skill
+</router-link>
+
         </div>
   
         <!-- Pagination -->

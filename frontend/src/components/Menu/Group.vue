@@ -27,9 +27,11 @@
           <div class="text-5xl mb-4">🔍</div>
           <p class="text-lg font-semibold mb-2">No groups or fields configured</p>
           <p class="mb-6">Set up fields or academic tracks to better segment your platform.</p>
-          <button class="bg-[#F97316] hover:bg-[#FA9148] text-white font-bold py-3 px-20 rounded-md">
-            + Add Group/Field
+          <router-link to="/AddField">
+        <button class="bg-[#F97316] hover:bg-[#FA9148] text-white font-bold py-3 px-20 rounded-md">
+          + Add Group/Field
           </button>
+          </router-link>
         </div>
   
         <!-- Pagination -->

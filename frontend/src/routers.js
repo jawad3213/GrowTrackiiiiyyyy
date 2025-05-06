@@ -13,13 +13,24 @@ import Supervisor from "./components/Menu/Supervisor.vue";
 import Group from "./components/Menu/Group.vue";
 import Professor from "./components/Menu/Professor.vue";
 import Student from "./components/Menu/Student.vue";
-import AddStudentModal from "./components/AddStudentModal.vue";
 import dashboard from "./components/dashboard.vue";
 import Calendar from "./components/Menu/Calendar.vue";
 import UserProfile from "./components/Menu/UserProfile.vue";
 import GlobalOverview from "./components/Menu/GlobalOverview.vue";
 import Signals from "./components/Menu/Signals.vue";
 import Coach from "./components/Menu/Coach.vue";
+import AddCoach from "./components/AddCoach.vue";
+import AddField from "./components/AddField.vue";
+import AddProfessorModal from "./components/AddProfessorModal.vue";
+import AddSkill from "./components/AddSkill.vue";
+import AddStudentModal from "./components/AddStudentModal.vue";
+import AddSupervisorModal from "./components/AddSupervisorModal.vue";
+import Evaluation from "./components/Evaluation.vue";
+import Personalized from "./components/Personalized.vue";
+import AddSignal from "./components/AddSignal.vue";
+import Solution from "./components/Solution.vue";
+import ListeStudent from "./components/Formulaire/ListeStudent.vue";
+import DeleteStudent from "./components/DeleteStudent.vue";
 
 const routes = [
     {
@@ -94,11 +105,6 @@ const routes = [
         path:"/Student",
     },
     {
-        name: "AddStudentModal",
-        component: AddStudentModal,
-        path:"/AddStudent",
-    },
-    {
         name : "dashboard",
         component : dashboard,
         path : "/dashboard",
@@ -129,10 +135,67 @@ const routes = [
         path : "/Coach",
     },
     {
-        path: '/reset-pass-email',
-        name: 'ResetPassword',
-        component: resetPassword,
+        name : "AddCoach",
+        component : AddCoach,
+        path : "/AddCoach",
     },
+    
+    {
+        name : "AddField",
+        component : AddField,
+        path : "/AddField",
+    },
+    {
+        name : "AddProfessorModal",
+        component : AddProfessorModal,
+        path : "/AddProfessor",
+    },
+    {
+        name : "AddSkill",
+        component : AddSkill,
+        path : "/AddSkill",
+    },
+    {
+        name : "AddStudentModal",
+        component : AddStudentModal,
+        path : "/AddStudent",
+    },
+    {
+        name : "AddSupervisorModal",
+        component : AddSupervisorModal,
+        path : "/AddSupervisor",
+    },
+    {
+        name : "Evaluation",
+        component : Evaluation,
+        path : "/Evaluation",
+    },
+    {
+        name : "Personalized",
+        component : Personalized,
+        path : "/Personalized",
+    },
+    {
+        name : "AddSignal",
+        component : AddSignal,
+        path : "/AddSignal",
+    },
+    {
+        name : "Solution",
+        component : Solution,
+        path : "/Solution",
+    },
+    {
+        name : "ListeStudent",
+        component : ListeStudent,
+        path : "/ListeStudent"
+    },
+    {
+        name : "DeleteStudent",
+        component : DeleteStudent,
+        path : "/DeleteStudent/:id"
+    }
+    
 ];
 
 const router =createRouter({
