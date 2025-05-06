@@ -109,6 +109,7 @@ exports.RefreshToken = async (req, res) => {
       return res.status(401).json({ message: "Invalid or expired refresh token!" });
     }
   };
+
 exports.Logout=(req, res)=>{
     try {
         res.clearCookie("refresh_token", {
@@ -157,7 +158,7 @@ exports.ResetPass = [
                     process.env.ACCESS_SECRET,
                     { expiresIn: '15m'})
             
-            const resetLink = `http://localhost:${PORT}/reset-pass-email?token=${Reset_Token}`;
+            const resetLink = `http://localhost:5173/resetpass?token=${Reset_Token}`;
             const mailOptions = {
                 from: process.env.EMAIL_USER,
                 to: email,
