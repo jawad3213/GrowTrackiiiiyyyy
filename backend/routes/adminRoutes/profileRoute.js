@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
 
-const profile = require("../../controllers/adminControllers/profileController");
+const profileController = require("../../controllers/adminControllers/profileController");
 
 
-router.get("/profile",profile.profileadmin);
+router.get("/:id_admin",profileController.profileadmin);
+router.patch("/:id_admin",profileController.updateAdmin);
 
 module.exports = router;
