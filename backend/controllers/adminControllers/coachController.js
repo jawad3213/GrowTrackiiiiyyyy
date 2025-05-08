@@ -83,6 +83,11 @@ exports.getCoachByCin = async (req, res) => {
 exports.updateCoach = async (req, res) => {
     const userId = req.params.id_coach;
     const updates = req.body;
+    const imagePath = req.file ? req.file.path : null;
+  
+    if (imagePath) {
+      updates.profile_picture = imagePath; // Ajout du chemin de l’image
+    }
 
     console.log("ID :", userId);
     console.log("Données :", updates);

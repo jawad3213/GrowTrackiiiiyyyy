@@ -101,13 +101,17 @@ exports.getStudentByCin = async (req, res) => {
     }
   };
   
-exports.updateStudent = async (req, res) => {
+  exports.updateStudent = async (req, res) => {
     const userId = req.params.id_student;
-    const updates = req.body;
-
-    
-  console.log("ID :", userId);
-  console.log("Données :", updates);
+    const updates = { ...req.body };
+    const imagePath = req.file ? req.file.path : null;
+  
+    if (imagePath) {
+      updates.profile_picture = imagePath; // Ajout du chemin de l’image
+    }
+  
+    console.log("ID :", userId);
+    console.log("Données :", updates);
   
     try {
       const updatedUser = await studentModel.updateStudentById(userId, updates);
@@ -125,6 +129,7 @@ exports.updateStudent = async (req, res) => {
       res.status(500).json({ message: "Erreur serveur." });
     }
   };
+  
 
 
 exports.deleteStudent = async (req, res) => {

@@ -99,6 +99,11 @@ exports.getSupervisorByCin = async (req, res) => {
 exports.updateSupervisor = async (req, res) => {
   const userId = req.params.id_supervisor;
   const updates = req.body;
+  const imagePath = req.file ? req.file.path : null;
+  
+    if (imagePath) {
+      updates.profile_picture = imagePath; // Ajout du chemin de l’image
+    }
 
   console.log("ID:", userId);
   console.log("Updates:", updates);

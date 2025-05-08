@@ -121,6 +121,11 @@ exports.getProfessorByCin = async (req, res) => {
 exports.updateProfessor = async (req, res) => {
   const userId = req.params.id_professor;
   const updates = req.body;
+  const imagePath = req.file ? req.file.path : null;
+  
+    if (imagePath) {
+      updates.profile_picture = imagePath; // Ajout du chemin de l’image
+    }
 
   console.log("ID :", userId);
   console.log("Données :", updates);

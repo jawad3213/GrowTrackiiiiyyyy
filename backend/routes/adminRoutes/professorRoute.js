@@ -26,7 +26,7 @@ router.post("/create", upload.single('image'),professorController.createProfesso
 router.get("/",professorController.getAllProfessor);
 router.get("/search",professorController.getProfessorByCin);
 router.patch("/:id_professor",professorController.updateProfessor);
-router.delete("/delete/:id_professor",professorController.deleteProfessor);
+router.delete("/delete/:id_professor", upload.single('image'), professorController.deleteProfessor);
 router.get("/total",professorController.getTotalProfessors)
 router.get("/class",professorController.getProfessorsByClass)
 router.get("/sector",professorController.getProfessorsBySector)
