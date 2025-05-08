@@ -35,31 +35,27 @@
   
           <!-- Level + Field -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label class="font-semibold">Year of Studies*</label>
-              <select v-model="form.level"
-                class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
-                <option disabled value="">-- select year --</option>
-                <option>AP1</option>
-                <option>AP2</option>
-                <option>CI1</option>
-                <option>CI2</option>
-                <option>CI3</option>
-              </select>
-            </div>
-            <div>
-              <label class="font-semibold">Field*</label>
-              <select v-model="form.field"
-                class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
-                <option disabled value="">-- select field --</option>
-                <option>GINF</option>
-                <option>GSEA</option>
-                <option>CYS</option>
-                <option>GSR</option>
-                <option>GINL</option>
-              </select>
-            </div>
+          <div>
+            <label class="font-semibold">Year of Studies*</label>
+            <select v-model="form.level"
+              class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+              <option disabled value="">-- Select --</option>
+              <option>AP1</option>
+              <option>AP2</option>
+              <option>CI1</option>
+              <option>CI2</option>
+              <option>CI3</option>
+            </select>
           </div>
+          <div>
+            <label class="font-semibold">Field*</label>
+            <select v-model="form.field" :disabled="availableFields.length === 0"
+              class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+              <option disabled value="">-- select field --</option>
+              <option v-for="field in availableFields" :key="field">{{ field }}</option>
+            </select>
+          </div>
+        </div>
   
           <!-- Admin Notes -->
           <div>
@@ -124,7 +120,7 @@
   
 
  <script setup>
-import { ref , onMounted } from 'vue'
+import { ref , onMounted , computed } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router';
 import { useRoute } from 'vue-router';
@@ -134,6 +130,25 @@ const route = useRoute()
 
 
 const isOpen = ref(true)
+
+
+
+
+
+const fieldsByYear = {
+  AP: ['TD1', 'TD2', 'TD3'],
+  CI: ['GINF', 'GSEA', 'CYS', 'GSR', 'GINL']
+}
+
+const availableFields = computed(() => {
+  if (form.value.level.startsWith('AP')) {
+    return fieldsByYear.AP
+  } else if (form.value.level.startsWith('CI')) {
+    return fieldsByYear.CI
+  }
+  return []
+})
+
 
 // Formulaire
 const form = ref({
@@ -212,11 +227,12 @@ const submitForm = async () => {
   }
 }
 
+//members
 const members = ref([])
 
 const fetchMembers = async () => {
   try {
-    const response = await axios.get('http://localhost:3001/members')
+    const response = await axios.get('http://localhost:3001/Members')
     members.value = response.data
   } catch (error) {
     console.error('Erreur lors de la récupération des membres:', error)

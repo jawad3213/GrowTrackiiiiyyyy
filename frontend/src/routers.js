@@ -29,12 +29,13 @@ import Evaluation from "./components/Evaluation.vue";
 import Personalized from "./components/Personalized.vue";
 import Solution from "./components/Solution.vue";
 import DeleteStudent from "./components/DeleteStudent.vue";
-
 import SignalEvaluationModal from "./components/SignalEvaluationModal.vue";
-
 import DashboardProf from "./components/DashboardProf.vue";
+
 import ClassesEval from "./components/MenuProf/ClassesEval.vue";
 import ClassesSignal from "./components/MenuProf/signal/ClassesSignal.vue";
+
+
 import HistoriqueEval from "./components/MenuProf/HistoriqueEval.vue";
 import HistoriqueSignal from "./components/MenuProf/signal/HistoriqueSignal.vue";
 import ProjectMang from "./components/MenuProf/ProjectMang.vue";
@@ -46,6 +47,14 @@ import NewSignal from "./components/MenuProf/signal/NewSignal.vue";
 import ViewHistory from "./components/MenuProf/signal/ViewHistory.vue";
 import SolutionSignal from "./components/MenuProf/signal/SolutionSignal.vue";
 import SolutionErrror from "./components/MenuProf/signal/SolutionErrror.vue";
+
+import ChooseSkills from "./components/MenuProf/ClassesEval/ChooseSkills.vue";
+import SkillsChoosen from "./components/MenuProf/ClassesEval/SkillsChoosen.vue";
+import courseEvaluation from "./components/MenuProf/ClassesEval/courseEvaluation.vue";
+import EndEval from "./components/MenuProf/ClassesEval/EndEval.vue";
+import Thanku from "./components/MenuProf/ClassesEval/Thanku.vue";
+
+
 
 const routes = [
     {
@@ -258,6 +267,7 @@ const routes = [
         path : "/AddMembers"
     },
     {
+
         name : "NewSignal",
         component : NewSignal,
         path : "/newsignal"
@@ -276,6 +286,32 @@ const routes = [
         name : "SolutionError",
         component : SolutionErrror,
         path : "/SolutionError"
+    },
+
+    {
+        name : "ChooseSkills",
+        component : ChooseSkills,
+        path : "/ChooseSkills"
+    },
+    {
+        name : "SkillsChoosen",
+        component : SkillsChoosen,
+        path : "/SkillsChoosen"
+    },
+    {
+        name : "courseEvaluation",
+        component : courseEvaluation,
+        path : "/courseEvaluation"
+    },
+    {
+        name : "EndEval",
+        component : EndEval,
+        path : "/EndEval"
+    },
+    {
+        name : "Thanku",
+        component : Thanku,
+        path : "/Thanku"
     },
 
 
