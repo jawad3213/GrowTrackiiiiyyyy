@@ -3,7 +3,7 @@
     <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-2xl w-full relative">
 
       <!-- Bouton Fermer -->
-      <button @click="router.back()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-2xl font-bold">
+      <button @click="closeModal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-2xl font-bold">
         &times;
       </button>
 
@@ -44,7 +44,7 @@
 
       <!-- Bouton Retour -->
       <div class="mt-8 text-center">
-        <button @click="router.back()" class="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-10 rounded shadow">
+        <button @click="closeModal" class="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-10 rounded shadow">
           Go Back
         </button>
       </div>
@@ -63,6 +63,13 @@ const route = useRoute()
 const studentId = route.query.id
 
 const signalHistory = ref([])
+
+const classId = route.query.classId
+
+  function closeModal() {
+    router.push({ path: '/ClassesSignal', query: { classId } })
+
+  }
 
 const fetchHistory = async () => {
   try {

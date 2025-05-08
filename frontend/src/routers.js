@@ -260,12 +260,12 @@ const routes = [
     {
         name : "NewSignal",
         component : NewSignal,
-        path : "/NewSignal"
+        path : "/newsignal"
     },
     {
         name : "ViewHistory",
         component : ViewHistory,
-        path : "/ViewHistory"
+        path : "/viewhistory"
     },
     {
         name : "SolutionSignal",

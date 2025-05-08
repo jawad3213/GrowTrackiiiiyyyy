@@ -68,8 +68,12 @@
     anonymous: false
   })
   
+ 
+const classId = route.query.classId
+
   function closeModal() {
-    router.back() // revient à la page précédente (ex : /classesignal)
+    router.push({ path: '/ClassesSignal', query: { classId } })
+
   }
   
   async function submitSignal() {

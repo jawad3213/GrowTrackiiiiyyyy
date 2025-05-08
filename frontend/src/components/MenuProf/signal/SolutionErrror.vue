@@ -1,9 +1,9 @@
 <template>
-    <div class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+    <div class="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/60 px-4 py-8">
       <div class="bg-white rounded-xl shadow-2xl px-8 py-10 max-w-md w-full text-center relative border-2 border-purple-300">
         
         <!-- Bouton Fermer -->
-        <button @click="router.back()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl font-bold">
+        <button @click="router.push(`/HistoriqueSignal`)" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl font-bold">
           &times;
         </button>
   

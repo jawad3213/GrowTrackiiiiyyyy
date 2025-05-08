@@ -102,33 +102,36 @@
   </template>
   
   <script setup>
-  import { ref, computed } from 'vue'
-  import axios from 'axios'
-  import { useRouter } from 'vue-router'
-  import ProfLayout from '@/components/layout/ProfLayout.vue'
-  
-  const router = useRouter()
-  const search = ref('')
-  const selectedlevel = ref('AP1')
-  const selectedClass = ref('')
-  const displayedStudents = ref([])
-  
-  const levels = {
-    AP1: ['TD1', 'TD2', 'TD3', 'TD4', 'TD5'],
-    AP2: ['TD1', 'TD2', 'TD3', 'TD4', 'TD5'],
-    CI1: ['GINF1', 'GCYS1', 'GIND1', 'GSTR1'],
-    CI2: ['GINF1', 'GCYS1', 'GIND1', 'GSTR1'],
-    CI3: ['GSTR1', 'GCYS1', 'GIND1', 'GSTR1']
-  }
-  
-  function selectClasse(classe) {
-    selectedClass.value = classe
-    fetchStudents(classe)
-  }
-  
-  async function fetchStudents(classe) {
+import { ref, computed, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import axios from 'axios'
+import ProfLayout from '@/components/layout/ProfLayout.vue'
+
+const router = useRouter()
+const route = useRoute()
+
+const search = ref('')
+const selectedlevel = ref('AP1')
+const selectedClass = ref('')
+const displayedStudents = ref([])
+
+const levels = {
+  AP1: ['TD1', 'TD2', 'TD3', 'TD4', 'TD5'],
+  AP2: ['TD1', 'TD2', 'TD3', 'TD4', 'TD5'],
+  CI1: ['GINF1', 'GCYS1', 'GIND1', 'GSTR1'],
+  CI2: ['GINF1', 'GCYS1', 'GIND1', 'GSTR1'],
+  CI3: ['GSTR1', 'GCYS1', 'GIND1', 'GSTR1']
+}
+
+function selectClasse(classe) {
+  selectedClass.value = classe
+  localStorage.setItem('selectedClass', classe) // ✅ mémorise dans le navigateur
+  fetchStudents(classe)
+}
+
+async function fetchStudents(classe) {
   try {
-    const res = await axios.get(`/api/classes/${classe}/students`)
+    const res = await axios.get(`http://localhost:3001/students?classe=${classe}`)
     console.log("✅ Données reçues :", res.data)
     displayedStudents.value = Array.isArray(res.data) ? res.data : []
   } catch (err) {
@@ -136,29 +139,53 @@
   }
 }
 
-  
-  const filteredDisplayedStudents = computed(() =>
-    displayedStudents.value.filter((s) =>
-      s.fullName.toLowerCase().includes(search.value.toLowerCase())
-    )
+const filteredDisplayedStudents = computed(() =>
+  displayedStudents.value.filter((s) =>
+    s.fullName.toLowerCase().includes(search.value.toLowerCase())
   )
-  
-  const getTotalStudents = (classe) => {
-    return selectedClass.value === classe ? displayedStudents.value.length : 0
+)
+
+const getTotalStudents = (classe) => {
+  return selectedClass.value === classe ? displayedStudents.value.length : 0
+}
+
+const badgeClass = (status) => {
+  return status === 'YES'
+    ? 'text-green-800 bg-green-100 dark:text-green-300 dark:bg-green-900 px-2 py-1 rounded-full text-xs font-semibold'
+    : 'text-orange-800 bg-orange-100 dark:text-orange-300 dark:bg-orange-900 px-2 py-1 rounded-full text-xs font-semibold'
+}
+
+// ✅ Navigation vers NewSignal
+const goToNewSignal = (id) => {
+  router.push({
+    path: '/newsignal',
+    query: {
+      id,
+      classId: selectedClass.value // ✅ on garde la classe actuelle
+    }
+  })
+}
+
+// ✅ Navigation vers ViewHistory
+const goToViewHistory = (id) => {
+  router.push({
+    path: '/viewhistory',
+    query: {
+      id,
+      classId: selectedClass.value
+    }
+  })
+}
+
+// ✅ Lors du chargement de la page, récupérer la dernière classe
+onMounted(() => {
+  const queryClass = route.query.classId
+  const savedClass = localStorage.getItem('selectedClass')
+  const finalClass = queryClass || savedClass
+
+  if (finalClass) {
+    selectedClass.value = finalClass
+    fetchStudents(finalClass)
   }
-  
-  const badgeClass = (status) => {
-    return status === 'YES'
-      ? 'text-green-800 bg-green-100 dark:text-green-300 dark:bg-green-900 px-2 py-1 rounded-full text-xs font-semibold'
-      : 'text-orange-800 bg-orange-100 dark:text-orange-300 dark:bg-orange-900 px-2 py-1 rounded-full text-xs font-semibold'
-  }
-  
-  const goToNewSignal = (id) => {
-    router.push(`/newsignal?id=${id}`)
-  }
-  
-  const goToViewHistory = (id) => {
-    router.push(`/viewhistory?id=${id}`)
-  }
-  </script>
-  
+})
+</script>
