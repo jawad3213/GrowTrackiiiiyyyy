@@ -116,7 +116,7 @@
   import { ref, onMounted, computed } from 'vue'
   import axios from 'axios'
   import { useRouter } from 'vue-router'
-  import ProfLayout from '../layout/ProfLayout.vue'
+  import ProfLayout from '@/components/layout/ProfLayout.vue'
   
   const router = useRouter()
   const search = ref('')
@@ -140,7 +140,7 @@
   }
   
   const goToNewEvaluation = (id) => {
-    router.push(`/newevaluation?id=${id}`)
+    router.push(`/ChooseSkills`)
   }
   
   const goToViewReport = (id) => {

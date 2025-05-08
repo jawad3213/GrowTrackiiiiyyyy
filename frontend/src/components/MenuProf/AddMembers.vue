@@ -69,7 +69,7 @@
       await axios.put(`http://localhost:3001/projects/${groupname.value}`, payload)
     } else {
         // Mode création (CREATE)
-    const response = await axios.post('http://localhost:3001/projects', payload)
+    const response = await axios.post('http://localhost:3001/Members', payload)
     }
     router.push('/AddProject')
 
@@ -85,7 +85,7 @@
 
   if (groupname.value) {
     try {
-      const { data } = await axios.get(`http://localhost:3001/projects/${groupname.value}`)
+      const { data } = await axios.post(`http://localhost:3001/Members`)
       members.value = data
     } catch (error) {
       console.error('Erreur de chargement du projet à éditer :', error)

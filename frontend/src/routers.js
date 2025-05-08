@@ -29,11 +29,9 @@ import Evaluation from "./components/Evaluation.vue";
 import Personalized from "./components/Personalized.vue";
 import Solution from "./components/Solution.vue";
 import DeleteStudent from "./components/DeleteStudent.vue";
-
 import SignalEvaluationModal from "./components/SignalEvaluationModal.vue";
-
 import DashboardProf from "./components/DashboardProf.vue";
-import ClassesEval from "./components/MenuProf/ClassesEval.vue";
+import ClassesEval from "./components/MenuProf/ClassesEval/ClassesEval.vue";
 import ClassesSignal from "./components/MenuProf/ClassesSignal.vue";
 import HistoriqueEval from "./components/MenuProf/HistoriqueEval.vue";
 import HistoriqueSignal from "./components/MenuProf/HistoriqueSignal.vue";
@@ -42,6 +40,11 @@ import Rapport from "./components/MenuProf/Rapport.vue";
 import Institution from "./components/MenuProf/Institution.vue";
 import AddProject from "./components/MenuProf/AddProject.vue";
 import AddMembers from "./components/MenuProf/AddMembers.vue";
+import ChooseSkills from "./components/MenuProf/ClassesEval/ChooseSkills.vue";
+import SkillsChoosen from "./components/MenuProf/ClassesEval/SkillsChoosen.vue";
+import courseEvaluation from "./components/MenuProf/ClassesEval/courseEvaluation.vue";
+import EndEval from "./components/MenuProf/ClassesEval/EndEval.vue";
+import Thanku from "./components/MenuProf/ClassesEval/Thanku.vue";
 
 
 const routes = [
@@ -253,6 +256,31 @@ const routes = [
         name : "AddMembers",
         component : AddMembers,
         path : "/AddMembers"
+    },
+    {
+        name : "ChooseSkills",
+        component : ChooseSkills,
+        path : "/ChooseSkills"
+    },
+    {
+        name : "SkillsChoosen",
+        component : SkillsChoosen,
+        path : "/SkillsChoosen"
+    },
+    {
+        name : "courseEvaluation",
+        component : courseEvaluation,
+        path : "/courseEvaluation"
+    },
+    {
+        name : "EndEval",
+        component : EndEval,
+        path : "/EndEval"
+    },
+    {
+        name : "Thanku",
+        component : Thanku,
+        path : "/Thanku"
     },
 
 
