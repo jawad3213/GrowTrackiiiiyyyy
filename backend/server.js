@@ -31,7 +31,16 @@ const { verifyResetToken }=require('./middlewares/VerifyToken')
 
 app.post('/api/resetpass',validate(authRules.Password),verifyResetToken, ResetPassEmail);
 
-
+/*
 app.listen(PORT, () => {
     console.log(`Server Running on http://localhost:${PORT}`);
 });
+*/
+
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`Server Running on http://localhost:${PORT}`);
+    });
+}
+
+module.exports = app;

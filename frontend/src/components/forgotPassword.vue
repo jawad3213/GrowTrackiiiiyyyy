@@ -64,7 +64,7 @@ async function forgot() {
 };
 
 onMounted(() => {
-    if(store. isAuthenticated){ //à répeter
+    if(store.isAuthenticated){ //à répeter
         router.push('/');
     }
     store.Clearstatus();

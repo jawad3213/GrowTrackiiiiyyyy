@@ -5,16 +5,17 @@ require('dotenv').config();
 const bcrypt = require('bcrypt');
 const PORT = process.env.PORT;
 const nodemailer = require('nodemailer');
-const limiter = require('../middlewares/Limiter')
+const {authlimiter} = require('../middlewares/Limiter')
 
 
 exports.Login =
+
 async (req , res) =>{
   const {password, email} = req.body;
   try {
       const user = await authModel.LoginModel(email, password);
       if(user){
-      limiter.resetKey(req.ip);
+      authlimiter.resetKey(req.ip);
       const Access_Token = JWT.sign(
           { id: user.id_member, role: user.role, fullname: user.fullname },
           process.env.ACCESS_SECRET,
@@ -99,7 +100,7 @@ exports.Logout=(req, res)=>{
     }
 }
 
-const transporter = nodemailer.createTransport({
+/*const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
       user: process.env.EMAIL_USER, 
@@ -112,9 +113,6 @@ exports.ResetPass =
         const {email} = req.body;
         try {
         const user = await authModel.FindUserByEmail(email);
-/*console.log(user);
-console.log(user.id);*/
-
             if(!user) {return res.status(400).json({ message: "User not found with this email ❌" });}
             else {
                 const Reset_Token = JWT.sign(
@@ -149,6 +147,54 @@ console.log(user.id);*/
             return res.status(500).json({message: "Server Error, Please try again later!"});
         }
     }
+*/
+exports.transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER, 
+    pass: process.env.EMAIL_PASS 
+  }
+});
+
+exports.ResetPass = 
+  async (req,res)=>{
+      const {email} = req.body;
+      try {
+      const user = await authModel.FindUserByEmail(email);
+          if(!user) {return res.status(400).json({ message: "User not found with this email ❌" });}
+          else {
+              const Reset_Token = JWT.sign(
+                  { id: user.id_member},
+                  process.env.RESET_SECRET,
+                  { expiresIn: '15m'})
+          
+                  const resetLink = `http://localhost:5173/resetpass?token=${Reset_Token}`;
+                  const mailOptions = {
+              from: process.env.EMAIL_USER,
+              to: email,
+              subject: "Password Reset Request 🔒",
+              html: `
+                <h2>Password Reset</h2>
+                <p>Click the link below to reset your password:</p>
+                <a href="${resetLink}">Reset My Password</a>
+                <p>This link will expire in 15 minutes.</p>
+              `
+            };
+            
+            const sent = await exports.transporter.sendMail(mailOptions);
+            
+            if (sent) {
+              return res.status(200).json({
+                message: "A password reset email has been sent. Please check your inbox or spam folder ✅",
+              });
+            }
+      }
+      }
+       catch (error) {
+          console.log(error);
+          return res.status(500).json({message: "Server Error, Please try again later!"});
+      }
+  }
 
 exports.ResetPassEmail= 
     async (req,res)=>{
@@ -164,7 +210,7 @@ exports.ResetPassEmail=
         }
         } catch (error) {
             console.error(error);
-            return res.status(500).json({ message: "Interne Servel Error " });
+            return res.status(500).json({ message: "Internal Server Error " });
         }
     }
 
