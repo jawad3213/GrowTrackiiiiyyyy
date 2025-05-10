@@ -32,7 +32,7 @@ jobs:
 
       - name: Run Frontend Tests
         working-directory: ./frontend
-        run: npm test  
+        run: npm cypress  
 
   build-and-push:
     name: Build & Push Docker Images
