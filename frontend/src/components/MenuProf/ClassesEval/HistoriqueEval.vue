@@ -58,7 +58,7 @@
                   <td class="px-4 py-2">{{ evaluation.type }}</td>
                   <td class="px-4 py-2">{{ evaluation.submittedIn }}</td>
                   
-                  <td class="p-3 text-purple-600 hover:underline cursor-pointer" @click="goToViewReport(evaluation.id)">View Report →</td>
+                  <td class="p-3 text-purple-600 hover:underline cursor-pointer" @click="goToViewReport(evaluation.id)">View evaluation →</td>
                 </tr>
               </tbody>
             </table>
@@ -72,7 +72,7 @@
   <script setup>
   import { ref, onMounted } from 'vue'
   import axios from 'axios'
-  import AdminLayout from '../layout/ProfLayout.vue'
+  import AdminLayout from '@/components/layout/ProfLayout.vue'
   import { useRouter } from 'vue-router'
   
   const evaluations = ref([])
@@ -90,7 +90,8 @@
   }
 
   const goToViewReport = (id) => {
-    router.push(`/viewreport?id=${id}`)
+    //router.push(`/viewreport?id=${id}`)
+    router.push('/ViewEval')
   }
   
   onMounted(fetchEvaluations)

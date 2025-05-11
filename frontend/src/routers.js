@@ -32,11 +32,11 @@ import DeleteStudent from "./components/DeleteStudent.vue";
 import SignalEvaluationModal from "./components/SignalEvaluationModal.vue";
 import DashboardProf from "./components/DashboardProf.vue";
 
-import ClassesEval from "./components/MenuProf/ClassesEval.vue";
+import ClassesEval from "./components/MenuProf/ClassesEval/ClassesEval.vue";
 import ClassesSignal from "./components/MenuProf/signal/ClassesSignal.vue";
 
 
-import HistoriqueEval from "./components/MenuProf/HistoriqueEval.vue";
+import HistoriqueEval from "./components/MenuProf/ClassesEval/HistoriqueEval.vue";
 import HistoriqueSignal from "./components/MenuProf/signal/HistoriqueSignal.vue";
 import ProjectMang from "./components/MenuProf/ProjectMang.vue";
 import Rapport from "./components/MenuProf/Rapport.vue";
@@ -53,7 +53,7 @@ import SkillsChoosen from "./components/MenuProf/ClassesEval/SkillsChoosen.vue";
 import courseEvaluation from "./components/MenuProf/ClassesEval/courseEvaluation.vue";
 import EndEval from "./components/MenuProf/ClassesEval/EndEval.vue";
 import Thanku from "./components/MenuProf/ClassesEval/Thanku.vue";
-
+import ViewEval from "./components/MenuProf/ClassesEval/ViewEval.vue";
 
 
 const routes = [
@@ -312,6 +312,11 @@ const routes = [
         name : "Thanku",
         component : Thanku,
         path : "/Thanku"
+    },
+    {
+        name : "ViewEval",
+        component : ViewEval,
+        path : "/ViewEval"
     },
 
 
