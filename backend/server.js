@@ -20,7 +20,7 @@ const limiter = rateLimit({
 });
 
 const corsOptions = {
-    origin:["http://localhost:3000", "http://localhost:5173"],
+    origin:["http://localhost:3000", "http://localhost:5173","https://frontend-production-665b.up.railway.app"],
     credentials: true
 }
 
