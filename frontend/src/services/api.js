@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: 'http://localhost:3000', 
+  baseURL: 'https://frontend-production-665b.up.railway.app/', 
   withCredentials: true 
 })
 
