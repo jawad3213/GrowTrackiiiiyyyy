@@ -35,17 +35,16 @@ const app  = express();
 app.use(express.json());
 app.use(cookieParser());
 
-/* ────────────── CORS (mise à jour) ────────────── */
+/* ────────────── CORS ────────────── */
 const whitelist = [
   'https://frontend-production-665b.up.railway.app',
-  /^http:\/\/localhost(:\d+)?$/,        // localhost + n’importe quel port
+  /^http:\/\/localhost(:\d+)?$/,       // localhost + n’importe quel port
   /^http:\/\/127\.0\.0\.1(:\d+)?$/
 ];
 
 const corsOptions = {
   origin(origin, cb) {
-    if (!origin) return cb(null, true); // requêtes serveur ou Postman
-
+    if (!origin) return cb(null, true);          // requêtes serveur‑à‑serveur ou Postman
     const ok = whitelist.some(rule =>
       typeof rule === 'string' ? rule === origin : rule.test(origin)
     );
@@ -57,12 +56,11 @@ const corsOptions = {
   optionsSuccessStatus: 204
 };
 
-app.use(cors(corsOptions));
-app.options('/*', cors(corsOptions));   // pré‑flight global (Express 5)
+app.use(cors(corsOptions));          // gère aussi les requêtes OPTIONS
 
 /* ────────────── Rate‑limit ────────────── */
 const limiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 60 min
+  windowMs: 60 * 60 * 1000, // 60 min
   max: 150,                 // 150 requêtes / IP
   standardHeaders: true,
   legacyHeaders: false,
