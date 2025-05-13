@@ -36,27 +36,30 @@ app.use(express.json());
 app.use(cookieParser());
 
 /* ────────────── CORS ────────────── */
+/* ────────────── CORS ────────────── */
 const whitelist = [
-  'https://frontend-production-665b.up.railway.app',
-  /^http:\/\/localhost(:\d+)?$/,       // localhost + n’importe quel port
-  /^http:\/\/127\.0\.0\.1(:\d+)?$/
-];
-
-const corsOptions = {
-  origin(origin, cb) {
-    if (!origin) return cb(null, true);          // requêtes serveur‑à‑serveur ou Postman
-    const ok = whitelist.some(rule =>
-      typeof rule === 'string' ? rule === origin : rule.test(origin)
-    );
-    cb(ok ? null : new Error('Not allowed by CORS'), ok);
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  optionsSuccessStatus: 204
-};
-
-app.use(cors(corsOptions));          // gère aussi les requêtes OPTIONS
+    'https://frontend-production-665b.up.railway.app',
+    /^http:\/\/localhost(:\d+)?$/,
+    /^http:\/\/127\.0\.0\.1(:\d+)?$/
+  ];
+  
+  const corsOptions = {
+    origin(origin, cb) {
+      if (!origin) return cb(null, true);            // appels serveur → serveur
+      const ok = whitelist.some(r =>
+        typeof r === 'string' ? r === origin : r.test(origin)
+      );
+      cb(ok ? null : new Error('Not allowed by CORS'), ok);
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    optionsSuccessStatus: 204
+  };
+  
+  app.use(cors(corsOptions));
+  app.options('*', cors(corsOptions));   // ← pré‑flight global
+  
 
 /* ────────────── Rate‑limit ────────────── */
 const limiter = rateLimit({
