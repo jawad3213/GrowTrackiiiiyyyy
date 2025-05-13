@@ -24,12 +24,6 @@ import AddField from "./components/AddField.vue";
 import AddProfessorModal from "./components/AddProfessorModal.vue";
 import AddSkill from "./components/AddSkill.vue";
 import AddStudentModal from "./components/AddStudentModal.vue";
-import dashboard from "./components/dashboard.vue";
-import Calendar from "./components/Others/Calendar.vue";
-import UserProfile from "./components/Others/UserProfile.vue";
-import GlobalOverview from "./components/Dash1/GlobalOverview.vue";
-import Signals from "./components/Dash1/Signals.vue";
-import Coach from "./components/Dash1/Coach.vue";
 import AddSupervisorModal from "./components/AddSupervisorModal.vue";
 import Evaluation from "./components/Evaluation.vue";
 import Personalized from "./components/Personalized.vue";
@@ -37,14 +31,14 @@ import AddSignal from "./components/AddSignal.vue";
 import Solution from "./components/Solution.vue";
 import ListeStudent from "./components/Formulaire/ListeStudent.vue";
 import DeleteStudent from "./components/DeleteStudent.vue";
-import api from "./services/api";
 
 
 const routes = [
     {
         name: 'LoadingPage',
         component: LoadingPage,
-        path: '/'
+        path: '/',
+        meta: { home: true }
     },
     {
         name: 'AboutUs',
@@ -69,7 +63,7 @@ const routes = [
     {
         name: 'Login',
         component: Login,
-        path: '/Login'
+        path: '/Login',
     },
     {
         name: "restepass",
@@ -207,18 +201,24 @@ const routes = [
     
 ];
 
+
+
 const router =createRouter({
     history: createWebHistory(),
     routes
 });
 
+import {useAuthStore} from '@/stores/auth'
+
 router.beforeEach(async (to, from, next)=>{
-    if (to.meta.requiresAuth) {
+    const auth = useAuthStore();
+    if (to?.meta.requiresAuth){
         try {
-          await api.get('/api/auth/check',{ withCredentials: true });
-          next(); // Token OK
+          await auth.checkAuth();
+          next();
         } catch (error) {
-          next('/login'); // Token not OK
+        console.log('error de check', error)
+          next('/Login'); // Token not OK
         }
       } else {
         next();

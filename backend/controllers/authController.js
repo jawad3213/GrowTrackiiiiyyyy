@@ -214,10 +214,20 @@ exports.ResetPassEmail=
         }
     }
 
+    /*
 exports.check = (req,res)=>{
   if (req.user) {
     return res.status(200).json({ message: 'Authenticated' });
   } else {
     return res.status(401).json({ message: 'Not authenticated' });
+  }
+}
+  */
+
+exports.check = (req,res)=>{
+  if (req.user) {
+    return res.status(200).json({ valid: true, role : req.user.role , message: 'Authenticated' });
+  } else {
+    return res.status(401).json({valid: false, role : null, message: 'Not authenticated' });
   }
 }

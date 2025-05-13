@@ -3,7 +3,8 @@ const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 require('dotenv').config();
 const PORT = process.env.PORT;
-const {ResetPassEmail} = require('./controllers/authController');
+//const {ResetPassEmail} = require('./controllers/authController');
+const {ResetPassEmail, check} = require('./controllers/authController');
 const cors = require('cors');
 const {ServerLimiter} = require('../backend/middlewares/Limiter');
 
@@ -42,5 +43,8 @@ if (require.main === module) {
         console.log(`Server Running on http://localhost:${PORT}`);
     });
 }
+
+
+app.get('/api/validate-reset-token', verifyResetToken, check)
 
 module.exports = app;

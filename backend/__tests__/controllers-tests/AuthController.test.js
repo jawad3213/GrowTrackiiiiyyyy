@@ -356,7 +356,7 @@ describe('Auth Controller Tests', () => {
   });
 
   describe('check', () => {
-    test('should return 200 when user is authenticated', () => {
+   /*test('should return 200 when user is authenticated', () => {
       // Arrange
       req.user = { id: 1 };
 
@@ -378,6 +378,79 @@ describe('Auth Controller Tests', () => {
       // Assert
       expect(res.status).toHaveBeenCalledWith(401);
       expect(res.json).toHaveBeenCalledWith({ message: 'Not authenticated' });
+    });*/
+
+
+describe('Authentication Controller - check function', () => {
+  test('should return 200 status with valid:true and role when user is authenticated', () => {
+    // Arrange
+    req.user = {
+      id: 1,
+      role: 'admin'
+    };
+
+    // Act
+    authController.check(req, res);
+
+    // Assert
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      valid: true,
+      role: 'admin',
+      message: 'Authenticated'
     });
+  });
+
+  test('should return 401 status with valid:false and null role when user is not authenticated', () => {
+    // Arrange
+    req.user = undefined;
+
+    // Act
+    authController.check(req, res);
+
+    // Assert
+    expect(res.status).toHaveBeenCalledWith(401);
+    expect(res.json).toHaveBeenCalledWith({
+      valid: false,
+      role: null,
+      message: 'Not authenticated'
+    });
+  });
+
+  test('should handle different user roles correctly', () => {
+    // Arrange
+    req.user = {
+      id: 2,
+      role: 'user'
+    };
+
+    // Act
+    authController.check(req, res);
+
+    // Assert
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      valid: true,
+      role: 'user',
+      message: 'Authenticated'
+    });
+  });
+
+  test('should treat empty user object as authenticated', () => {
+    // Arrange
+    req.user = {};
+
+    // Act
+    authController.check(req, res);
+
+    // Assert
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      valid: true,
+      role: undefined,
+      message: 'Authenticated'
+    });
+  });
+});
   });
 });

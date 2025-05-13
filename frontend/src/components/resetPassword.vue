@@ -18,7 +18,7 @@
       </div>
       <!-- Formulaire -->
       <form>
-        <div class="grid gap-y-4 text-left">
+        <div v-if="store.validtoken" class="grid gap-y-4 text-left">
 
           <!-- Nouveau mot de passe -->
           <div>
@@ -30,6 +30,7 @@
               class="w-full py-3 px-4 border-2 border-gray-200 rounded-md text-sm focus:border-purple-500 focus:ring-2 focus:ring-purple-300 outline-none"
               required
             />
+            <span class="text-red-500 text-sm">{{ formStore.errors.newpassword }}</span>
           </div>
 
           <!-- Confirmation mot de passe -->
@@ -65,27 +66,77 @@
 import { ref , onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
+import { useFormStore } from '@/stores/form'
+import * as yup from 'yup'
+
+  
+const disallowedPasswords = [
+  "password",
+  "12345678",
+  "qwertyui",
+  "abcdefgh",
+  "87654321"
+];
+
+const passwordSchema = yup.object({
+  newpassword: yup
+  .string()
+  .required('The password is required')
+  .min(8, 'The password must have at least 8 characters')
+  .max(64, 'The password must be at most 64 characters')
+  .test(
+    'not-in-disallowed',
+    'The password is weak.',
+    value => !disallowedPasswords.includes(value?.toLowerCase())
+  )
+  .matches(
+    /^(?=.[A-Z])(?=.\d).+$/,
+    'The password must contain at least one uppercase letter and one number.'
+  )
+})
 
 const store = useAuthStore()
+const formStore = useFormStore()
 const newpassword = ref('')
 const confirmpasssword = ref('')     
 const router = useRouter()
 const route = useRoute() //pour recupérer  de l'url 
-const token = route.query.token //pour recupérer le token de de l'url 
+const token = route.query.token || ''; //pour recupérer le token de de l'url 
+
+async function checktoken(token){
+  try {
+    await store.CheckResetToken(token);
+  } catch (error) {
+    console.log('Invalide link')
+  }
+}checktoken(token);
 
 function match(){
-  return newpassword.value === confirmpasssword.value;
+  if(newpassword.value !== confirmpasssword.value){
+  store.error = 'Passwords do not match';
+  confirmpasssword.value = '';
+  return false;
+}return true;
 }
-  async function resetPass() {
-  if (!match()) {
-    store.errorMsg = "Passwords do not match"
-    confirmpasssword.value = ''
-    return
+
+
+
+async function resetPass() {
+  try {
+    const valid = await formStore.validateWithSchema({newpassword: newpassword.value}, passwordSchema);
+    if(valid){
+    if (match()) {
+    await store.resetPassword(newpassword.value , token);
+    if (!store.errorMsg) {
+      formStore.clearStatus();
+      router.push('/check');
+    }
   }
-  await store.resetPassword(newpassword.value , token) 
-  if (!store.errorMsg) {
-    router.push('/check')
+}
+  } catch (error) {
+    console.error('An Error occured while submiting the password, Please Try again', error)
   }
+  
 }
 onMounted(() => {
     if(store.isAuthenticated){ //à répeter

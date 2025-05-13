@@ -102,7 +102,7 @@
       alert('Notification sent!')
     } catch (err) {
         console.error('Notification error:', err)
-        errorApi = err.response?.data?.message ||"error while sending"
+        errorApi.value = err.response?.data?.message ||"error while sending"
     }
   }
 
