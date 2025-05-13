@@ -45,7 +45,7 @@ const corsOptions = {
   ],
   credentials: true
 };
-app.use(cors(corsOptions));
+app.use(cors(corsOptions)); 
 
 const limiter = rateLimit({
   windowMs: 60 * 60 * 1000,    // 60 min

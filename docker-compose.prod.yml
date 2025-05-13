@@ -31,7 +31,7 @@ services:
 
   frontend:
     image: nour537/growtrack-frontend:latest
-    container_name: growtrack_frontend
+    container_name: growtrack_frontendclea
     environment:
       - NODE_ENV=production
       # VITE_API_URL doit pointer vers l’URL réelle du backend en prod :
