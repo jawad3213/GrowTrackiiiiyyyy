@@ -54,7 +54,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));                    // requêtes simples
-app.options('/api/:path*', cors(corsOptions)); // pré‑flights sur toute l’API
+app.options('/api/*', cors(corsOptions)); // pré‑flights sur toute l’API
 
 /* ────────────── Rate‑limit ────────────── */
 const limiter = rateLimit({
