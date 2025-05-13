@@ -10,14 +10,13 @@
 
 require('dotenv').config();
 
-const express = require('express');
-const cookieParser = require('cookie-parser');
-const cors = require('cors');
-const rateLimit = require('express-rate-limit');
+const express       = require('express');
+const cookieParser  = require('cookie-parser');
+const cors          = require('cors');
+const rateLimit     = require('express-rate-limit');
 
-const authController = require('./controllers/authController');
-const verify        = require('./middlewares/VerifyToken');
-
+const authController       = require('./controllers/authController');
+const verify               = require('./middlewares/VerifyToken');
 const AuthRoute            = require('./routes/AuthRoute');
 const hashRoute            = require('./routes/HashRoute');
 const DashAdminRoute       = require('./routes/adminRoutes/AdminDashboardRoute');
@@ -36,24 +35,39 @@ const app  = express();
 app.use(express.json());
 app.use(cookieParser());
 
-const corsOptions = {
-  origin: [
-    'http://localhost:3000',
-    'http://localhost:5173',
-    'https://frontend-production-665b.up.railway.app',
-    'http://localhost',
-  ],
-  credentials: true
-};
-app.use(cors(corsOptions));
+/* ────────────── CORS (mise à jour) ────────────── */
+const whitelist = [
+  'https://frontend-production-665b.up.railway.app',
+  /^http:\/\/localhost(:\d+)?$/,        // localhost + n’importe quel port
+  /^http:\/\/127\.0\.0\.1(:\d+)?$/
+];
 
+const corsOptions = {
+  origin(origin, cb) {
+    if (!origin) return cb(null, true); // requêtes serveur ou Postman
+
+    const ok = whitelist.some(rule =>
+      typeof rule === 'string' ? rule === origin : rule.test(origin)
+    );
+    cb(ok ? null : new Error('Not allowed by CORS'), ok);
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  optionsSuccessStatus: 204
+};
+
+app.use(cors(corsOptions));
+app.options('/*', cors(corsOptions));   // pré‑flight global (Express 5)
+
+/* ────────────── Rate‑limit ────────────── */
 const limiter = rateLimit({
-  windowMs: 60 * 60 * 1000,    // 60 min
-  max: 150,                    // 150 requêtes / IP / heure
+  windowMs: 60 * 60 * 1000, // 60 min
+  max: 150,                 // 150 requêtes / IP
   standardHeaders: true,
   legacyHeaders: false,
   message: {
-    status: 429,
+    status : 429,
     message: 'Too many requests, please try again after 60 minutes.'
   }
 });
@@ -71,7 +85,7 @@ app.use('/api/GlobalOverView', EvaluationAdminRoute);
 app.use('/api/contactus',      contactusRoute);
 
 app.get('/testbackend', (req, res) => {
-  res.send('connexion reussie to backend !!');
+  res.send('connexion reussie to backend !!');
 });
 
 /* ──────────────────────── Démarrage ────────────────────────── */
@@ -82,4 +96,4 @@ if (process.env.NODE_ENV !== 'test') {
   });
 }
 
-module.exports = app;   // ← indispensable pour Supertest/Jest
+module.exports = app; // indispensable pour Supertest / Jest
