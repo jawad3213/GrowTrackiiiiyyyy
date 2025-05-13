@@ -2,9 +2,9 @@ name: CI/CD for Growtrack
 
 on:
   push:
-    branches: [dev]
+    branches: [CISetup]
   pull_request:
-    branches: [dev]
+    branches: [CISetup]
 
 jobs:
   test:
