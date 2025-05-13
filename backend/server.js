@@ -41,9 +41,9 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 
-app.use(limiter);
+// app.use(limiter);
 
-app.post('/api/resetpass',verify.verifyToken, authController.ResetPassEmail);
+// app.post('/api/resetpass',verify.verifyToken, authController.ResetPassEmail);
 
 //route hachage
 const hashRoute = require("./routes/HashRoute");
@@ -55,8 +55,8 @@ const DashAdminRoute = require("./routes/adminRoutes/AdminDashboardRoute");
 app.use("/api/DashAdmin", DashAdminRoute)
 
 //PROFILE
-const ProfileAdminRoute = require("./routes/adminRoutes/AdminProfile");
-app.use("/api/ProfileAdmin", ProfileAdminRoute)
+// const ProfileAdminRoute = require("./routes/adminRoutes/AdminProfile");
+// app.use("/api/ProfileAdmin", ProfileAdminRoute)
 
 //Global Over View
 const EvaluationAdminRoute = require("./routes/adminRoutes/GlobalOverView_Route");
@@ -69,7 +69,7 @@ app.use("/api/contactus", contactus)
 
 // Importation des routes
 const AuthRoute = require("./routes/AuthRoute");
-app.use("/auth", AuthRoute);
+app.use("/api/auth", AuthRoute);
 
 
 const studentRoute = require("./routes/adminRoutes/studentRoute");
@@ -115,10 +115,10 @@ app.listen(PORT, () => {
     console.log(`✅ Server Running on http://localhost:${PORT}`);
 });
 
-const pool = require('./config/db');
+// const pool = require('./config/db');
 
-app.get('/testbackend',(req,res)=>{
-    res.send('connexion reussie to backend !! ');
-})
+// app.get('/testbackend',(req,res)=>{
+//     res.send('connexion reussie to backend !! ');
+// })
 
 
