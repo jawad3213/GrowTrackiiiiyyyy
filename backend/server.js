@@ -1,10 +1,7 @@
 /**
  * server.js – Growtrack API
  * -------------------------------------------------------------
- * - Exporte l'instance Express pour les tests (Supertest)
- * - Ne démarre le serveur que si NODE_ENV !== 'test'
- * - Limiteur de requêtes & CORS avant les routes
- * - Toutes les routes regroupées par domaine
+ * CORS & rate‑limit avant les routes | exporté pour les tests
  * -------------------------------------------------------------
  */
 
@@ -24,7 +21,7 @@ const ProfileAdminRoute    = require('./routes/adminRoutes/AdminProfile');
 const EvaluationAdminRoute = require('./routes/adminRoutes/GlobalOverView_Route');
 const contactusRoute       = require('./routes/contactusRoute');
 
-// Initialise la connexion PG (side‑effect utile à tout le projet)
+// Connexion PG (side‑effect)
 require('./config/db');
 
 const PORT = process.env.PORT || 3000;
@@ -36,41 +33,36 @@ app.use(express.json());
 app.use(cookieParser());
 
 /* ────────────── CORS ────────────── */
-/* ────────────── CORS ────────────── */
 const whitelist = [
-    'https://frontend-production-665b.up.railway.app',
-    /^http:\/\/localhost(:\d+)?$/,
-    /^http:\/\/127\.0\.0\.1(:\d+)?$/
-  ];
-  
-  const corsOptions = {
-    origin(origin, cb) {
-      if (!origin) return cb(null, true);            // appels serveur → serveur
-      const ok = whitelist.some(r =>
-        typeof r === 'string' ? r === origin : r.test(origin)
-      );
-      cb(ok ? null : new Error('Not allowed by CORS'), ok);
-    },
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-    optionsSuccessStatus: 204
-  };
-  
-  app.use(cors(corsOptions));
-  app.options('*', cors(corsOptions));   // ← pré‑flight global
-  
+  'https://frontend-production-665b.up.railway.app',
+  /^http:\/\/localhost(:\d+)?$/,
+  /^http:\/\/127\.0\.0\.1(:\d+)?$/
+];
+
+const corsOptions = {
+  origin(origin, cb) {
+    if (!origin) return cb(null, true);          // appels server‑to‑server
+    const ok = whitelist.some(r =>
+      typeof r === 'string' ? r === origin : r.test(origin)
+    );
+    cb(ok ? null : new Error('Not allowed by CORS'), ok);
+  },
+  credentials: true,
+  methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
+  allowedHeaders: ['Content-Type','Authorization','X-Requested-With'],
+  optionsSuccessStatus: 204
+};
+
+app.use(cors(corsOptions));           // requêtes simples
+app.options('/api/*', cors(corsOptions)); // pré‑flights sur toute l’API
 
 /* ────────────── Rate‑limit ────────────── */
 const limiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 60 min
-  max: 150,                 // 150 requêtes / IP
+  windowMs: 60*60*1000,
+  max      : 150,
   standardHeaders: true,
-  legacyHeaders: false,
-  message: {
-    status : 429,
-    message: 'Too many requests, please try again after 60 minutes.'
-  }
+  legacyHeaders  : false,
+  message: { status: 429, message: 'Too many requests, please try again after 60 minutes.' }
 });
 app.use(limiter);
 
@@ -85,16 +77,12 @@ app.use('/api/ProfileAdmin',   ProfileAdminRoute);
 app.use('/api/GlobalOverView', EvaluationAdminRoute);
 app.use('/api/contactus',      contactusRoute);
 
-app.get('/testbackend', (req, res) => {
-  res.send('connexion reussie to backend !!');
-});
+app.get('/testbackend', (_, res) => res.send('connexion reussie to backend !!'));
 
 /* ──────────────────────── Démarrage ────────────────────────── */
 
 if (process.env.NODE_ENV !== 'test') {
-  app.listen(PORT, () => {
-    console.log(`🚀  Server running on http://localhost:${PORT}`);
-  });
+  app.listen(PORT, () => console.log(`🚀  Server running on http://localhost:${PORT}`));
 }
 
-module.exports = app; // indispensable pour Supertest / Jest
+module.exports = app;   // pour Supertest / Jest
