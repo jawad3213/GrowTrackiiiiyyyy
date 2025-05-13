@@ -21,7 +21,7 @@ const ProfileAdminRoute    = require('./routes/adminRoutes/AdminProfile');
 const EvaluationAdminRoute = require('./routes/adminRoutes/GlobalOverView_Route');
 const contactusRoute       = require('./routes/contactusRoute');
 
-// Connexion PG (side‑effect)
+// Initialise la connexion PG
 require('./config/db');
 
 const PORT = process.env.PORT || 3000;
@@ -41,7 +41,7 @@ const whitelist = [
 
 const corsOptions = {
   origin(origin, cb) {
-    if (!origin) return cb(null, true);          // appels server‑to‑server
+    if (!origin) return cb(null, true);           // appels serveur‑à‑serveur
     const ok = whitelist.some(r =>
       typeof r === 'string' ? r === origin : r.test(origin)
     );
@@ -53,8 +53,8 @@ const corsOptions = {
   optionsSuccessStatus: 204
 };
 
-app.use(cors(corsOptions));           // requêtes simples
-app.options('/api/*', cors(corsOptions)); // pré‑flights sur toute l’API
+app.use(cors(corsOptions));                    // requêtes simples
+app.options('/api/:path*', cors(corsOptions)); // pré‑flights sur toute l’API
 
 /* ────────────── Rate‑limit ────────────── */
 const limiter = rateLimit({
@@ -82,7 +82,9 @@ app.get('/testbackend', (_, res) => res.send('connexion reussie to backend !!'))
 /* ──────────────────────── Démarrage ────────────────────────── */
 
 if (process.env.NODE_ENV !== 'test') {
-  app.listen(PORT, () => console.log(`🚀  Server running on http://localhost:${PORT}`));
+  app.listen(PORT, () =>
+    console.log(`🚀  Server running on http://localhost:${PORT}`)
+  );
 }
 
-module.exports = app;   // pour Supertest / Jest
+module.exports = app;          // indispensable pour Supertest / Jest
