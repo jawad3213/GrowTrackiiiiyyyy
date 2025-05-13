@@ -8,28 +8,17 @@ const verify=require('./middlewares/VerifyToken');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 
-const limiter = rateLimit({
-    windowMs: 60 * 60 * 1000, // 60 minutes
-    max: 150, // 100 requests per ip in the current window
-    message: {
-      status: 429,
-      message: "Too many requests from this IP, please try again after 60 minutes."
-    },
-    standardHeaders: true, 
-    legacyHeaders: false, 
-});
+// Récupération du port depuis le fichier .env
+const PORT = process.env.PORT || 8080;
 
 const corsOptions = {
     origin:["http://localhost:3000", "http://localhost:5173"],
     credentials: true
 }
 
-// Récupération du port depuis le fichier .env
-const PORT = process.env.PORT || 8080;
 
 // Middleware pour parser les cookies
 app.use(cookieParser());
-app.use(cors(corsOptions));
 
 // Ces deux lignes sont utiles pour les routes POST/PUT classiques (JSON ou form-urlencoded)
 // 👉 PAS utilisées par multer, mais ne posent pas de problème pour le reste de l'app
@@ -107,6 +96,16 @@ app.use("/admin/profile", profileRoute);
 
 
 
+
+
+// // Importation des routes
+// const AuthRoute = require("./routes/AuthRoute");
+const dashRoute = require("./routes/profRoutes/dashRoute");
+
+
+// // Montage des routes
+// app.use("/auth", AuthRoute);
+app.use("/prof/dashboard", dashRoute );
 
 
 
