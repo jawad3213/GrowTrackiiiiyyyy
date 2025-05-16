@@ -1,0 +1,61 @@
+version: '3.9'
+
+#######################
+#  NETWORKS & VOLUMES #
+#######################
+networks:
+  growtrack-net:
+    driver: bridge
+
+volumes:
+  certs: {}          # si tu ajoutes un proxy HTTPS plus tard
+  frontend_dist: {}  # optionnel : cache Nginx si build statique
+
+################
+#  SERVICES    #
+################
+services:
+
+  backend:
+    image: nour537/growtrack-backend:latest
+    container_name: growtrack_backend
+    env_file:
+      - ./backend/backend.env         # ← tous tes secrets (JWT, DB, mail…)
+    environment:
+      - NODE_ENV=production
+    ports:
+      - "3000:3000"           # ou expose uniquement en interne si tu passes par un proxy
+    restart: unless-stopped
+    networks:
+      - growtrack-net
+
+  frontend:
+    image: nour537/growtrack-frontend:latest
+    container_name: growtrack_frontendclea
+    environment:
+      - NODE_ENV=production
+      # VITE_API_URL doit pointer vers l’URL réelle du backend en prod :
+      - VITE_API_URL=https://api.growtrack.mon‑domaine.com
+    ports:
+      - "80:5173"             # simple : publie directement sur le port 80
+      # si tu utilises un proxy (Nginx, Traefik) enlève cette ligne
+    restart: unless-stopped
+    networks:
+      - growtrack-net
+
+  # (Option) Reverse‑proxy Nginx pour HTTPS & routing
+  # proxy:
+  #   image: nginx:alpine
+  #   container_name: growtrack_proxy
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf:ro
+  #     - certs:/etc/letsencrypt
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   depends_on:
+  #     - backend
+  #     - frontend
+  #   restart: unless-stopped
+  #   networks:
+  #     - growtrack-net
