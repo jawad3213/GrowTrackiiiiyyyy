@@ -60,11 +60,11 @@ const routes = [
         component: ContactUs,
         path: '/ContactUs'
     },
-    {
-        name: 'Teachers',
-        component: Teachers,
-        path: '/Teachers'
-    },
+    // {
+    //     name: 'Teachers',
+    //     component: Teachers,
+    //     path: '/Teachers'
+    // },
     {
         name: 'Students',
         component: Students,
