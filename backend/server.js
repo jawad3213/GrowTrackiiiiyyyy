@@ -8,17 +8,28 @@ const verify=require('./middlewares/VerifyToken');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 
-// Récupération du port depuis le fichier .env
-const PORT = process.env.PORT || 8080;
+const limiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 60 minutes
+    max: 150, // 100 requests per ip in the current window
+    message: {
+      status: 429,
+      message: "Too many requests from this IP, please try again after 60 minutes."
+    },
+    standardHeaders: true, 
+    legacyHeaders: false, 
+});
 
 const corsOptions = {
     origin:["http://localhost:3000", "http://localhost:5173"],
     credentials: true
 }
 
+// Récupération du port depuis le fichier .env
+const PORT = process.env.PORT || 8080;
 
 // Middleware pour parser les cookies
 app.use(cookieParser());
+app.use(cors(corsOptions));
 
 // Ces deux lignes sont utiles pour les routes POST/PUT classiques (JSON ou form-urlencoded)
 // 👉 PAS utilisées par multer, mais ne posent pas de problème pour le reste de l'app
@@ -30,9 +41,9 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 
-// app.use(limiter);
+app.use(limiter);
 
-// app.post('/api/resetpass',verify.verifyToken, authController.ResetPassEmail);
+//  app.post('/api/resetpass',verify.verifyToken, authController.ResetPassEmail);
 
 //route hachage
 const hashRoute = require("./routes/HashRoute");
@@ -86,6 +97,11 @@ app.use("/admin/signals", signalRoute);
 const profileRoute = require("./routes/adminRoutes/profileRoute");
 app.use("/admin/profile", profileRoute);
 
+const dashprof = require("./routes/profRoutes/dashRoute");
+app.use("/api/dashprof", dashprof);
+
+const dashstudent = require("./routes/studentRoutes/dashRoutes");
+app.use("/student/dashboard", dashstudent);
 
 
 
@@ -98,14 +114,7 @@ app.use("/admin/profile", profileRoute);
 
 
 
-// // Importation des routes
-// const AuthRoute = require("./routes/AuthRoute");
-const dashRoute = require("./routes/profRoutes/dashRoute");
 
-
-// // Montage des routes
-// app.use("/auth", AuthRoute);
-app.use("/prof/dashboard", dashRoute );
 
 
 
