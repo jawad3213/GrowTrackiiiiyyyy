@@ -40,8 +40,8 @@ const corsOptions = {
   origin: [
     "http://localhost:3000",
     "http://localhost:5173",
-    "https://frontend-production-665b.up.railway.app",
     "http://localhost",
+    "https://frontend-production-665b.up.railway.app"
   ],
   credentials: true
 };
