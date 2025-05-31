@@ -132,5 +132,29 @@ async function sendMonitoringNotif() {
     console.error('Notification error:', err)
     errorApi.value = err.response?.data?.message || 'Error while sending'
   }
-}
-</script>
+  
+  function goBack() {
+    router.back()
+  }
+
+    const errors = ref({})
+    const errorApi = ref('null')
+
+    async function sendMonitoringNotif() {
+        const { valid, errors: formErrors } = useFormStore.validateForm(monitor.value, [ 
+        'solutions', 'details', 'reporter', 'user', 'startDate', 'endDate','cin Reporter','cin Reported User'
+    ])
+    errors.value = formErrors
+    if (!valid) return
+
+    try {
+      await api.post('/notifications', monitor.value)
+      alert('Notification sent!')
+    } catch (err) {
+        console.error('Notification error:', err)
+        errorApi.value = err.response?.data?.message ||"error while sending"
+    }
+  }
+ }
+  </script>
+ 

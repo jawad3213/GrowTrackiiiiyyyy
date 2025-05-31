@@ -30,6 +30,7 @@
             placeholder="your@email.com"
             class="w-full px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
           />
+          <span class="error">{{ errors.email }}</span>
         </div>
 
         <!-- Password -->
@@ -50,7 +51,10 @@
               <path d="M2.458 12C3.732 7.943 7.523 5 12 5c2.063 0 3.97.786 5.452 2.048M16.24 16.24C14.758 17.514 12.85 18.3 10.787 18.3 6.31 18.3 2.519 15.357 1.245 11.3a9.963 9.963 0 012.258-3.45" />
             </svg>
           </button>
+          <span class="error">{{ errors.password }}</span>
         </div>
+        
+
 
         <!-- Remember Me & Forgot Password -->
         <div class="flex justify-between items-center mb-6 text-sm">
@@ -92,9 +96,11 @@
 </template>
 
 <script setup>
-import { ref , onMounted} from 'vue'
+import { ref , onMounted, onBeforeMount } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
+import DOMPurify from 'dompurify'
+import * as yup from 'yup'
 
 const store = useAuthStore()
 const router = useRouter()
@@ -104,23 +110,63 @@ const password = ref('')
 const showPassword = ref(false)
 const RememberMe = ref(false)
 
+const errors = ref({})
+
+const schema = yup.object({
+  email: yup
+    .string().trim()
+    .email('Invalid email')
+    .required('Email is required'),
+  password: yup
+    .string().trim()
+    .min(8, 'Password must be at least 8 characters')
+    .required('Password is required'),
+})
+
+const validateForm = async (safeemail, safepassword) => {
+  try {
+    // Reset errors before validation
+    errors.value = {}
+    await schema.validate(
+      {
+        email: safeemail,
+        password: safepassword,
+      },
+      { abortEarly: false }
+    )
+    return true;
+  }catch(err){
+      err.inner.forEach((e) => {
+      errors.value[e.path] = e.message
+    })
+    return false;
+  }
+}
+
 const togglePassword = () => {
   showPassword.value = !showPassword.value
 }
 
 const handlelogin = async () => {
   try {
-    await store.Login(email.value, password.value, RememberMe.value)
+    const safeemail = DOMPurify.sanitize(email.value)
+    const safepassword = DOMPurify.sanitize(password.value)
+    const isValid = await validateForm(safeemail,safepassword);
+    if(isValid){
+    await store.Login(safeemail, safepassword)  
     if (!store.errorMsg) {
       router.push('/dashboard')
     }
+  }
   } catch (err) {
     console.error('Erreur lors de la connexion :', err)
   }
 }
 
+
+
 onMounted(() => {
-    if(store.isAuthenticated){ //à répeter
+  if(store.isAuthenticated){ //à répeter
         router.push('/dashboard');
     }
     store.Clearstatus();
@@ -128,3 +174,9 @@ onMounted(() => {
 
 
 </script>
+<style scoped>
+.error {
+  color: red;
+  font-size: 0.875rem;
+}
+</style>

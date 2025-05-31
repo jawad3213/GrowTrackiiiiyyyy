@@ -48,7 +48,8 @@ const routes = [
     {
         name: 'LoadingPage',
         component: LoadingPage,
-        path: '/'
+        path: '/',
+        meta: { home: true }
     },
     {
         name: 'AboutUs',
@@ -73,7 +74,7 @@ const routes = [
     {
         name: 'Login',
         component: Login,
-        path: '/Login'
+        path: '/Login',
     },
     {
         name: "restepass",
@@ -120,6 +121,7 @@ const routes = [
         name : "dashboard",
         component : dashboard,
         path : "/dashboard",
+        meta: { requiresAuth: true },
     },
     {
         name : "Calendar",
@@ -259,9 +261,28 @@ const routes = [
     
 ];
 
+
+
 const router =createRouter({
     history: createWebHistory(),
     routes
+});
+
+import {useAuthStore} from '@/stores/auth'
+
+router.beforeEach(async (to, from, next)=>{
+    const auth = useAuthStore();
+    if (to?.meta.requiresAuth){
+        try {
+          await auth.checkAuth();
+          next();
+        } catch (error) {
+        console.log('error de check', error)
+          next('/Login'); // Token not OK
+        }
+      } else {
+        next();
+      }
 });
 
 export default router

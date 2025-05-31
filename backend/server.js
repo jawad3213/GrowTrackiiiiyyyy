@@ -1,39 +1,36 @@
 const express = require("express")
-const app = express()
 const cookieParser = require('cookie-parser');
+const helmet = require('helmet');
 require('dotenv').config();
 const PORT = process.env.PORT;
-const authController = require('./controllers/authController');
-const verify=require('./middlewares/VerifyToken');
+//const {ResetPassEmail} = require('./controllers/authController');
+const {ResetPassEmail, check} = require('./controllers/authController');
 const cors = require('cors');
-const rateLimit = require('express-rate-limit');
+const {ServerLimiter} = require('../backend/middlewares/Limiter');
 
-const limiter = rateLimit({
-    windowMs: 60 * 60 * 1000, // 60 minutes
-    max: 150, // 100 requests per ip in the current window
-    message: {
-      status: 429,
-      message: "Too many requests from this IP, please try again after 60 minutes."
-    },
-    standardHeaders: true, 
-    legacyHeaders: false, 
-});
+
 
 const corsOptions = {
     origin:["http://localhost:3000", "http://localhost:5173"],
     credentials: true
 }
 
+const app = express()
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors(corsOptions));
+app.use(helmet({hsts: false})); // Leaves Default options that come with helmet and removes the one that forces https 
 
+// The routes of Authentication
 const AuthRoute = require("./routes/AuthRoute");
 app.use("/api/auth", AuthRoute)
+//Usage of rate limiter for all routes except for the authentication
+app.use(ServerLimiter);
+const authRules = require('./validators/authrules'); // The rules for validation the inputs
+const { validate } = require('./middlewares/validate'); // The middlwares that validates the inputs based on the rules given 
+const { verifyResetToken }=require('./middlewares/VerifyToken')
 
-app.use(limiter);
-
-app.post('/api/resetpass',verify.verifyToken, authController.ResetPassEmail);
+app.post('/api/resetpass',validate(authRules.Password),verifyResetToken, ResetPassEmail);
 
 //route hachage
 const hashRoute = require("./routes/HashRoute");
@@ -63,10 +60,13 @@ app.listen(PORT, () => {
     console.log(`Server Running on http://localhost:${PORT}`);
 });
 
-const pool = require('./config/db');
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`Server Running on http://localhost:${PORT}`);
+    });
+}
 
-app.get('/testbackend',(req,res)=>{
-    res.send('connexion reussie to backend !! ');
-})
 
+app.get('/api/validate-reset-token', verifyResetToken, check)
 
+module.exports = app;

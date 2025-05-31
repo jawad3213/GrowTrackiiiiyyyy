@@ -2,13 +2,14 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import api from '@/services/api'
+import DOMPurify from 'dompurify'
 
 export const useFormStore = defineStore('form', () => {
   // État global partagé
   const loading = ref(false)
   const error = ref(null)
   const success = ref(null)
-
+  const errors = ref({})
   /**
    * Fonction générique pour soumettre un formulaire via POST
    * @param {string} endpoint - URL backend, ex: '/addStudent'
@@ -34,38 +35,47 @@ export const useFormStore = defineStore('form', () => {
     }
   }
 
-  /**
-   * Fonction de validation générique
-   * @param {object} obj - objet à valider (étudiant, skill, etc.)
-   * @param {array} requiredFields - tableau des champs obligatoires
-   * @returns { valid: boolean, errors: object }
-   */
-  function validateForm(obj, requiredFields = []) {
-    const errors = {}
-    let valid = true
 
-    requiredFields.forEach(field => {
-      if (!obj[field] || obj[field].toString().trim() === '') {
-        errors[field] = `${field} is required`
-        valid = false
-      }
-    })
-
-    return { valid, errors }
+  async function validateWithSchema(data, schema) {
+    try {
+      await schema.validate(data, { abortEarly: false })
+      errors.value = {} 
+      return true
+    } catch (err) {
+      const result = {}
+      err.inner.forEach(e => {
+        result[e.path] = e.message
+      })
+      errors.value = result
+      return false
+    }
   }
+
+  function sanitizeInputs(obj) {
+    const sanitized = {}
+    for (const key in obj) {
+      const value = obj[key]
+      sanitized[key] = typeof value === 'string' ? DOMPurify.sanitize(value) : value
+    }
+    return sanitized
+  }
+  
 
   function clearStatus() {
     loading.value = false
     error.value = null
     success.value = null
+    errors.value = {}
   }
 
   return {
     loading,
     error,
     success,
+    errors,
     submitForm,
-    validateForm,
-    clearStatus
+    clearStatus,
+    validateWithSchema,
+    sanitizeInputs
   }
 })

@@ -51,22 +51,28 @@
 import {ref , onMounted} from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
+import { useFormStore } from '@/stores/form';
 
 const store = useAuthStore();
+const formStore = useFormStore()
 const emailres = ref('');
 const router = useRouter();
 
+
 async function forgot() {
-    await store.forgotPassword(emailres.value)
+  try {
+    const sanitizedemail = formStore.sanitizeInputs({email: emailres.value});
+    await store.forgotPassword(sanitizedemail.email);
     if(store.errorMsg === null){
+        formStore.clearStatus();
         router.push('/check');
     }
+  } catch (error) {
+    console.error('An Error occured while trying to send the email, Please retry :', error)
+  }
 };
 
 onMounted(() => {
-    if(store. isAuthenticated){ //à répeter
-        router.push('/');
-    }
     store.Clearstatus();
 });
 
