@@ -3,8 +3,7 @@ const skillModel = require("../../models/adminModels/skillModel");
 exports.createSkill = async (req, res) => {
   console.log("Received data:", req.body);
 
-  const { skill_name, question1, question2, question3, desciption_skill } = req.body;
-  const { id_admin } = req.params;
+  const { skill_name, question1, question2, question3, description_skill, id_admin } = req.body;
 
   try {
     const skill = await skillModel.createSkill(
@@ -12,7 +11,7 @@ exports.createSkill = async (req, res) => {
       question1,
       question2,
       question3,
-      desciption_skill,
+      description_skill,
       id_admin
     );
 
@@ -52,14 +51,14 @@ exports.getAllSkills = async (req, res) => {
 };
 
 exports.updateSkill = async (req, res) => {
-  const { id_skill } = req.params;
+  const { skill_name } = req.params;
   const updates = req.body;
 
-  console.log("Skill ID:", id_skill);
   console.log("Update fields:", updates);
 
   try {
-    const updatedSkill = await skillModel.updateSkillById(id_skill, updates);
+    const updatedSkill = await skillModel.updateSkillById(skill_name, updates);
+    console.log(updatedSkill)
 
     if (!updatedSkill) {
       return res.status(404).json({
@@ -81,10 +80,10 @@ exports.updateSkill = async (req, res) => {
 };
 
 exports.deleteSkill = async (req, res) => {
-  const { id_skill } = req.params;
+  const { skill_name } = req.params;
 
   try {
-    const result = await skillModel.deleteSkillById(id_skill);
+    const result = await skillModel.deleteSkillById(skill_name);
 
     if (result.rowCount === 0) {
       return res.status(404).json({

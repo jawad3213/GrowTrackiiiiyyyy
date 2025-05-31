@@ -2,14 +2,14 @@ const pool = require("../../config/db");
 
 
 
-exports.createStudent = async (id_user, name, cin, cne, email, pass, field, note, role,imagePath) => {
+exports.createStudent = async (id_user, full_name, cin, cne, email, pass, field, note, role,imagePath) => {
     try {
       // Insertion dans la table member
       const result = await pool.query(
         `INSERT INTO public.member (
            id_member, full_name, cin, email, password, role, description, profile_picture
          ) VALUES ($1, $2, $3, $4, $5, $6, $7,$8)`,
-        [id_user, name, cin, email, pass, role, note,imagePath]
+        [id_user, full_name, cin, email, pass, role, note,imagePath]
       );
   
   
@@ -34,7 +34,7 @@ exports.createStudent = async (id_user, name, cin, cne, email, pass, field, note
   exports.getAllStudents = async () => { 
     try { 
       const result = await pool.query(
-        `SELECT s.cne, m.full_name, m.cin, m.email, f.id_sector, m.profile_picture, c.id_class, m.date_add 
+        `SELECT m.id_member, s.cne, m.full_name, m.cin, m.email, f.id_sector, m.profile_picture, c.id_class, m.date_add 
          FROM public.member m 
          JOIN public.student s ON m.id_member = s.id_member 
          JOIN public.class c ON c.id_class = s.id_class 
@@ -138,9 +138,13 @@ exports.deleteStudentById = async (id) => {
         "DELETE FROM public.report WHERE id_reported = $1",
         [id]
       );
-
+      
       await pool.query(
         "DELETE FROM public.supervise WHERE id_student = $1",
+        [id]
+      );
+      await pool.query(
+        "DELETE FROM public.skill_evaluation WHERE id_student = $1",
         [id]
       );
 
@@ -153,8 +157,8 @@ exports.deleteStudentById = async (id) => {
         "DELETE FROM public.member WHERE id_member = $1",
         [id]
       );
-      
-      return result; // Renvoie tout l'objet result pour avoir accès à rowCount
+      return result;
+       // Renvoie tout l'objet result pour avoir accès à rowCount
     } catch (error) {
       console.error("Error deleting student:", error);
       throw error;

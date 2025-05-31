@@ -20,7 +20,7 @@ exports.createSkill = async (skill_name, question1, question2, question3,descipt
 exports.getAllSkills = async () => {
   try {
     const result = await pool.query(
-      `SELECT skill_name, description_skill
+      `SELECT *
        FROM public.skill`
     );
     return result.rows;
@@ -38,25 +38,29 @@ exports.updateSkillById = async (id, fieldsToUpdate) => {
   if (keys.length === 0) return null;
 
   const setClause = keys.map((key, i) => `${key} = $${i + 1}`).join(", ");
-  const query = `UPDATE public.member SET ${setClause} WHERE id_member = $${keys.length + 1} RETURNING *`;
-
+  const query = `UPDATE public.skill SET ${setClause} WHERE skill_name = $${keys.length + 1} RETURNING *`;
+  console.log(query)
+  console.log(...values)
+  console.log(id)
   const result = await pool.query(query, [...values, id]);
   return result.rows[0];
 };
-
-exports.deleteSkillById = async (id) => {
+exports.deleteSkillById = async (skill_name) => {
   try {
-
+    await pool.query(
+      "DELETE FROM public.evaluations WHERE skill_name = $1",
+      [skill_name]
+    );
     const result = await pool.query(
-      "DELETE FROM public.skill WHERE id_member = $1",
-      [id]
+      "DELETE FROM public.skill WHERE skill_name = $1",
+      [skill_name]
     );
 
     return result;
   } catch (error) {
     console.error("Error deleting skill:", error);
-    throw error;
-  }
+    throw error;
+  }
 };
 
 exports.total = async () => {

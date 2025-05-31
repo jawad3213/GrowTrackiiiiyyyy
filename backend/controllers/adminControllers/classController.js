@@ -2,8 +2,7 @@
 const classModel = require("../../models/adminModels/classModel");
 
 exports.createClass = async (req, res) => {
-  const { field, description, classe } = req.body;
-  const {id_admin} = req.params;
+  const { field, description, classe, id_admin } = req.body;
 
   try {
     if (!Array.isArray(classe)) {

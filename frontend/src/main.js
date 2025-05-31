@@ -2,13 +2,27 @@ import './assets/main.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import VueApexCharts from 'vue3-apexcharts'
+import {useAuthStore} from '@/stores/auth'
 
 import App from './App.vue'
-import router from './router'
+import router from './routers'
 
-const app = createApp(App)
+async function start() {
+    const app = createApp(App);
+    const pinia = createPinia();
+    app.component('apexchart', VueApexCharts)
 
-app.use(createPinia())
-app.use(router)
+    app.use(pinia);
+    app.use(router);
 
-app.mount('#app')
+    const auth = useAuthStore();
+    await auth.checkAuth();
+    console.log(auth.Role)
+    console.log(auth.ID)
+
+  
+    app.mount('#app');
+  }
+  
+start();

@@ -5,15 +5,14 @@ const { v4: uuidv4 } = require("uuid");
 
 
 const generateImageUrl = (path) => {
-  return path ? `http://localhost:8080/${path.replace(/\\/g, "/")}` : null;
+  return path ? `http://localhost:3000/${path.replace(/\\/g, "/")}` : null;
 };
 
 
 
 exports.createStudent = async (req, res) => {
-    console.log("Données reçues :", req.body);
-  const { name, cin, cne, email, pass, field, note } = req.body;
-  console.log(req.body)
+  console.log("Données reçues :", req.body);
+  const { full_name, cin, cne, email, pass, field, note } = req.body;
   const imagePath = req.file ? req.file.path : null;
 
   try {
@@ -22,7 +21,7 @@ exports.createStudent = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(pass, salt);
 
-    const student = await studentModel.createStudent(id_user, name, cin, cne, email, hashedPassword, field, note, role,imagePath);
+    const student = await studentModel.createStudent(id_user, full_name, cin, cne, email, hashedPassword, field, note, role,imagePath);
 
     res.status(201).json({
       message: "Student added successfully.",
@@ -75,7 +74,7 @@ exports.getAllStudents = async (req, res) => {
 
 
 exports.getStudentByCin = async (req, res) => {
-    const { cin } = req.body;
+    const cin  = req.query.cin;
   
     try {
       const student = await studentModel.getStudentByCin(cin);
@@ -133,10 +132,11 @@ exports.getStudentByCin = async (req, res) => {
 
 
 exports.deleteStudent = async (req, res) => {
-    const { id_student } = req.params;
+    const { id_member } = req.params;
+    console.log(id_member)
   
     try {
-      const result = await studentModel.deleteStudentById(id_student);
+      const result = await studentModel.deleteStudentById(id_member);
   
       if (result.rowCount === 0) {
         return res.status(404).json({

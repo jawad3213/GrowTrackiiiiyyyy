@@ -1,25 +1,34 @@
-const express = require("express");
-const app = express();
+const express = require("express")
 const cookieParser = require('cookie-parser');
+const helmet = require('helmet');
 require('dotenv').config();
-const path = require("path");
+const PORT = process.env.PORT;
+const {ResetPassEmail, check} = require('./controllers/authController');
+const cors = require('cors');
+const {ServerLimiter} = require('../backend/middlewares/Limiter');
+const { verifyResetToken }=require('./middlewares/VerifyToken')
+const path = require('path')
 
-// Récupération du port depuis le fichier .env
-const PORT = process.env.PORT || 8080;
 
-// Middleware pour parser les cookies
-app.use(cookieParser());
 
-// Ces deux lignes sont utiles pour les routes POST/PUT classiques (JSON ou form-urlencoded)
-// 👉 PAS utilisées par multer, mais ne posent pas de problème pour le reste de l'app
-app.use(express.json()); // Pour les requêtes avec JSON (API)
+
+const corsOptions = {
+    origin:["http://localhost:3000", "http://localhost:5173"],
+    credentials: true
+}
+
+const app = express()
+app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // Pour les formulaires HTML classiques
+app.use(cookieParser());
+app.use(cors(corsOptions));
+app.use(helmet({hsts: false})); // Leaves Default options that come with helmet and removes the one that forces https 
 
-// Rendre le dossier "uploads" accessible publiquement
+// The routes of Authentication
+const AuthRoute = require("./routes/AuthRoute");
+app.use("/api/auth", AuthRoute)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Importation des routes
-const AuthRoute = require("./routes/AuthRoute");
 const studentRoute = require("./routes/adminRoutes/studentRoute");
 const professorRoute = require("./routes/adminRoutes/professorRoute");
 const supervisorRoute = require("./routes/adminRoutes/supervisorRoute");
@@ -29,8 +38,10 @@ const coachRoute = require("./routes/adminRoutes/coachRoute");
 const signalRoute = require("./routes/adminRoutes/signalRoute");
 const profileRoute = require("./routes/adminRoutes/profileRoute");
 
-// Montage des routes
-app.use("/auth", AuthRoute);
+
+//Usage of rate limiter for all routes except for the authentication
+app.use(ServerLimiter);
+
 app.use("/admin/students", studentRoute);
 app.use("/admin/professors", professorRoute);
 app.use("/admin/supervisors", supervisorRoute);
@@ -41,7 +52,43 @@ app.use("/admin/signals", signalRoute);
 app.use("/admin/profile", profileRoute);
 
 
-// Lancement du serveur
+
+const authRules = require('./validators/authrules'); // The rules for validation the inputs
+const { validate } = require('./middlewares/validate'); // The middlwares that validates the inputs based on the rules given 
+app.get('/api/validate-reset-token', verifyResetToken, check) //Route for checking the reset token
+app.post('/api/resetpass',validate(authRules.Password),verifyResetToken, ResetPassEmail);
+
+const contactus = require("./routes/contactusRoute");
+app.use("/api/contactus", contactus)
+
+
+//route hachage
+const hashRoute = require("./routes/HashRoute");
+app.use("/api/hash", hashRoute)
+
+
+//route DashBaordAdmin
+const DashAdminRoute = require("./routes/adminRoutes/AdminDashboardRoute");
+app.use("/api/DashAdmin", DashAdminRoute)
+
+//PROFILE
+const ProfileAdminRoute = require("./routes/adminRoutes/AdminProfile");
+app.use("/api/ProfileAdmin", ProfileAdminRoute)
+
+//Global Over View
+const EvaluationAdminRoute = require("./routes/adminRoutes/GlobalOverView_Route");
+app.use("/api/GlobalOverView", EvaluationAdminRoute)
+
+
+//Global Over View
+
+const pool = require('./config/db');
+
+app.get('/testbackend',(req,res)=>{
+    res.send('connexion reussie to backend !! ');
+})
+
 app.listen(PORT, () => {
     console.log(`✅ Server Running on http://localhost:${PORT}`);
 });
+

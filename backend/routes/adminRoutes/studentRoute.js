@@ -23,7 +23,7 @@ router.post("/create", upload.single('image'),studentController.createStudent);
 router.get("/",studentController.getAllStudents);
 router.get("/search",studentController.getStudentByCin);
 router.patch("/update/:id_student", upload.single('image'),studentController.updateStudent);
-router.delete("/delete/:id_student",studentController.deleteStudent);
+router.delete("/delete/:id_member",studentController.deleteStudent);
 router.get("/total",studentController.getTotalStudents)
 router.get("/class",studentController.getStudentsByClass)
 router.get("/sector",studentController.getStudentsBySector)

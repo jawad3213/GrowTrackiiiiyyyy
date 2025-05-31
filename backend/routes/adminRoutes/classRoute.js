@@ -4,7 +4,7 @@ const router = express.Router();
 const classController = require("../../controllers/adminControllers/classController");
 
 // Create a fields ans classes
-router.post("/create/:id_admin", classController.createClass);
+router.post("/create", classController.createClass);
 
 // Get all fields
 router.get("/", classController.getAllSectors);
