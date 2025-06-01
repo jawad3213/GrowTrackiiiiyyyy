@@ -155,18 +155,18 @@ const badgeClass = (status) => {
     : 'text-orange-800 bg-orange-100 dark:text-orange-300 dark:bg-orange-900 px-2 py-1 rounded-full text-xs font-semibold'
 }
 
-// ✅ Navigation vers NewSignal
+// Navigation vers NewSignal
 const goToNewSignal = (id) => {
   router.push({
     path: '/newsignal',
     query: {
       id,
-      classId: selectedClass.value // ✅ on garde la classe actuelle
+      classId: selectedClass.value //  on garde la classe actuelle
     }
   })
 }
 
-// ✅ Navigation vers ViewHistory
+//  Navigation vers ViewHistory
 const goToViewHistory = (id) => {
   router.push({
     path: '/viewhistory',

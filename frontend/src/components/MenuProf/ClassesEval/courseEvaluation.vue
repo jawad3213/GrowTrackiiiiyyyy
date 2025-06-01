@@ -16,12 +16,12 @@
           
         <!-- Questions -->
         <div v-if="questions.length > 0">
-  <div v-for="(q, index) in questions" :key="index" class="mb-4">
-    <p>Question {{ index + 1 }}</p>
-    <input type="range" min="0" max="5" step="0.1" v-model="ratings[index]" class="w-full" />
-    <p class="text-center text-sm mt-1">{{ ratings[index] }}</p>
-  </div>
-</div>
+          <div v-for="(q, index) in questions" :key="index" class="mb-4">
+            <p>Question {{ index + 1 }}</p>
+            <input type="range" min="0" max="5" step="0.1" v-model="ratings[index]" class="w-full" />
+            <p class="text-center text-sm mt-1">{{ ratings[index] }}</p>
+          </div>
+        </div>
 
   
         <!-- Bouton -->

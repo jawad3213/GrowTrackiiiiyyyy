@@ -40,7 +40,7 @@ import HistoriqueEval from "./components/MenuProf/ClassesEval/HistoriqueEval.vue
 import HistoriqueSignal from "./components/MenuProf/signal/HistoriqueSignal.vue";
 import ProjectMang from "./components/MenuProf/ProjectMang.vue";
 import Rapport from "./components/MenuProf/Rapport.vue";
-import Institution from "./components/MenuProf/Institution.vue";
+import Notification from "./components/MenuProf/Notification.vue";
 import AddProject from "./components/MenuProf/AddProject.vue";
 import AddMembers from "./components/MenuProf/AddMembers.vue";
 import NewSignal from "./components/MenuProf/signal/NewSignal.vue";
@@ -54,6 +54,24 @@ import courseEvaluation from "./components/MenuProf/ClassesEval/courseEvaluation
 import EndEval from "./components/MenuProf/ClassesEval/EndEval.vue";
 import Thanku from "./components/MenuProf/ClassesEval/Thanku.vue";
 import ViewEval from "./components/MenuProf/ClassesEval/ViewEval.vue";
+import ProjectDetails from "./components/MenuProf/ProjectDetails.vue";
+
+import CompletionRate from "./components/MenuStudent/dashStudent/CompletionRate.vue";
+import StudEvals from "./components/MenuStudent/Evaluations/StudEvals.vue";
+import dashstud from "./components/MenuStudent/dashStudent/dashstud.vue";
+import StudProjects from "./components/MenuStudent/Evaluations/StudProjects.vue";
+import StudSignals from "./components/MenuStudent/Evaluations/StudSignals.vue";
+import skillsChoseen from "./components/MenuStudent/SelfEval/skillsChoseen.vue";
+import evalSkills from "./components/MenuStudent/SelfEval/evalSkills.vue";
+import skillsEnd from "./components/MenuStudent/SelfEval/skillsEnd.vue";
+import end from "./components/MenuStudent/SelfEval/end.vue";
+
+import StudRapport from "./components/MenuStudent/StudRapport.vue";
+import StudNotif from "./components/MenuStudent/StudNotif.vue";
+import StudSolution from "./components/MenuStudent/StudSolution.vue";
+import StudReason from "./components/MenuStudent/StudReason.vue";
+import selfEval from "./components/MenuStudent/selfEval.vue";
+
 
 
 const routes = [
@@ -252,9 +270,9 @@ const routes = [
         path : "/Rapport"
     },
     {
-        name : "Institution",
-        component : Institution,
-        path : "/Institution"
+        name : "Notification",
+        component : Notification,
+        path : "/Notification"
     },
     {
         name : "AddProject",
@@ -318,8 +336,81 @@ const routes = [
         component : ViewEval,
         path : "/ViewEval"
     },
-
-
+     {
+        name : "StudEvals",
+        component : StudEvals,
+        path : "/StudEvals"
+    },
+     {
+        name : "StudProject",
+        component : StudProjects,
+        path : "/StudProject"
+    },
+     {
+        name : "StudRapport",
+        component : StudRapport,
+        path : "/StudRapport"
+    },
+     {
+        name : "StudSignals",
+        component : StudSignals,
+        path : "/StudSignals"
+    },
+     {
+        name : "StudNotif",
+        component : StudNotif,
+        path : "/StudNotif"
+    },
+     {
+        name : "skillsChoseen",
+        component : skillsChoseen,
+        path : "/skillsChoseen"
+    },
+     {
+        name : "evalSkills",
+        component : evalSkills,
+        path : "/evalSkills"
+    },
+     {
+        name : "StudSolution",
+        component : StudSolution,
+        path : "/StudSolution"
+    },
+     {
+        name : "StudReason",
+        component : StudReason,
+        path : "/StudReason"
+    },
+    {
+        name : "skillsEnd",
+        component : skillsEnd,
+        path : "/skillsEnd"
+    },
+    {
+        name : "end",
+        component : end,
+        path : "/end"
+    },
+    {
+        name : "CompletionRate",
+        component : CompletionRate,
+        path : "/CompletionRate"
+    },
+    {
+        name : "dashstud",
+        component : dashstud,
+        path : "/dashstud"
+    },
+    {
+        name : "selfEval",
+        component : selfEval,
+        path : "/selfEval"
+    },
+{
+        name : "ProjectDetails",
+        component : ProjectDetails,
+        path : "/ProjectDetails"
+    },
 
     
 ];

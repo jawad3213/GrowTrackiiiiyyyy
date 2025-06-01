@@ -20,7 +20,7 @@
       </div>
 
       <!-- Commentaire -->
-      <div class="mb-10">
+      <div class="mb-5">
         <label class="text-lg font-semibold">Description Given:</label>
         <textarea
           v-model="feedbackComment"
@@ -53,7 +53,7 @@ const router = useRouter()
 onMounted(async () => {
   try {
     // Récupérer tous les skills choisis
-    const skillRes = await axios.get('http://localhost:3001/SkillsChoosen')
+    const skillRes = await axios.get('http://localhost:3001/ChooseSkills')
     skillsList.value = skillRes.data.map(s => s.name)
 
     // Récupérer les réponses

@@ -57,7 +57,25 @@ app.use("/api/GlobalOverView", EvaluationAdminRoute)
 const contactus = require("./routes/contactusRoute");
 app.use("/api/contactus", contactus)
 
+//prof_Evaluation history
+const prof_evaluation_history = require("./routes/professorRoutes/Evaluation_Route_history");
+app.use("/api/prof_evaluation_history", prof_evaluation_history)
 
+//prof_Evaluation classes
+const prof_evaluation_classes = require("./routes/professorRoutes/Evaluation_Route_classes");
+app.use("/api/prof_evaluation_classes", prof_evaluation_classes)
+
+//prof_project
+const prof_project_management = require("./routes/professorRoutes/project_management_Route");
+app.use("/api/prof_project_management", prof_project_management)
+
+//prof signal history
+const prof_signal_history = require("./routes/professorRoutes/signal_history_Route");
+app.use("/api/signal_history", prof_signal_history)
+
+//prof signal classes
+const prof_signal_classes = require("./routes/professorRoutes/signal_classes_Route");
+app.use("/api/signal_classes", prof_signal_classes)
 
 app.listen(PORT, () => {
     console.log(`Server Running on http://localhost:${PORT}`);

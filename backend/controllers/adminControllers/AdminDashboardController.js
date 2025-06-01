@@ -172,19 +172,30 @@ exports.user_distribution_by_role_Controller = [
   }
 ];
 ///////////////////
-exports.total_evaluation_Controller = [
-  async (req, res) => {
+exports.news_admin_Controller = async (req, res) => {
     try {
-      const { data } = await total_evaluation_Model();
+      const news = await DashModel.news_admin_Model();
 
       return res.status(200).json({
-        data
+        news
       });
 
     } catch (error) {
       console.error(error);
       return res.status(500).json({ message: "Server Error, Please try again later!" });
     }
+};
+////////////////
+exports.news_professor_Controller = async (req, res) => {
+  try {
+    const news = await DashModel.news_professor_Model();
+
+    return res.status(200).json({
+      news
+    });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server Error, Please try again later!" });
   }
-];
-///////////////////
+};

@@ -37,8 +37,8 @@ CREATE TABLE public.admin (
 
 CREATE TABLE public.class (
     id_class character varying(100) NOT NULL,
-    sector_id character varying(100) NOT NULL,
-    start_date date DEFAULT CURRENT_DATE
+    start_date date DEFAULT CURRENT_DATE,
+    sector_id character varying(100) NOT NULL
 );
 
 
@@ -53,14 +53,27 @@ CREATE TABLE public.coach (
 
 
 --
+-- Name: evaluations; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.evaluations (
+    id_evaluation integer NOT NULL,
+    note_skill double precision,
+    skill_name character varying(100) NOT NULL
+);
+
+
+--
 -- Name: follow_up; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.follow_up (
     id_coach character varying(100) NOT NULL,
     id_student character varying(100) NOT NULL,
-    id_solution character varying(100) NOT NULL,
-    message character varying(1000)
+    id_solution integer NOT NULL,
+    message character varying(1000),
+    start_date date DEFAULT CURRENT_DATE,
+    date_done date
 );
 
 
@@ -69,11 +82,31 @@ CREATE TABLE public.follow_up (
 --
 
 CREATE TABLE public.internship (
-    id_internship character varying(100) NOT NULL,
+    id_internship integer NOT NULL,
     date_start date,
     date_done date,
     subject_internship character varying(100)
 );
+
+
+--
+-- Name: internship_id_internship_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.internship_id_internship_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: internship_id_internship_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.internship_id_internship_seq OWNED BY public.internship.id_internship;
 
 
 --
@@ -82,17 +115,51 @@ CREATE TABLE public.internship (
 
 CREATE TABLE public.member (
     id_member character varying(100) NOT NULL,
-    cin character varying(50) NOT NULL,
-    phone character varying(100),
+    cin character varying(50),
+    phone character varying(50),
     password character varying(255) NOT NULL,
+    role character varying(50) NOT NULL,
     full_name character varying(50),
     email character varying(50) NOT NULL,
-    profile_picture character varying(200),
+    profile_picture character varying(100),
     description character varying(1000),
     date_add timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    role character varying(50) NOT NULL,
     CONSTRAINT member_role_check CHECK (((role)::text = ANY ((ARRAY['admin'::character varying, 'student'::character varying, 'Supervisor'::character varying, 'Professor'::character varying, 'coach'::character varying])::text[])))
 );
+
+
+--
+-- Name: news; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.news (
+    id_news integer NOT NULL,
+    id_member character varying(100),
+    message character varying(1000),
+    type character varying(50),
+    date timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT news_type_check CHECK (((type)::text = ANY ((ARRAY['admin'::character varying, 'Professor'::character varying])::text[])))
+);
+
+
+--
+-- Name: news_id_news_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.news_id_news_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: news_id_news_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.news_id_news_seq OWNED BY public.news.id_news;
 
 
 --
@@ -100,11 +167,32 @@ CREATE TABLE public.member (
 --
 
 CREATE TABLE public.notifications (
-    id_notification character varying(100) NOT NULL,
+    id_notification integer NOT NULL,
     content_notification character varying(100),
     date_notification timestamp without time zone,
-    id_member character varying(100)
+    id_member character varying(100),
+    id_reporter character varying(100)
 );
+
+
+--
+-- Name: notifications_id_notification_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.notifications_id_notification_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: notifications_id_notification_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.notifications_id_notification_seq OWNED BY public.notifications.id_notification;
 
 
 --
@@ -123,7 +211,7 @@ CREATE TABLE public.professor (
 --
 
 CREATE TABLE public.project (
-    id_project character varying(100) NOT NULL,
+    id_project integer NOT NULL,
     description_project character varying(1000),
     date_project date,
     subject_project character varying(1000),
@@ -132,13 +220,53 @@ CREATE TABLE public.project (
 
 
 --
+-- Name: project_id_project_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.project_id_project_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: project_id_project_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.project_id_project_seq OWNED BY public.project.id_project;
+
+
+--
 -- Name: rate; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.rate (
-    id_rate character varying(100) NOT NULL,
+    id_rate integer NOT NULL,
     id_member character varying(100)
 );
+
+
+--
+-- Name: rate_id_rate_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.rate_id_rate_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: rate_id_rate_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.rate_id_rate_seq OWNED BY public.rate.id_rate;
 
 
 --
@@ -148,7 +276,7 @@ CREATE TABLE public.rate (
 CREATE TABLE public.report (
     id_reporter character varying(100) NOT NULL,
     id_reported character varying(100) NOT NULL,
-    id_signal character varying(100) NOT NULL
+    id_signal integer NOT NULL
 );
 
 
@@ -158,7 +286,7 @@ CREATE TABLE public.report (
 
 CREATE TABLE public.sector (
     id_sector character varying(100) NOT NULL,
-    sector_name character varying(100),
+    description character varying(2000),
     id_admin character varying(100)
 );
 
@@ -168,17 +296,36 @@ CREATE TABLE public.sector (
 --
 
 CREATE TABLE public.signal (
-    id_signal character varying(100) NOT NULL,
+    id_signal integer NOT NULL,
     approved boolean,
     message character varying(1000),
     anony boolean,
     option_signal character varying(100),
-    prove bytea,
-    id_solution character varying(100),
+    id_solution integer,
     id_member character varying(100),
     date_add date DEFAULT CURRENT_DATE,
-    solution_state character varying(50) DEFAULT 'No Access Taken'::character varying
+    solution_state character varying(100)
 );
+
+
+--
+-- Name: signal_id_signal_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.signal_id_signal_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: signal_id_signal_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.signal_id_signal_seq OWNED BY public.signal.id_signal;
 
 
 --
@@ -187,7 +334,7 @@ CREATE TABLE public.signal (
 
 CREATE TABLE public.skill (
     skill_name character varying(100) NOT NULL,
-    desciption_skill character varying(1000),
+    description_skill character varying(1000),
     question1 character varying(100),
     question2 character varying(100),
     question3 character varying(100),
@@ -204,13 +351,14 @@ CREATE TABLE public.skill_evaluation (
     note_evaluation double precision,
     type_evaluation character varying(100),
     comment_evaluation character varying(1000),
-    id_internship character varying(100),
+    id_internship integer,
     id_class character varying(100),
-    id_team character varying(100),
+    id_team integer,
     id_student character varying(100),
     id_evaluator character varying(100),
-    skill_name character varying(100),
     date_add date DEFAULT CURRENT_DATE,
+    evaluation_context character varying(100),
+    CONSTRAINT skill_evaluation_evaluation_context_check CHECK (((evaluation_context)::text = ANY ((ARRAY['class'::character varying, 'project'::character varying, 'internship'::character varying])::text[]))),
     CONSTRAINT skill_evaluation_type_evaluation_check CHECK (((type_evaluation)::text = ANY ((ARRAY['Pair'::character varying, 'Self'::character varying, 'Supervisor'::character varying, 'Professor'::character varying])::text[])))
 );
 
@@ -240,13 +388,33 @@ ALTER SEQUENCE public.skill_evaluation_id_evaluation_seq OWNED BY public.skill_e
 --
 
 CREATE TABLE public.solution (
-    id_solution character varying(100) NOT NULL,
+    id_solution integer NOT NULL,
     option_solution character varying(100),
     subject_solution character varying(100),
     periode character varying(100),
     state character varying(100) DEFAULT 'New'::character varying,
-    CONSTRAINT chk_state_values CHECK (((state)::text = ANY ((ARRAY['New'::character varying, 'Approved'::character varying, 'Rejected'::character varying])::text[])))
+    CONSTRAINT solution_state_check CHECK (((state)::text = ANY ((ARRAY['New'::character varying, 'Approved'::character varying, 'Rejected'::character varying])::text[])))
 );
+
+
+--
+-- Name: solution_id_solution_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.solution_id_solution_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: solution_id_solution_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.solution_id_solution_seq OWNED BY public.solution.id_solution;
 
 
 --
@@ -267,7 +435,7 @@ CREATE TABLE public.student (
 CREATE TABLE public.supervise (
     id_supervisor character varying(100) NOT NULL,
     id_student character varying(100) NOT NULL,
-    id_internship character varying(100) NOT NULL
+    id_internship integer NOT NULL
 );
 
 
@@ -299,11 +467,31 @@ CREATE TABLE public.teach (
 --
 
 CREATE TABLE public.team (
-    id_team character varying(100) NOT NULL,
+    id_team integer NOT NULL,
     note double precision,
     id_prof character varying(100) NOT NULL,
-    id_project character varying(100) NOT NULL
+    id_project integer
 );
+
+
+--
+-- Name: team_id_team_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.team_id_team_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: team_id_team_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.team_id_team_seq OWNED BY public.team.id_team;
 
 
 --
@@ -311,9 +499,51 @@ CREATE TABLE public.team (
 --
 
 CREATE TABLE public.team_student (
-    id_team character varying(100) NOT NULL,
+    id_team integer NOT NULL,
     student_id character varying(100) NOT NULL
 );
+
+
+--
+-- Name: internship id_internship; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.internship ALTER COLUMN id_internship SET DEFAULT nextval('public.internship_id_internship_seq'::regclass);
+
+
+--
+-- Name: news id_news; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.news ALTER COLUMN id_news SET DEFAULT nextval('public.news_id_news_seq'::regclass);
+
+
+--
+-- Name: notifications id_notification; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.notifications ALTER COLUMN id_notification SET DEFAULT nextval('public.notifications_id_notification_seq'::regclass);
+
+
+--
+-- Name: project id_project; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.project ALTER COLUMN id_project SET DEFAULT nextval('public.project_id_project_seq'::regclass);
+
+
+--
+-- Name: rate id_rate; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.rate ALTER COLUMN id_rate SET DEFAULT nextval('public.rate_id_rate_seq'::regclass);
+
+
+--
+-- Name: signal id_signal; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.signal ALTER COLUMN id_signal SET DEFAULT nextval('public.signal_id_signal_seq'::regclass);
 
 
 --
@@ -324,11 +554,25 @@ ALTER TABLE ONLY public.skill_evaluation ALTER COLUMN id_evaluation SET DEFAULT 
 
 
 --
+-- Name: solution id_solution; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.solution ALTER COLUMN id_solution SET DEFAULT nextval('public.solution_id_solution_seq'::regclass);
+
+
+--
+-- Name: team id_team; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.team ALTER COLUMN id_team SET DEFAULT nextval('public.team_id_team_seq'::regclass);
+
+
+--
 -- Data for Name: admin; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 COPY public.admin (id_member, assigned_zone) FROM stdin;
-M002	\N
+M001	info
 \.
 
 
@@ -336,11 +580,11 @@ M002	\N
 -- Data for Name: class; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.class (id_class, sector_id, start_date) FROM stdin;
-GINF1	CI1	2025-04-27
-GIND1	CI1	2025-04-27
-GIL1	CI1	2025-04-27
-CYS1	CI1	2025-04-27
+COPY public.class (id_class, start_date, sector_id) FROM stdin;
+CLS001	2025-05-03	SEC001
+GINF1	2025-05-05	CI1
+GIND1	2025-05-05	CI1
+CYS1	2025-05-05	CI1
 \.
 
 
@@ -349,7 +593,21 @@ CYS1	CI1	2025-04-27
 --
 
 COPY public.coach (id_member, field) FROM stdin;
-71673502-4f3d-4dde-9879-fca92da6c983	Informatique
+4cf96e59-1cca-46b1-8cff-2bfa379b1e95	Informatique
+\.
+
+
+--
+-- Data for Name: evaluations; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.evaluations (id_evaluation, note_skill, skill_name) FROM stdin;
+7	8.5	Communication
+7	9	Teamwork
+7	7.5	Problem-solving
+7	8.3	Time Management
+7	8.8	Critical Thinking
+7	9.2	Creativity
 \.
 
 
@@ -357,7 +615,8 @@ COPY public.coach (id_member, field) FROM stdin;
 -- Data for Name: follow_up; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.follow_up (id_coach, id_student, id_solution, message) FROM stdin;
+COPY public.follow_up (id_coach, id_student, id_solution, message, start_date, date_done) FROM stdin;
+4cf96e59-1cca-46b1-8cff-2bfa379b1e95	da93bdeb-a589-4bd3-9138-a207f691c62b	2	I recommend scheduling a session with a licensed psychologist 	2025-05-01	2025-06-15
 \.
 
 
@@ -366,8 +625,7 @@ COPY public.follow_up (id_coach, id_student, id_solution, message) FROM stdin;
 --
 
 COPY public.internship (id_internship, date_start, date_done, subject_internship) FROM stdin;
-INT001	\N	\N	\N
-Développement Web	2025-05-01	2025-08-01	Création d'une application de gestion
+1	2025-05-01	2025-08-01	Création d'une application 
 \.
 
 
@@ -375,34 +633,36 @@ Développement Web	2025-05-01	2025-08-01	Création d'une application de gestion
 -- Data for Name: member; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.member (id_member, cin, phone, password, full_name, email, profile_picture, description, date_add, role) FROM stdin;
-M001	CIN001	0612345678	hashedpass1	Nada Admin	admin1@example.com	admin.png	Admin system manager	2025-04-23 20:11:38.736008	admin
-M003	CIN003	0634567890	hashedpass3	Sara Superviseure	supervisor1@example.com	supervisor.png	Supervise les projets de fin des	2025-04-23 20:11:38.736008	Supervisor
-M004	CIN004	0645678901	hashedpass4	Youssef Prof	prof1@example.com	prof.png	Professeur de base de données	2025-04-23 20:11:38.736008	Professor
-M005	CIN005	0656789012	hashedpass5	Amal Coach	coach1@example.com	coach.png	Coach en soft skills	2025-04-23 20:11:38.736008	coach
-F001	CIN00133	0612345678	hashed_pwd1	Dr. Amine Rahmouni	amine.rahmouni@univ.ma	amine.png	Professeur en informatique.	2025-04-23 21:25:48.884503	Professor
-F002	CIN0023	0612345679	hashed_pwd2	Dr. Salma Idrissi	salma.idrissi@univ.ma	salma.png	Spécialiste en intelligence artificielle.	2025-04-23 21:25:48.884503	Professor
-F003	CIN0033	0612345680	hashed_pwd3	Dr. Youssef Bakkali	youssef.bakkali@univ.ma	youssef.png	Enseignant chercheur en cybersécurité.	2025-04-23 21:25:48.884503	Professor
-F004	CIN0043	0612345681	hashed_pwd4	Dr. Zineb El Alaoui	zineb.alaoui@univ.ma	zineb.png	Experte en systèmes distribués.	2025-04-23 21:25:48.884503	Professor
-F005	CIN0053	0612345682	hashed_pwd5	Dr. Mehdi Mansouri	mehdi.mansouri@univ.ma	mehdi.png	Professeur en génie logiciel.	2025-04-23 21:25:48.884503	Professor
-F006	CIN006	0612345683	hashed_pwd6	Aya El Khattabi	aya.khattabi@student.ma	aya.png	Étudiante en 2e année ingénierie informatique.	2025-04-23 21:26:21.8554	student
-F007	CIN007	0612345684	hashed_pwd7	Mohamed Benali	mohamed.benali@student.ma	mohamed.png	Passionné par le développement web.	2025-04-23 21:26:21.8554	student
-F008	CIN008	0612345685	hashed_pwd8	Sara Laaroussi	sara.laaroussi@student.ma	sara.png	Étudiante active au club robotique.	2025-04-23 21:26:21.8554	student
-F009	CIN009	0612345686	hashed_pwd9	Yassine Ait Taleb	yassine.aittaleb@student.ma	yassine.png	Étudiant intéressé par l’IA et les données.	2025-04-23 21:26:21.8554	student
-F010	CIN010	0612345687	hashed_pwd10	Fatima Zahra Idrissi	fatima.idrissi@student.ma	fatima.png	Étudiante motivée en cybersécurité.	2025-04-23 21:26:21.8554	student
-21e2dc75-98b3-4f95-8a17-073b96634a86	lb28634	\N	$2b$10$yvQgOMjMuNlg4yZ506MJfeD6vwfMrQ81FkJmAaLvDX9qTNAj/hwyS	mohamed	dhjd@gmail.com	uploads\\1745634382322-Capture d’écran 2024-12-12 155640.png	nouveau	2025-04-26 02:31:30.437286	Professor
-3f89087a-0f35-43a9-bca3-d441df394223	AB123456	\N	$2b$10$litQYGB9mWF8lvfmbaaUqerkaO1z5HvoSFdM8yxyX4zi19wCwo3PS	Ali Ben Salah	ali.salah@example.com	uploads\\1745636364638-Screenshot 2025-01-21 205954.png	Projet très important pour le département IT.	2025-04-26 03:04:33.449826	Supervisor
-F011	NJ0	\N	hashedpass	\N	student11@example.com	\N	\N	2024-03-15 00:00:00	student
-F031	NJ30	\N	hashedpass	\N	student12@example.com	\N	\N	2025-03-15 00:00:00	student
-F0341	NJ340	\N	hashedpass	\N	student14@example.com	\N	\N	2025-03-15 00:00:00	student
-F03412	NJ2340	\N	hashedpass	\N	student142@example.com	\N	\N	2025-03-15 00:00:00	student
-F03414	NJ3404	\N	hashedpass	\N	student144@example.com	\N	\N	2025-03-15 00:00:00	student
-71673502-4f3d-4dde-9879-fca92da6c983	AB12456	\N	$2b$10$XqtBCOLC45wLPJ.LfHbtduisMfEUJLW0Y2o2oaLSe5lOMUKaXlNI2	Omar Benjelloun	omar.benjelloun@example.com	\N	Professeur expérimenté en développement web.	2025-04-27 01:55:49.308871	coach
-54c5b83f-2a94-44a6-8001-af0a4cbeb645	CIN653232	\N	$2b$10$YCwD45yF0mw3CEmpqWWjeeMw.aRF4navXEx22sntGLkISq7bEVUui	hamza	hamza@gamil.com	uploads\\1745630775446-Screenshot 2025-01-21 150850.png	nouveau etudiant	2025-04-26 01:31:22.866761	student
-d8a7acb0-7f80-40da-b493-595c87b4d499	CIN65323	\N	$2b$10$6K.T.aXB7BUcS/fUwfKYtufnbCtrkH/hZV3Js..X/YmVAxDJMgVdi	ossma 	ossama@gamil.com	uploads\\1745714353151-Screenshot 2025-01-21 150850.png	nouveau etudiant	2025-04-27 00:44:23.510264	student
-13dae651-f693-4959-8930-738d0d8ed844	c12	\N	$2b$10$E2blC8XINfAZ.DAFv6UAqeO12y5XyByvcPxM8q5V4Nn/6.gsp9SK.	khaled	khaled13@gmail.com	uploads\\1745716437314-Capture d’écran 2024-12-12 155640.png	nouveau	2025-04-27 01:19:06.307434	Professor
-hdkdak	kzlflz	\N	$2b$10$XCZ3EcjDWRh5Ej59TVsqn.iwrrhKcHVED2QC5gY5msC823xA4REaG	\N	elouansaidisoukaina@gmail.com	\N	\N	2025-04-27 03:07:56.286762	admin
-M002	CIN002	0623456789	$2b$10$lXwUpW569qS9f4ICGYeTnOwR0k5mDC16gw3dz86tY9ot9I4FTloNO	Omar Étudiant	eloukili.nada@etu.uae.ac.ma	student.png	1ère année ingénierie	2025-04-23 20:11:38.736008	student
+COPY public.member (id_member, cin, phone, password, role, full_name, email, profile_picture, description, date_add) FROM stdin;
+M002	CIN002	0600000002	$2b$10$lXwUpW569qS9f4ICGYeTnOwR0k5mDC16gw3dz86tY9ot9I4FTloNO	admin	Soukaina Elouansaidi	elouansaidisoukaina@gmail.com	soukaina.jpg	Admin secondaire	2025-05-03 15:54:01.377623
+M003	\N	\N	pass	student	\N	email	\N	\N	2025-05-03 20:03:51.815812
+P004	AA123456	0600123456	$2b$10$lXwUpW569qS9f4ICGYeTnOwR0k5mDC16gw3dz86tY9ot9I4FTloNO	Professor	Youssef El Fassi	youssef.fassi@example.com	youssef.jpg	Étudiant en génie informatique	2025-05-03 23:02:42.749681
+S100	ST123456	0611122233	hashed_pwd123	student	Imane Benali	imane.benali@example.com	imane.jpg	Étudiante en 1ère année GI	2025-05-03 23:26:53.03388
+1e6edf29-9b83-4080-9963-31e50ddf46a8	c1245	\N	$2b$10$z3R5A1GlxbfWQURN0KVyeOpbhYdiZr/hCn93GDbC21MZ4l2iqpkhO	Professor	ghailani	ghailani@gmail.com	uploads\\1746403702580-R.png	nouveau	2025-05-05 00:13:36.967843
+da93bdeb-a589-4bd3-9138-a207f691c62b	CIN653	\N	$2b$10$vMk20kgZwo4VYWZsAmxXo.FtuUN/joMukeTbetOAsBlT18qIsp2MK	student	hamza 	hamza@gamil.com	uploads\\1746404178323-R.png	nouveau 	2025-05-05 00:21:32.703476
+4cf96e59-1cca-46b1-8cff-2bfa379b1e95	AB12456	\N	$2b$10$FJiwb6rA8GbqWoz24Iu./uFosB7FLhamWkOp3AQZrSX9tCajyEEd.	coach	Omar Benjelloun	omar.benjelloun@example.com	\N	Professeur expérimenté en développement web.	2025-05-05 10:28:29.096535
+c01e7026-20df-49b5-aa54-df62b1b0771f	AB123456	\N	$2b$10$2PNjO9Bl.a8HiqUkIZKdNO2lbTcmSl92gt54tSeNeUpw/.YZCyz36	Supervisor	Ali Ben Salah	ali.salah@example.com	uploads\\1746441778868-R.png	Projet très important pour le département IT.	2025-05-05 10:48:13.761072
+M001	CIN001	0600000001	$2b$10$lXwUpW569qS9f4ICGYeTnOwR0k5mDC16gw3dz86tY9ot9I4FTloNO	admin	Nada	eloukili.nada@etu.uae.ac.ma	nada.jpg	Admin principale	2025-05-03 15:54:01.377623
+\.
+
+
+--
+-- Data for Name: news; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.news (id_news, id_member, message, type, date) FROM stdin;
+11	M001	Création d’un nouveau programme de formation pour les étudiants.	\N	2025-05-03 19:49:01.69892
+12	M001	Mise à jour des informations de la salle B.	\N	2025-05-03 19:49:01.69892
+13	M001	Signalement d’un étudiant ayant perturbé le cours.	\N	2025-05-03 19:49:01.69892
+14	M002	Demande d’intervention pour du matériel pédagogique manquant.	\N	2025-05-03 19:49:01.69892
+15	M002	Suppression d’un compte utilisateur inactif.	\N	2025-05-03 19:49:01.69892
+16	M001	Création d’un nouveau programme de formation pour les étudiants.	admin	2025-05-03 20:17:35.255732
+17	M002	Mise à jour des informations de la salle B.	admin	2025-05-03 20:17:35.255732
+18	M002	Signalement d’un étudiant ayant perturbé le cours.	Professor	2025-05-03 20:17:35.255732
+19	M002	Demande d’intervention pour du matériel pédagogique manquant.	Professor	2025-05-03 20:17:35.255732
+20	M001	Suppression d’un compte utilisateur inactif.	admin	2025-05-03 20:17:35.255732
+21	M001	Création nouveau programme de formation pour les étudiants.	admin	2024-01-01 00:00:00
+23	M001	Création nouveau programme de formation pour les étudiants.	Professor	2024-01-01 00:00:00
 \.
 
 
@@ -410,7 +670,9 @@ M002	CIN002	0623456789	$2b$10$lXwUpW569qS9f4ICGYeTnOwR0k5mDC16gw3dz86tY9ot9I4FTl
 -- Data for Name: notifications; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.notifications (id_notification, content_notification, date_notification, id_member) FROM stdin;
+COPY public.notifications (id_notification, content_notification, date_notification, id_member, id_reporter) FROM stdin;
+2	I recommend scheduling a session with a licensed psychologist 	\N	da93bdeb-a589-4bd3-9138-a207f691c62b	\N
+3	 Important : vous devez venir demain à l'administration à 10h.  	\N	da93bdeb-a589-4bd3-9138-a207f691c62b	da93bdeb-a589-4bd3-9138-a207f691c62b
 \.
 
 
@@ -419,11 +681,7 @@ COPY public.notifications (id_notification, content_notification, date_notificat
 --
 
 COPY public.professor (id_member, department, code) FROM stdin;
-F001	Informatique	CODE001
-F002	Intelligence Artificielle	CODE002
-F003	Cybersécurité	CODE003
-21e2dc75-98b3-4f95-8a17-073b96634a86	\N	8725
-13dae651-f693-4959-8930-738d0d8ed844	\N	100
+1e6edf29-9b83-4080-9963-31e50ddf46a8	\N	100
 \.
 
 
@@ -448,7 +706,8 @@ COPY public.rate (id_rate, id_member) FROM stdin;
 --
 
 COPY public.report (id_reporter, id_reported, id_signal) FROM stdin;
-54c5b83f-2a94-44a6-8001-af0a4cbeb645	54c5b83f-2a94-44a6-8001-af0a4cbeb645	10
+da93bdeb-a589-4bd3-9138-a207f691c62b	da93bdeb-a589-4bd3-9138-a207f691c62b	1
+da93bdeb-a589-4bd3-9138-a207f691c62b	da93bdeb-a589-4bd3-9138-a207f691c62b	2
 \.
 
 
@@ -456,8 +715,9 @@ COPY public.report (id_reporter, id_reported, id_signal) FROM stdin;
 -- Data for Name: sector; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.sector (id_sector, sector_name, id_admin) FROM stdin;
-CI1	Année préparatoire 1	M002
+COPY public.sector (id_sector, description, id_admin) FROM stdin;
+SEC001	Filière Génie Informatique et Réseaux	M001
+CI1	Cycle d'Ingenieure 1	M001
 \.
 
 
@@ -465,28 +725,9 @@ CI1	Année préparatoire 1	M002
 -- Data for Name: signal; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.signal (id_signal, approved, message, anony, option_signal, prove, id_solution, id_member, date_add, solution_state) FROM stdin;
-SIG001	\N	\N	\N	\N	\N	\N	\N	2025-01-05	No Access Taken
-SIG002	\N	\N	\N	\N	\N	\N	\N	2025-01-12	No Access Taken
-SIG003	\N	\N	\N	\N	\N	\N	\N	2025-01-18	No Access Taken
-SIG004	\N	\N	\N	\N	\N	\N	\N	2025-01-23	No Access Taken
-SIG005	\N	\N	\N	\N	\N	\N	\N	2025-01-29	No Access Taken
-SIG006	\N	\N	\N	\N	\N	\N	\N	2025-02-03	No Access Taken
-SIG007	\N	\N	\N	\N	\N	\N	\N	2025-02-10	No Access Taken
-SIG008	\N	\N	\N	\N	\N	\N	\N	2025-02-14	No Access Taken
-SIG009	\N	\N	\N	\N	\N	\N	\N	2025-02-20	No Access Taken
-SIG010	\N	\N	\N	\N	\N	\N	\N	2025-02-25	No Access Taken
-SIG011	\N	\N	\N	\N	\N	\N	\N	2025-03-02	No Access Taken
-SIG012	\N	\N	\N	\N	\N	\N	\N	2025-03-08	No Access Taken
-SIG013	\N	\N	\N	\N	\N	\N	\N	2025-03-15	No Access Taken
-SIG014	\N	\N	\N	\N	\N	\N	\N	2025-03-22	No Access Taken
-SIG015	\N	\N	\N	\N	\N	\N	\N	2025-03-30	No Access Taken
-SIG016	\N	\N	\N	\N	\N	\N	\N	2025-04-01	No Access Taken
-SIG017	\N	\N	\N	\N	\N	\N	\N	2025-04-06	No Access Taken
-SIG018	\N	\N	\N	\N	\N	\N	\N	2025-04-12	No Access Taken
-SIG019	\N	\N	\N	\N	\N	\N	\N	2025-04-18	No Access Taken
-SIG020	\N	\N	\N	\N	\N	\N	\N	2025-04-24	No Access Taken
-10	\N	nouveau	\N	tricher	\N	\N	\N	2025-04-27	No Access Taken
+COPY public.signal (id_signal, approved, message, anony, option_signal, id_solution, id_member, date_add, solution_state) FROM stdin;
+2	f	signal2	\N	\N	\N	\N	2025-03-11	\N
+1	f	signal 	\N	\N	2	\N	2025-05-05	in progress
 \.
 
 
@@ -494,8 +735,13 @@ SIG020	\N	\N	\N	\N	\N	\N	\N	2025-04-24	No Access Taken
 -- Data for Name: skill; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.skill (skill_name, desciption_skill, question1, question2, question3, id_admin) FROM stdin;
-Communication	Compétence permettant de transmettre	Quelles sont les qualités essentielles d'un bon communicant ?	Comment adapter sa communication en fonction de son interlocuteur ?	Pourquoi l'écoute active est-elle importante dans une conversation ?	M002
+COPY public.skill (skill_name, description_skill, question1, question2, question3, id_admin) FROM stdin;
+Communication	Ability to convey ideas clearly and understandably.	Does this person express their ideas clearly and understandably?	Do they listen actively and let others finish speaking?	Do they adapt their communication style depending on the audience?	M001
+Teamwork	Ability to collaborate and contribute effectively in group settings.	Does this person collaborate effectively with teammates?	Are they open to others’ ideas and feedback?	Do they support the team in achieving common goals?	M001
+Problem-solving	Ability to address challenges analytically and effectively.	Does this person approach problems calmly and analytically?	Do they contribute useful solutions when challenges arise?	Are they willing to seek help or input when needed?	M001
+Time Management	Skill in prioritizing and managing tasks efficiently.	Does this person prioritize tasks effectively to meet deadlines?	Does this person allocate time appropriately across multiple responsibilities?	Does this person avoid unnecessary delays or procrastination?	M001
+Critical Thinking	Capacity to analyze and evaluate information constructively.	Does this person analyze information carefully before forming conclusions?	Does this person question assumptions or challenge ideas constructively?	Does this person evaluate the strengths and weaknesses of arguments or solutions?	M001
+Creativity	Ability to generate and explore innovative ideas and solutions.	Does this person generate original or innovative ideas?	Does this person approach tasks with imagination or out-of-the-box thinking?	Does this person explore multiple possibilities before settling on a solution?	M001
 \.
 
 
@@ -503,27 +749,11 @@ Communication	Compétence permettant de transmettre	Quelles sont les qualités e
 -- Data for Name: skill_evaluation; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.skill_evaluation (id_evaluation, note_evaluation, type_evaluation, comment_evaluation, id_internship, id_class, id_team, id_student, id_evaluator, skill_name, date_add) FROM stdin;
-9	\N	Self	\N	\N	\N	\N	F010	F010	\N	2025-04-24
-10	\N	Professor	\N	\N	\N	\N	F010	F003	\N	2025-04-24
-11	13	Pair	Participation correcte aux travaux de groupe	\N	\N	\N	\N	\N	\N	2024-03-05
-12	15.5	Professor	Bonne compréhension du sujet	\N	\N	\N	\N	\N	\N	2024-03-12
-13	17	Supervisor	Respect des délais et bonne communication	\N	\N	\N	\N	\N	\N	2024-03-20
-14	11.5	Self	Des efforts restent à faire	\N	\N	\N	\N	\N	\N	2024-03-27
-15	\N	\N	\N	\N	\N	\N	\N	F001	\N	2025-03-24
-16	\N	\N	\N	\N	\N	\N	\N	F002	\N	2025-03-24
-17	\N	\N	\N	\N	\N	\N	\N	F003	\N	2025-03-24
-18	\N	\N	\N	\N	\N	\N	\N	F004	\N	2025-03-24
-19	\N	Self	\N	\N	\N	\N	\N	\N	\N	2024-04-01
-20	\N	Self	\N	\N	\N	\N	\N	\N	\N	2024-04-05
-21	\N	Self	\N	\N	\N	\N	\N	\N	\N	2024-04-10
-22	\N	Self	\N	\N	\N	\N	\N	\N	\N	2024-04-15
-23	\N	Self	\N	\N	\N	\N	\N	\N	\N	2000-01-01
-29	14.5	Self	Très bonne auto-évaluation.	\N	\N	\N	F010	F010	\N	2025-04-26
-30	16	Self	Bonne compréhension des concepts.	\N	\N	\N	F010	F010	\N	2025-04-26
-31	15	Self	Travail d'équipe efficace.	\N	\N	\N	F010	F010	\N	2025-04-26
-32	13.5	Self	Peut améliorer la présentation.	\N	\N	\N	F010	F010	\N	2025-04-26
-33	17	Self	Excellente implication dans le projet.	\N	\N	\N	F010	F010	\N	2025-04-26
+COPY public.skill_evaluation (id_evaluation, note_evaluation, type_evaluation, comment_evaluation, id_internship, id_class, id_team, id_student, id_evaluator, date_add, evaluation_context) FROM stdin;
+7	4.7	Professor	Bonne participation en classe	\N	CLS001	\N	S100	P004	2025-05-03	class
+8	4.7	Professor	Bonne participation en classe	\N	CLS001	\N	S100	P004	2025-05-03	class
+4	17.2	Professor	Très bon travail.	\N	GINF1	\N	M001	M002	2025-05-03	\N
+3	17.2	Professor	Très bon travail.	\N	GINF1	\N	da93bdeb-a589-4bd3-9138-a207f691c62b	M001	2025-05-03	\N
 \.
 
 
@@ -532,7 +762,8 @@ COPY public.skill_evaluation (id_evaluation, note_evaluation, type_evaluation, c
 --
 
 COPY public.solution (id_solution, option_solution, subject_solution, periode, state) FROM stdin;
-20	Tutoring Support	\N	\N	New
+1	therapy_recommended	therapy_recommended..	\N	New
+2	Tutoring Support	L'étudiant a été orienté vers un coach pour suivi psychologique.	\N	New
 \.
 
 
@@ -541,9 +772,10 @@ COPY public.solution (id_solution, option_solution, subject_solution, periode, s
 --
 
 COPY public.student (id_member, cne, id_class) FROM stdin;
-F010	CNE123456	\N
-54c5b83f-2a94-44a6-8001-af0a4cbeb645	lc234	GINF1
-d8a7acb0-7f80-40da-b493-595c87b4d499	p137634	GINF1
+M001	\N	\N
+M002	\N	\N
+S100	CNE789456	CLS001
+da93bdeb-a589-4bd3-9138-a207f691c62b	p1373	GINF1
 \.
 
 
@@ -552,7 +784,7 @@ d8a7acb0-7f80-40da-b493-595c87b4d499	p137634	GINF1
 --
 
 COPY public.supervise (id_supervisor, id_student, id_internship) FROM stdin;
-3f89087a-0f35-43a9-bca3-d441df394223	54c5b83f-2a94-44a6-8001-af0a4cbeb645	Développement Web
+c01e7026-20df-49b5-aa54-df62b1b0771f	da93bdeb-a589-4bd3-9138-a207f691c62b	1
 \.
 
 
@@ -561,7 +793,7 @@ COPY public.supervise (id_supervisor, id_student, id_internship) FROM stdin;
 --
 
 COPY public.supervisor (id_member, registration_number, company, "position") FROM stdin;
-3f89087a-0f35-43a9-bca3-d441df394223	0600123456	Tech Solutions	Senior Engineer
+c01e7026-20df-49b5-aa54-df62b1b0771f	0600123456	Tech Solutions	Senior Engineer
 \.
 
 
@@ -570,8 +802,8 @@ COPY public.supervisor (id_member, registration_number, company, "position") FRO
 --
 
 COPY public.teach (id_member, id_class, course) FROM stdin;
-13dae651-f693-4959-8930-738d0d8ed844	GINF1	Mathématiques
-13dae651-f693-4959-8930-738d0d8ed844	GIND1	Programmation
+1e6edf29-9b83-4080-9963-31e50ddf46a8	GINF1	Mathématiques
+1e6edf29-9b83-4080-9963-31e50ddf46a8	GIND1	Programmation
 \.
 
 
@@ -592,10 +824,66 @@ COPY public.team_student (id_team, student_id) FROM stdin;
 
 
 --
+-- Name: internship_id_internship_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.internship_id_internship_seq', 1, true);
+
+
+--
+-- Name: news_id_news_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.news_id_news_seq', 23, true);
+
+
+--
+-- Name: notifications_id_notification_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.notifications_id_notification_seq', 3, true);
+
+
+--
+-- Name: project_id_project_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.project_id_project_seq', 1, false);
+
+
+--
+-- Name: rate_id_rate_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.rate_id_rate_seq', 1, false);
+
+
+--
+-- Name: signal_id_signal_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.signal_id_signal_seq', 2, true);
+
+
+--
 -- Name: skill_evaluation_id_evaluation_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.skill_evaluation_id_evaluation_seq', 33, true);
+SELECT pg_catalog.setval('public.skill_evaluation_id_evaluation_seq', 8, true);
+
+
+--
+-- Name: solution_id_solution_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.solution_id_solution_seq', 2, true);
+
+
+--
+-- Name: team_id_team_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.team_id_team_seq', 1, false);
 
 
 --
@@ -620,6 +908,14 @@ ALTER TABLE ONLY public.class
 
 ALTER TABLE ONLY public.coach
     ADD CONSTRAINT coach_pkey PRIMARY KEY (id_member);
+
+
+--
+-- Name: evaluations evaluations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.evaluations
+    ADD CONSTRAINT evaluations_pkey PRIMARY KEY (id_evaluation, skill_name);
 
 
 --
@@ -660,6 +956,14 @@ ALTER TABLE ONLY public.member
 
 ALTER TABLE ONLY public.member
     ADD CONSTRAINT member_pkey PRIMARY KEY (id_member);
+
+
+--
+-- Name: news news_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.news
+    ADD CONSTRAINT news_pkey PRIMARY KEY (id_news);
 
 
 --
@@ -839,6 +1143,22 @@ ALTER TABLE ONLY public.coach
 
 
 --
+-- Name: evaluations evaluations_id_evaluation_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.evaluations
+    ADD CONSTRAINT evaluations_id_evaluation_fkey FOREIGN KEY (id_evaluation) REFERENCES public.skill_evaluation(id_evaluation);
+
+
+--
+-- Name: evaluations evaluations_skill_name_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.evaluations
+    ADD CONSTRAINT evaluations_skill_name_fkey FOREIGN KEY (skill_name) REFERENCES public.skill(skill_name);
+
+
+--
 -- Name: follow_up follow_up_id_coach_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -863,11 +1183,27 @@ ALTER TABLE ONLY public.follow_up
 
 
 --
+-- Name: news news_id_member_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.news
+    ADD CONSTRAINT news_id_member_fkey FOREIGN KEY (id_member) REFERENCES public.member(id_member);
+
+
+--
 -- Name: notifications notifications_id_member_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.notifications
     ADD CONSTRAINT notifications_id_member_fkey FOREIGN KEY (id_member) REFERENCES public.member(id_member);
+
+
+--
+-- Name: notifications notifications_id_reporter_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.notifications
+    ADD CONSTRAINT notifications_id_reporter_fkey FOREIGN KEY (id_reporter) REFERENCES public.member(id_member);
 
 
 --
@@ -931,7 +1267,7 @@ ALTER TABLE ONLY public.sector
 --
 
 ALTER TABLE ONLY public.signal
-    ADD CONSTRAINT signal_id_member_fkey FOREIGN KEY (id_member) REFERENCES public.admin(id_member);
+    ADD CONSTRAINT signal_id_member_fkey FOREIGN KEY (id_member) REFERENCES public.member(id_member);
 
 
 --
@@ -983,19 +1319,19 @@ ALTER TABLE ONLY public.skill_evaluation
 
 
 --
--- Name: skill_evaluation skill_evaluation_skill_name_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.skill_evaluation
-    ADD CONSTRAINT skill_evaluation_skill_name_fkey FOREIGN KEY (skill_name) REFERENCES public.skill(skill_name);
-
-
---
 -- Name: skill skill_id_admin_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.skill
     ADD CONSTRAINT skill_id_admin_fkey FOREIGN KEY (id_admin) REFERENCES public.admin(id_member);
+
+
+--
+-- Name: student student_id_class_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.student
+    ADD CONSTRAINT student_id_class_fkey FOREIGN KEY (id_class) REFERENCES public.class(id_class);
 
 
 --

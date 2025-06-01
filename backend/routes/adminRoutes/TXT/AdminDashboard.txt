@@ -68,3 +68,13 @@
                      - Chaque nombre(integer) correspond au nombre des signales soumises dans un mois précis.
                      - Ordre exacte : Septembre (9), Octobre (10), Novembre (11), Décembre (12), Janvier (1), Février (2), Mars (3), Avril (4), Mai (5), Juin (6)
   STATUT : 200 OK , 500 SERVER ERROR
+
+11-Function:  
+  ROUTE:    http://localhost:3000/api/DashAdmin/total_evaluation
+  A DONNE PAR FRONT : rien
+  A DONNE PAR BACK : - La route retourne un objet (data) 
+                     - data : est une liste de 10 lignes.
+                     -chaque ligne a 4 ligne : 1ere ligne (Pair) , 2eme (Self), 3eme (Supervisor), 4eme (Professor) 
+                     - Chaque nombre(integer) correspond au nombre des signales soumises dans un mois précis.
+                     - Ordre exacte : Septembre (9), Octobre (10), Novembre (11), Décembre (12), Janvier (1), Février (2), Mars (3), Avril (4), Mai (5), Juin (6)
+  STATUT : 200 OK , 500 SERVER ERROR

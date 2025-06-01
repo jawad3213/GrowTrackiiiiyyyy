@@ -46,17 +46,17 @@ async function copyDatabase() {
   
     
     console.log("🔄 Suppression de l'ancienne base locale...");
-    await localDB.query("DROP DATABASE IF EXISTS test;");
+    await localDB.query("DROP DATABASE IF EXISTS skills;");
 
     
     console.log("🔄 Création de la base locale...");
-    await localDB.query("CREATE DATABASE test;");
+    await localDB.query("CREATE DATABASE skills;");
 
     
     
     console.log("🔄 Restauration de la base en local...");
     await new Promise((resolve, reject) => {
-      exec(`psql -U postgres -d test -f ${dumpFile}`, (error, stdout, stderr) => {
+      exec(`psql -U postgres -d skills -f ${dumpFile}`, (error, stdout, stderr) => {
         if (error) {
           console.error("❌ Erreur lors de la restauration : ${error.message}");
           reject(error);

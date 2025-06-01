@@ -230,28 +230,19 @@
     {
       title: "Menu",
       items: [
-        { icon: GridIcon, name: "Dashboard", path: "/DashboardProf" },
+        { icon: GridIcon, name: "Dashboard", path: "/dashstud" },
         { 
           icon: UserAdd, 
-          name: "Evaluation",
+          name: "Evaluations",
           subItems: [
-            { name: "Classes", path: "/ClassesEval" },
-            { name: "History", path: "/HistoriqueEval" },
+            { name: "Projects", path: "/StudProjects" },
+            { name: "History Of Evaluations", path: "/StudEvals" },
+            { name: "History Of Signals", path: "/StudSignals" },
           ],
         },
-        { icon: UserSittings, name: "Project Management", path: "/ProjectMang" },
-        { 
-          name: "Signal", 
-          icon: PageIcon,
-          subItems: [
-            { name: "Classes", path: "/ClassesSignal" },
-            { name: "History", path: "/HistoriqueSignal" },
-          ]
-        },
-        { 
-          name: "Notification", icon: PageIcon, path : "/Notification" },
-          { 
-            name: "Rapport", icon: PageIcon, path : "/Rapport" },
+        { icon: UserSittings, name: "Self Evaluation", path: "/selfEval" },
+        { name: "Notifications", icon: PageIcon, path : "/StudNotif" },
+        { name: "Rapport", icon: PageIcon, path : "/StudRapport" },
       ]
     }
   ];

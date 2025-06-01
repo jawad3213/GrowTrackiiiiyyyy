@@ -33,10 +33,10 @@ async (req , res) =>{
       console.log(user)
       if(user){
       const Access_Token = JWT.sign(
-          { id: user.id_member, role: user.role, },
+          { id: user.id_member, role: user.role,name: user.full_name },
           process.env.ACCESS_SECRET,
           { expiresIn: '15m'})
-
+      console.log(Access_Token)
       const refresh_token = JWT.sign(
           {id: user.id_member, type:"refresh"}
           ,process.env.REFRESH_SECRET,
