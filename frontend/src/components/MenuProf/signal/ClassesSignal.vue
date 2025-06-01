@@ -119,8 +119,8 @@ const levels = {
   AP1: ['TD1', 'TD2', 'TD3', 'TD4', 'TD5'],
   AP2: ['TD1', 'TD2', 'TD3', 'TD4', 'TD5'],
   CI1: ['GINF1', 'GCYS1', 'GIND1', 'GSTR1'],
-  CI2: ['GINF1', 'GCYS1', 'GIND1', 'GSTR1'],
-  CI3: ['GSTR1', 'GCYS1', 'GIND1', 'GSTR1']
+  CI2: ['GINF2', 'GCYS2', 'GIND2', 'GSTR2'],
+  CI3: ['GINF3', 'GCYS3', 'GIND3', 'GSTR3']
 }
 
 function selectClasse(classe) {
@@ -131,7 +131,7 @@ function selectClasse(classe) {
 
 async function fetchStudents(classe) {
   try {
-    const res = await axios.get(`http://localhost:3001/students?classe=${classe}`)
+    const res = await axios.get(`http://localhost:3001/studentss?classe=${classe}&level=${selectedlevel.value}`)
     console.log("✅ Données reçues :", res.data)
     displayedStudents.value = Array.isArray(res.data) ? res.data : []
   } catch (err) {

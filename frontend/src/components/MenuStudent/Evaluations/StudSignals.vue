@@ -114,6 +114,5 @@ import ProfLayout from '@/components/layout/ProfLayout.vue'
   
   const viewSignal = (id) => {
     router.push(`/SolutionSignal?id=${id}`)
-  }
-  </script>
-  
+}
+</script>
