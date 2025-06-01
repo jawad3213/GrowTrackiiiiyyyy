@@ -11,11 +11,15 @@ const {authlimiter} = require('../middlewares/Limiter')
 exports.Login =
 
 async (req , res) =>{
+  console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+  const errors = validationResult(req);
   const {password, email} = req.body;
+
   try {
       const user = await authModel.LoginModel(email, password);
+      console.log("user", user);
       if(user){
-      authlimiter.resetKey(req.ip);
+      
       const Access_Token = JWT.sign(
           { id: user.id_member, role: user.role, fullname: user.fullname },
           process.env.ACCESS_SECRET,

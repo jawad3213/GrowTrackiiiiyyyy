@@ -2,7 +2,7 @@ const pool = require("../config/db");
 const bcrypt = require('bcrypt');
 
 
-exports.LoginModel = async (email, password) => {
+exports.LoginModel = async (email, password) => { 
     const result = await pool.query(
         "SELECT * FROM public.member WHERE email=$1",
         [email]

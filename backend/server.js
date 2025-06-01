@@ -7,7 +7,7 @@
  * - Toutes les routes regroupées par domaine
  * -------------------------------------------------------------
  */
-
+const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const express = require('express');

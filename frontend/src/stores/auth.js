@@ -17,7 +17,7 @@ export const useAuthStore = defineStore('auth',() =>
         /*
         actions
         */
-        async function Login(email , password, RememberMe){
+        async function Login(email , password){
             loading.value = true
             try {
                 const response = await api.post('/api/auth/login', {email , password}); //api url !! //envoi de l'objet 
