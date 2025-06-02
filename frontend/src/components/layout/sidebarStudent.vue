@@ -230,11 +230,7 @@
     {
       title: "Menu",
       items: [
-<<<<<<< Updated upstream
-        { icon: GridIcon, name: "Dashboard", path: "/dashstud" },
-=======
         { icon: GridIcon, name: "Dashboard", path: "/DashboardProf" },
->>>>>>> Stashed changes
         { 
           icon: UserAdd, 
           name: "Evaluations",
@@ -244,11 +240,7 @@
             { name: "History Of Signals", path: "/StudSignals" },
           ],
         },
-<<<<<<< Updated upstream
-        { icon: UserSittings, name: "Self Evaluation", path: "/selfEval" },
-=======
         { icon: UserSittings, name: "Self Evaluation", path: "/SelfEval" },
->>>>>>> Stashed changes
         { name: "Notifications", icon: PageIcon, path : "/StudNotif" },
         { name: "Rapport", icon: PageIcon, path : "/StudRapport" },
       ]

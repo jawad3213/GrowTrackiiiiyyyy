@@ -82,8 +82,7 @@ app.use("/api/GlobalOverView", EvaluationAdminRoute)
 
 
 //Global Over View
-const contactus = require("./routes/contactusRoute");
-app.use("/api/contactus", contactus)
+
 
 //prof_Evaluation history
 const prof_evaluation_history = require("./routes/professorRoutes/Evaluation_Route_history");
