@@ -72,6 +72,7 @@ import StudNotif from "./components/MenuStudent/StudNotif.vue";
 import StudSolution from "./components/MenuStudent/StudSolution.vue";
 import StudReason from "./components/MenuStudent/StudReason.vue";
 import selfEval from "./components/MenuStudent/selfEval.vue";
+import Team from "./components/Team.vue";
 
 
 
@@ -82,9 +83,9 @@ const routes = [
         path: '/'
     },
     {
-        name: 'AboutUs',
-        component: AboutUs,
-        path: '/AboutUs'
+        name: "OurTeam",
+        component: Team,
+        path:"/OurTeam",
     },
     {
         name: 'ContactUs',
