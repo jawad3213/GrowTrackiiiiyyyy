@@ -1,9 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const DashController = require('../../controllers/adminControllers/AdminDashboardController.js');
+const verifyRolee = require('../../middlewares/verificationRole');
+const {verifyToken}=require('../../middlewares/VerifyToken')
+
+ router.use(verifyToken)
+ router.use(verifyRolee("admin"))
 
 //fonction donne totalite des membres dans le mois
-router.get('/Total_User',DashController.Total_User);
+router.get('/Total_User', DashController.Total_User);
 //fonction donne diifrenece entre user le mois avant et ce mois ci
 router.get('/Stat_User',DashController.differenceUserController);
 

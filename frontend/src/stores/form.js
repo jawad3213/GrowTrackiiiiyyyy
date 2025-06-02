@@ -24,24 +24,50 @@ export const useFormStore = defineStore('form', () => {
     try {
       const res = await api.post(endpoint, data)
       success.value = 'Submitted successfully'
-
-      // Si une fonction de rappel est passée, on lui donne res.data
+      errors.value=null;
       if (onSuccess) onSuccess(res.data)
-
     } catch (err) {
-      error.value = err.response?.data?.message || 'Submission failed'
+      error.value = err.response?.data?.message || err.response?.data?.error || "Couldn't submit the form. Please retry again later"
+      const result = {}
+      err.response?.data?.errors?.forEach(e => {
+      result[e.path] = e.msg
+      })
+      errors.value = result
+    } finally {
+      loading.value = false
+    }
+  }
+
+async function Update(endpoint, data, onSuccess = null) {
+    loading.value = true
+    error.value = null
+    success.value = null
+
+    try {
+      const res = await api.patch(endpoint, data)
+      success.value = 'Submitted successfully'
+      errors.value=null;
+      if (onSuccess) onSuccess(res.data)
+    } catch (err) {
+      error.value = err.response?.data?.message || err.response?.data?.error || "Couldn't submit the form. Please retry again later"
+      const result = {}
+      err.response?.data?.errors?.forEach(e => {
+      result[e.path] = e.msg
+      })
+      errors.value = result
     } finally {
       loading.value = false
     }
   }
 
 
-  async function validateWithSchema(data, schema) {
+  async function validateWithSchema(data, schema) { 
     try {
       await schema.validate(data, { abortEarly: false })
       errors.value = {} 
       return true
     } catch (err) {
+      console.log(err)
       const result = {}
       err.inner.forEach(e => {
         result[e.path] = e.message
@@ -67,15 +93,19 @@ export const useFormStore = defineStore('form', () => {
     success.value = null
     errors.value = {}
   }
+// 3melt hadxi li maji hnaya because mafiya li y creayi store jdid 3la functionality wahda :)
+  const SelectedObj = ref(null);
 
   return {
     loading,
     error,
+    SelectedObj,
     success,
     errors,
     submitForm,
     clearStatus,
     validateWithSchema,
-    sanitizeInputs
+    sanitizeInputs,
+    Update
   }
 })

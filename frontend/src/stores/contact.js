@@ -18,6 +18,7 @@ export const useContactStore = defineStore('contact', () => { //creer un store a
         try {
             const response = await api.post('/api/contactus/', payload)
             success.value = 'Message sent successfully!'
+            error.value = null;
         } catch (err) {
             error.value = err.response?.data?.message || 'Error while sending. Please try again.'
         } finally {

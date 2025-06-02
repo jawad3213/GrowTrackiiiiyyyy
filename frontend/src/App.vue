@@ -11,8 +11,16 @@
 import ThemeProvider from './components/layout/ThemeProvider.vue'
 import SidebarProvider from './components/layout/SidebarProvider.vue'
 
-/* import { onMounted} from 'vue';
-import { useAuthStore} from './stores/auth';
-const store = useAuthStore();
-onMounted(async ()=> {await store.fetchUser()}) //on fait appelle a fetchUser dés que l'application est montée */
+
 </script>
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

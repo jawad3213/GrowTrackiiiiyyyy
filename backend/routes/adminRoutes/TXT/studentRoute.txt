@@ -1,0 +1,152 @@
+Documentation des routes `student`
+
+---
+
+# Routes `student`
+
+### 1 - Création d'un étudiant
+ROUTE : http://localhost:3000/api/student/
+
+A DONNÉ PAR FRONT :
+- Body (format JSON) :
+  - name : (string) nom complet
+  - cin : (string) CIN
+  - cne : (string) CNE
+  - email : (string) adresse email
+  - pass : (string) mot de passe
+  - field : (string) id de la classe (id_class)
+  - note : (string) description ou remarque
+- Fichier :
+  - profile_picture : (fichier image optionnel)
+
+A DONNÉ PAR BACK :
+- La route retourne un objet JSON :
+  - message : (string) "Student created successfully."
+  - data : (objet) informations du nouvel étudiant
+
+---
+
+### 2 - Récupération de tous les étudiants
+ROUTE : http://localhost:3000/api/student/
+
+A DONNÉ PAR FRONT :
+- rien
+
+A DONNÉ PAR BACK :
+- La route retourne :
+  - message : (string) "Students retrieved successfully."
+  - data : (array d'objets) liste des étudiants :
+    - cne, full_name, cin, email, id_sector, id_class, profile_picture, date_add
+
+---
+
+### 3 - Rechercher un étudiant par son CIN
+ROUTE : http://localhost:3000/api/student/search
+
+A DONNÉ PAR FRONT :
+- Body (format JSON) :
+  - cin : (string) CIN de l'étudiant à chercher
+
+A DONNÉ PAR BACK :
+- Si trouvé :
+  - message : (string) "Student retrieved successfully."
+  - data : (objet) informations de l'étudiant
+- Sinon :
+  - message : (string) "Student not found."
+
+---
+
+### 4 - Mise à jour d'un étudiant
+ROUTE : http://localhost:3000/api/student/:id_student
+
+A DONNÉ PAR FRONT :
+- Params :
+  - id_student : (string) identifiant de l'étudiant
+- Body (format JSON) :
+  - Un ou plusieurs champs à mettre à jour parmi :
+    - full_name, cin, email, password, role, description, profile_picture (member)
+    - cne, id_class (student)
+
+A DONNÉ PAR BACK :
+- La route retourne :
+  - message : (string) "Student updated successfully."
+  - data : (objet) informations mises à jour
+
+---
+
+### 5 - Suppression d'un étudiant
+ROUTE : http://localhost:3000/api/student/:id_student
+
+A DONNÉ PAR FRONT :
+- Params :
+  - id_student : (string) identifiant de l'étudiant
+
+A DONNÉ PAR BACK :
+- Si suppression réussie :
+  - message : (string) "Student deleted successfully."
+- Sinon :
+  - message : (string) "Student not found."
+
+---
+
+### 6 - Récupération du nombre total d'étudiants
+ROUTE : http://localhost:3000/api/student/total
+
+A DONNÉ PAR FRONT :
+- rien
+
+A DONNÉ PAR BACK :
+- La route retourne :
+  - message : (string) "Total number of students retrieved successfully."
+  - data : (integer) nombre total d'étudiants
+
+---
+
+### 7 - Récupération des étudiants par classe
+ROUTE : http://localhost:3000/api/student/class
+
+A DONNÉ PAR FRONT :
+- Body (format JSON) :
+  - classe : (string) identifiant de la classe (id_class)
+
+A DONNÉ PAR BACK :
+- La route retourne :
+  - message : (string) "Students retrieved successfully by class."
+  - data : (array d'objets) liste des étudiants de la classe
+
+---
+
+### 8 - Récupération des étudiants par secteur
+ROUTE : http://localhost:3000/api/student/sector
+
+A DONNÉ PAR FRONT :
+- Body (format JSON) :
+  - sector : (string) identifiant du secteur (id_sector)
+
+A DONNÉ PAR BACK :
+- La route retourne :
+  - message : (string) "Students retrieved successfully by sector."
+  - data : (array d'objets) liste des étudiants du secteur
+
+---
+
+# Résumé rapide
+
+| Route | Méthode | Action |
+|:------|:--------|:-------|
+| / | POST | Créer un étudiant |
+| / | GET | Liste de tous les étudiants |
+| /search | POST | Chercher un étudiant par CIN |
+| /:id_student | PATCH | Mettre à jour un étudiant |
+| /:id_student | DELETE | Supprimer un étudiant |
+| /total | GET | Nombre total d'étudiants |
+| /class | POST | Liste d'étudiants par classe |
+| /sector | POST | Liste d'étudiants par secteur |
+
+---
+
+# Remarques importantes
+- Les images de profil sont stockées en chemin relatif et doivent être traitées par le front (ex: `http://localhost:8080/` + chemin relatif).
+- Lors de la mise à jour, seuls les champs modifiés doivent être envoyés.
+- La suppression enlève les données de `student` puis de `member`.
+

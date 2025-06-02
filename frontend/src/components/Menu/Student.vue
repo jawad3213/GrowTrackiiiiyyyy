@@ -27,59 +27,62 @@
               <tr>
                 <th class="py-3 px-4 text-left text-sm font-semibold">Full Name</th>
                 <th class="py-3 px-4 text-left text-sm font-semibold">CIN</th>
-                <th class="py-3 px-4 text-left text-sm font-semibold">Email</th>
+                <th class="py-3 px-4 text-left text-sm font-semibold">Email Address</th>
                 <th class="py-3 px-4 text-left text-sm font-semibold">Field</th>
-                <th class="py-3 px-4 text-left text-sm font-semibold">Year</th>
-                <th class="py-3 px-4 text-left text-sm font-semibold">Notes</th>
+                <th class="py-3 px-4 text-left text-sm font-semibold">Registration Date</th>
+                <th class="py-3 px-4 text-left text-sm font-semibold">Group</th>
                 <th class="py-3 px-4 text-center text-sm font-semibold">Actions</th>
               </tr>
             </thead>
             <tbody>
               <tr
                 v-for="student in students"
-                :key="student.id"
+                :key="student.cin"
                 class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
-              >
-                <td class="py-3 px-4">{{ student.fullName }}</td>
+              >  
+                <td class="py-3 px-4">{{ student.full_name }}</td>   
                 <td class="py-3 px-4">{{ student.cin }}</td>
                 <td class="py-3 px-4">{{ student.email }}</td>
-                <td class="py-3 px-4">{{ student.field }}</td>
-                <td class="py-3 px-4">{{ student.year }}</td>
-                <td class="py-3 px-4">{{ student.notes }}</td>
+                <td class="py-3 px-4">{{ student.id_class }} </td>
+                <td class="py-3 px-4">{{new Date(student.date_add).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric'  })}}</td>
+                <td class="py-3 px-4">{{ student.id_sector }} </td>
                 <td class="py-3 px-4 flex justify-center space-x-2">
-                  <router-link :to="`/AddStudent/${student.id}`" class="text-blue-500 hover:text-blue-700">✏️</router-link>
-                  <router-link :to="`/DeleteStudent/${student.id}`" class="text-red-500 hover:text-red-700">🗑️</router-link>
+                  <router-link :to="`/AddStudent/${student.cin}`" class="text-blue-500 hover:text-blue-700">✏️</router-link>
+                  <router-link :to="`/DeleteStudent/${student.id_member}`" class="text-red-500 hover:text-red-700">🗑️</router-link>
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
-
         <!-- Si pas d'étudiants -->
         <div v-else class="flex-1 flex flex-col items-center justify-center text-center text-gray-600 dark:text-gray-300 py-10">
           <div class="text-5xl mb-4">🔍</div>
           <p class="text-lg font-semibold mb-2">No student defined</p>
           <p class="mb-6">You haven’t set up any student yet.</p>
         </div>
-
       </main>
     </div>
   </admin-layout>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import AdminLayout from '../layout/AdminLayout.vue'
-import axios from 'axios'
+import api from '@/services/api'
 
-const students = ref([])
+const students = ref([{}])
+
 
 const fetchStudents = async () => {
-  const res = await axios.get('http://localhost:3001/students')
-  students.value = res.data
+  try {
+  const res = await api.get('/admin/students')
+  students.value = res.data.data
+  } catch (err) {
+    console.log('Something went wrong while trying to fetch the student!' ,err)
+  }
 }
 
-onMounted(() => {
+onMounted(async() => {
   fetchStudents()
 })
 </script>

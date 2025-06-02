@@ -17,7 +17,7 @@
         <!-- Field name -->
         <div>
           <label class="block text-sm font-medium text-gray-700">Field name *</label>
-          <input v-model="field.name" type="text" placeholder="AP1, AP2, CI1..."
+          <input v-model="Field.field" type="text" placeholder="AP1, AP2, CI1..."
             class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" />
           <p v-if="errors.name" class="text-red-500 text-xs mt-1">{{ errors.name }}</p>
         </div>
@@ -25,16 +25,16 @@
         <!-- Field description -->
         <div>
           <label class="block text-sm font-medium text-gray-700">Field description</label>
-          <textarea v-model="field.description" rows="3" placeholder="e.g. Description of the field"
+          <textarea v-model="Field.description" rows="3" placeholder="e.g. Description of the Field"
             class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"></textarea>
         </div>
 
-        <!-- Dynamic Classes -->
+        <!-- Dynamic classe -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Add Class *</label>
           <div class="space-y-2">
-            <div v-for="(cls, index) in field.classes" :key="index" class="flex gap-2 items-center">
-              <input v-model="field.classes[index]" type="text" placeholder="e.g. GINF1"
+            <div v-for="(cls, index) in Field.classe" :key="index" class="flex gap-2 items-center">
+              <input v-model="Field.classe[index]" type="text" placeholder="e.g. GINF1"
                 class="flex-1 px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" />
               <button v-if="index > 0" @click.prevent="removeClass(index)" type="button"
                 class="text-red-500 hover:text-red-700 text-sm">✖</button>
@@ -66,17 +66,22 @@
 <script setup>
 import { ref } from 'vue'
 import { useFormStore } from '@/stores/form'
+import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
 
+
+
 const formStore = useFormStore()
+const authStore = useAuthStore()
 const router = useRouter()
 
 const isOpen = ref(true)
 
-const field = ref({
-  name: '',
+const Field = ref({
+  field: '',
   description: '',
-  classes: ['']
+  classe: [''],
+  id_admin: authStore.ID
 })
 
 const errors = ref({})
@@ -87,22 +92,26 @@ function closeModal() {
 }
 
 function addClass() {
-  field.value.classes.push('')
+  Field.value.classe.push('')
 }
 
 function removeClass(index) {
-  field.value.classes.splice(index, 1)
+  Field.value.classe.splice(index, 1)
 }
 
-async function submitForm() {
-  const { valid, errors: formErrors } = formStore.validateForm(field.value, ['name'])
-  errors.value = formErrors
-  if (!valid) return
-
-  await formStore.submitForm('/addfield', field.value, () => {
-    closeModal()
-  })
-}
-
+  async function submitForm() {
+    try {
+      const sanitizedData = formStore.sanitizeInputs(Field.value)
+      await formStore.submitForm('/admin/class/create', sanitizedData, () => {
+      closeModal()
+    })
+    if(!formStore.errors){
+    router.push('/Group')
+  }
+    } catch (error) {
+      console.error('Erreur lors de la connexion :', error)
+    }
+    
+  }
 formStore.clearStatus()
 </script>

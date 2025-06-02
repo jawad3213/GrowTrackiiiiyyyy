@@ -18,7 +18,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label class="font-semibold">Evaluator Name</label>
-            <p class="border rounded-md px-4 py-2 bg-gray-50">{{ data.evaluatorName }}</p>
+            <p class="border rounded-md px-4 py-2 bg-gray-50">{{ data.evaluator_full_name }}</p>
           </div>
           <div>
             <label class="font-semibold">Evaluator Role</label>
@@ -103,9 +103,10 @@ async function fetchData() {
   if (!props.id) return
   loading.value = true
   try {
-    const res = await api.get(`/evaluation/${props.id}`)
-    data.value = res.data
-    form.value.skills = res.data.skills || []
+    const res = await api.get(`/api/GlobalOverView/search_by_id_evaluation/${props.id}`)
+    console.log(res.data.result)
+    data.value = res.data.result
+    form.value.skills = res.data.result || []
   } catch (err) {
     error.value = err.response?.data?.message || 'Failed to fetch evaluation.'
   } finally {

@@ -133,7 +133,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
+import api from '@/services/api'
 
 const totalUsers = ref(0)
 const totalEvaluations = ref(0)
@@ -145,20 +145,20 @@ const evaluationGrowth = ref(0)
 onMounted(async () => {
   try {
     // Total users
-    const resUsers = await axios.get('http://localhost:3000/api/DashAdmin/Total_User')
+    const resUsers = await api.get('http://localhost:3000/api/DashAdmin/Total_User')
     totalUsers.value = resUsers.data
 
     // Growth in users
-    const resUserGrowth = await axios.get('http://localhost:3000/api/DashAdmin/Stat_User')
+    const resUserGrowth = await api.get('http://localhost:3000/api/DashAdmin/Stat_User')
     userGrowth.value = resUserGrowth.data.percentage
     trendUser.value = resUserGrowth.data.trend
 
     // Total evaluations
-    const resEvals = await axios.get('http://localhost:3000/api/DashAdmin/Total_Evaluation')
+    const resEvals = await api.get('http://localhost:3000/api/DashAdmin/Total_Evaluation')
     totalEvaluations.value = resEvals.data
 
     // Growth in evaluations
-    const resEvalGrowth = await axios.get('http://localhost:3000/api/DashAdmin/Stat_Evaluation')
+    const resEvalGrowth = await api.get('http://localhost:3000/api/DashAdmin/Stat_Evaluation')
     evaluationGrowth.value = resEvalGrowth.data.percentage
     trendEval.value = resEvalGrowth.data.trend
   } catch (error) {

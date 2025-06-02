@@ -141,7 +141,7 @@ const isOpen = ref(true)
 
 const fieldsByLevel = {
   AP: ['TD1', 'TD2', 'TD3'],
-  CI: ['GINF', 'GSEA', 'CYS', 'GSR', 'GINL']
+  CI: ['GINF1', 'GSEA', 'CYS', 'GSR', 'GINL']
 }
 
 function getFieldsForLevel(level) {
@@ -155,12 +155,12 @@ const prof = ref({
   password: '',
   department: 'INFO',
   educatorCode: '',
-  groups: [{ level: 'AP1', field: 'GINF', module: '' }],
+  groups: [{ level: 'AP1', field: 'GINF1', module: '' }],
   notes: ''
 })
 
 function addgrp() {
-  prof.value.groups.push({ level: 'AP1', field: 'GINF', module: '' })
+  prof.value.groups.push({ level: 'AP1', field: 'GINF1', module: '' })
 }
 
 

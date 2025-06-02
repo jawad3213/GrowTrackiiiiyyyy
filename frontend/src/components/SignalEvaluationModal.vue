@@ -18,12 +18,12 @@
         <div class="grid sm:grid-cols-2 gap-4">
           <div>
             <label class="font-medium text-sm text-gray-700">Reported By</label>
-            <input v-model="form.reportedBy" type="text"
+            <input v-model="form.reporder_name" type="text"
               class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-purple-500" />
           </div>
           <div>
             <label class="font-medium text-sm text-gray-700">Reporter Role</label>
-            <input v-model="form.reporterRole" type="text"
+            <input v-model="form.reporder_role" type="text"
               class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-purple-500" />
           </div>
         </div>
@@ -32,12 +32,12 @@
         <div class="grid sm:grid-cols-2 gap-4">
           <div>
             <label class="font-medium text-sm text-gray-700">Reported User</label>
-            <input v-model="form.reportedUser" type="text"
+            <input v-model="form.reported_name" type="text"
               class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-purple-500" />
           </div>
           <div>
             <label class="font-medium text-sm text-gray-700">Reported User Role</label>
-            <input v-model="form.reportedUserRole" type="text"
+            <input v-model="form.reported_role" type="text"
               class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-purple-500" />
           </div>
         </div>
@@ -110,7 +110,7 @@ watch(() => props.signal, (newSignal) => {
 function closeModal() {
   emit('fermer') //lorsque on a l'evt closeModal on envoi un evenement au parent pour fermer 
 }
-
+console.log(form)
 async function submitForm(decision) {
   const { valid, errors: formErrors } = formStore.validateForm(form.value, [
     'reportedBy', 'reporterRole', 'submittedDate', 'reportedUser', 'reason'
@@ -121,6 +121,9 @@ async function submitForm(decision) {
   }
 
   form.value.status = decision //pou la stocker dans database
+
+  
+
 
   await formStore.submitForm('/signal-evaluation', form.value, () => {
     if (decision === 'approved') {

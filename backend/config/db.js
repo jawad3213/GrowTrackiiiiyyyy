@@ -1,4 +1,5 @@
 require("dotenv").config();
+require("dotenv").config();
 const { Pool } = require("pg");
 
 let pool;
@@ -24,3 +25,4 @@ if (process.env.MODE === "cloud") {
 
 
 module.exports = pool;
+

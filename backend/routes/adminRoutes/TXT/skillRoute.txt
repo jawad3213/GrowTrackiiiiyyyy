@@ -1,0 +1,101 @@
+Documentation des routes `skill`
+
+---
+
+# Routes `skill`
+
+### 1 - Création d'une compétence (skill)
+ROUTE : http://localhost:3000/api/skill/:id_admin
+
+A DONNÉ PAR FRONT :
+- Params :
+  - id_admin : (string) identifiant de l'administrateur
+- Body (format JSON) :
+  - skill_name : (string) nom de la compétence
+  - question1 : (string) première question associée
+  - question2 : (string) deuxième question associée
+  - question3 : (string) troisième question associée
+  - desciption_skill : (string) description de la compétence
+
+A DONNÉ PAR BACK :
+- La route retourne un objet JSON :
+  - message : (string) "Skill created successfully."
+  - data : (objet) données de la compétence créée
+
+---
+
+### 2 - Récupération de toutes les compétences
+ROUTE : http://localhost:3000/api/skill/
+
+A DONNÉ PAR FRONT :
+- rien
+
+A DONNÉ PAR BACK :
+- La route retourne :
+  - message : (string) "Skills retrieved successfully." ou "No skills found."
+  - data : (array d'objets) liste des compétences
+
+---
+
+### 3 - Mise à jour d'une compétence
+ROUTE : http://localhost:3000/api/skill/:id_skill
+
+A DONNÉ PAR FRONT :
+- Params :
+  - id_skill : (string) identifiant de la compétence
+- Body (format JSON) :
+  - Champs à mettre à jour (skill_name, question1, question2, question3, desciption_skill)
+
+A DONNÉ PAR BACK :
+- Si mise à jour réussie :
+  - message : (string) "Skill updated successfully."
+  - data : (objet) compétence mise à jour
+- Sinon :
+  - message : (string) "Skill not found or no fields provided for update."
+
+---
+
+### 4 - Suppression d'une compétence
+ROUTE : http://localhost:3000/api/skill/:id_skill
+
+A DONNÉ PAR FRONT :
+- Params :
+  - id_skill : (string) identifiant de la compétence
+
+A DONNÉ PAR BACK :
+- Si suppression réussie :
+  - message : (string) "Skill deleted successfully."
+- Sinon :
+  - message : (string) "Skill not found."
+
+---
+
+### 5 - Récupération du nombre total de compétences
+ROUTE : http://localhost:3000/api/skill/total
+
+A DONNÉ PAR FRONT :
+- rien
+
+A DONNÉ PAR BACK :
+- La route retourne :
+  - message : (string) "Total number of skills retrieved successfully."
+  - data : (integer) nombre total de compétences
+
+---
+
+# Résumé rapide
+
+| Route | Méthode | Action |
+|:------|:--------|:-------|
+| /:id_admin | POST | Créer une compétence |
+| / | GET | Liste de toutes les compétences |
+| /:id_skill | PATCH | Mettre à jour une compétence |
+| /:id_skill | DELETE | Supprimer une compétence |
+| /total | GET | Nombre total de compétences |
+
+---
+
+# Remarques
+- Les questions (question1, question2, question3) sont associées à chaque compétence.
+- Le nom de compétence doit être unique (vérifié en base avec contrainte UNIQUE).
+

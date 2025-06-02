@@ -31,6 +31,7 @@
         <table class="w-full text-sm bg-white dark:bg-gray-800 rounded shadow">
           <thead class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200">
             <tr>
+              <th class="p-3 text-left">Select</th>
               <th class="p-3 text-left">Signal ID</th>
               <th class="p-3 text-left">Reason</th>
               <th class="p-3 text-left">Reported By</th>
@@ -43,40 +44,42 @@
           <tbody>
             <tr
               v-for="signal in filteredSignals"
-              :key="signal.id"
+              :key="signal.id_signal"
               class="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
             >
               <td class="p-3"><input type="checkbox" /></td>
-              <td class="p-3">{{ signal.id }}</td>
+              <td class="p-3">{{ signal.id_signal }}</td>
               <td class="p-3">{{ signal.reason }}</td>
 
               <td class="p-3 flex items-center gap-2">
                 <img :src="signal.reporterAvatar" class="w-8 h-8 rounded-full object-cover" />
                 <div>
-                  <div class="font-semibold">{{ signal.reportedBy }}</div>
-                  <div class="text-xs text-gray-500 dark:text-gray-400">{{ signal.reporterRole }}</div>
+                  <div class="font-semibold">{{ signal.reporder_name }}</div>
+                  <div class="text-xs text-gray-500 dark:text-gray-400">{{ signal.reporder_role }}</div>
                 </div>
               </td>
-
+              
               <td class="p-3 flex items-center gap-2">
                 <img :src="signal.userAvatar" class="w-8 h-8 rounded-full object-cover" />
                 <div>
-                  <div class="font-semibold">{{ signal.reportedUser }}</div>
-                  <div class="text-xs text-gray-500 dark:text-gray-400">{{ signal.reportedUserRole }}</div>
+                  <div class="font-semibold">{{ signal.reported_name }}</div>
+                  <div class="text-xs text-gray-500 dark:text-gray-400">{{ signal.reported_role }}</div>
                 </div>
               </td>
+            
 
               <td class="p-3">
-                <span :class="badgeClass(signal.state)">{{ signal.state }}</span>
+                <span :class="badgeClass(signal.approved)">{{ signal.approved }}</span>
               </td>
 
               <td class="p-3">
-                <span :class="solutionBadge(signal.solution)">{{ signal.solution }}</span>
+                <span :class="solutionBadge(signal.solution_state || 'No Action Taken')">{{ signal.solution_state || 'No Action Taken'}}</span>
               </td>
 
               <td class="p-3">
-                <button @click="openSignal(signal)" class="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300">
-                  <i class="fas fa-file-alt"></i>
+                <button @click="openSignal(signal)" class="px-2 py-5 text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300">
+                  <i class="fas fa-file-alt"></i> 
+                  Click me
                 </button>
               </td>
             </tr>
@@ -114,19 +117,22 @@ const showModal = ref(false)
 // Appel API direct
 onMounted(async () => {
   try {
-    const res = await api.get('/signals') // adapte l’URL à ton backend
-    signals.value = res.data
+    const res = await api.get('/admin/signals') // adapte l’URL à ton backend
+    signals.value = res.data.data
+    console.log(res.data)
   } catch (error) {
     console.error('Erreur chargement signals :', error)
   }
 })
 
-const filteredSignals = computed(() =>
-  signals.value.filter((s) =>
-    s.reportedBy.toLowerCase().includes(search.value.toLowerCase()) ||
-    s.reportedUser.toLowerCase().includes(search.value.toLowerCase()) ||
+const filteredSignals = computed(() =>{
+     const filtered = signals.value.filter((s) =>
+    s.reporder_name.toLowerCase().includes(search.value.toLowerCase()) ||
+    s.reported_name.toLowerCase().includes(search.value.toLowerCase()) ||
     s.reason.toLowerCase().includes(search.value.toLowerCase())
-  )
+  ) 
+return filtered.sort((a, b) => a.date_add - b.date_add)
+}
 )
 
 function openSignal(signal) {
@@ -145,7 +151,7 @@ const badgeClass = (state) => {
 const solutionBadge = (solution) => {
   return {
     'No Action Taken': 'bg-gray-200 text-gray-600',
-    'In Progress': 'bg-purple-100 text-purple-600',
+    'in progress': 'bg-purple-100 text-purple-600',
     Blocked: 'bg-red-100 text-red-600'
   }[solution] + ' px-3 py-1 rounded-full text-xs font-semibold'
 }

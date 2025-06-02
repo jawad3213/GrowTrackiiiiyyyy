@@ -1,7 +1,8 @@
 import axios from 'axios'
+import {useAuthStore} from '@/stores/auth'
 
 const api = axios.create({
-  baseURL: 'http://localhost:3000', // Replace with your backend URL
+  baseURL: 'http://localhost:3000', 
   withCredentials: true 
 })
 
@@ -12,6 +13,8 @@ api.interceptors.response.use(
   },
   async (error) => {
     const originalRequest = error.config;
+    const auth = useAuthStore();
+
 
     // ⿡ Check if the error is 401 Unauthorized
     if (error.response?.status === 401 && !originalRequest._retry) {
@@ -19,23 +22,22 @@ api.interceptors.response.use(
       const errorCode = error.response.data?.errorCode;
 
       // ⿢ Only refresh if the errorCode is TOKEN_EXPIRED
-      if (errorCode === 'TOKEN_EXPIRED') {
+      if (errorCode === 'TOKEN_EXPIRED' || errorCode === 'NO_TOKEN') {
         originalRequest._retry = true; // Mark that we are retrying
         try {
           // ⿣ Call the /refresh endpoint to get new tokens
           await api.post('/api/auth/refresh');
           // the new token is stored and sent automatically in the cookies
-          console.log("After the refresh request")
           // ⿤ Retry the original request automatically
           return api(originalRequest);
         } catch (refreshError) {
           // ⿥ If refresh also fails, force user to login
-          window.location.href = '/login';
+          auth.isAuthenticated = false;
           return Promise.reject(refreshError);
         }
       }
     }
-
+    
     // ⿦ Any other error → just reject
     return Promise.reject(error);
   }

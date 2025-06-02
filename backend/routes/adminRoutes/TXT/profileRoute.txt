@@ -1,0 +1,15 @@
+ROUTE : http://localhost:3000/api/profile/admin
+
+A DONNÉ PAR FRONT :
+- rien
+
+A DONNÉ PAR BACK :
+- La route retourne un objet JSON :
+  - message : (string) "admin retrieved successfully."
+  - data : (array d'objets) chaque objet contient :
+    - id_member : (string) identifiant de l'admin
+    - full_name : (string) nom complet
+    - email : (string) email
+    - phone : (string) téléphone (si disponible)
+    - cin : (string) CIN (si disponible)
+    - profile_picture_url : (string) URL complète de la photo de profil

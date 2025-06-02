@@ -11,45 +11,53 @@
       </button>
 
       <!-- Titre -->
-      <h2 class="text-2xl font-bold mb-1 text-center">Add New Skill</h2>
+      <h2 class="text-2xl font-bold mb-1 text-center">{{ isEditMode ? 'Edit Skill' : 'Add Skill' }}</h2>
       <p class="text-sm text-gray-600 mb-6 text-center">Fill in the skill and its indicators below</p>
 
       <!-- Formulaire -->
       <form @submit.prevent="submitForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-        <div class="md:col-span-2">
+        <div v-if="!isEditMode" class="md:col-span-2">
           <label class="font-semibold">Skill Name*</label>
-          <input v-model="skill.name" type="text" placeholder="Skill name"
-            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" />
-          <p v-if="errors.name" class="text-red-500 text-xs mt-1">{{ errors.name }}</p>
+          <input v-model="skill.skill_name" type="text" placeholder="Skill name"
+         class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" />
+          <span class="text-red-500 text-sm">{{ formStore.errors.skill_name }}</span>
+        </div>
+
+        <div v-else class="md:col-span-2">
+          <label class="font-semibold">Skill Name* <small>not Editibale</small></label>
+          <input v-model="skill.skill_name" type="text" placeholder="Skill name" readonly
+          class="w-full px-4 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-500 cursor-not-allowed focus:outline-none focus:ring-0"/>
+          <span class="text-red-500 text-sm">{{ formStore.errors.skill_name }}</span>
         </div>
 
         <div>
           <label class="font-semibold">Indicator 1*</label>
-          <input v-model="skill.indicator1" type="text" placeholder="First indicator"
+          <input v-model="skill.question1" type="text" placeholder="First indicator"
             class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" />
-          <p v-if="errors.indicator1" class="text-red-500 text-xs mt-1">{{ errors.indicator1 }}</p>
+          <span class="text-red-500 text-sm">{{ formStore.errors.question1 }}</span>
         </div>
 
         <div>
           <label class="font-semibold">Indicator 2*</label>
-          <input v-model="skill.indicator2" type="text" placeholder="Second indicator"
+          <input v-model="skill.question2" type="text" placeholder="Second indicator"
             class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" />
-          <p v-if="errors.indicator2" class="text-red-500 text-xs mt-1">{{ errors.indicator2 }}</p>
+          <span class="text-red-500 text-sm">{{ formStore.errors.question2 }}</span>
         </div>
 
         <div class="md:col-span-2">
           <label class="font-semibold">Indicator 3*</label>
-          <input v-model="skill.indicator3" type="text" placeholder="Third indicator"
+          <input v-model="skill.question3" type="text" placeholder="Third indicator"
             class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" />
-          <p v-if="errors.indicator3" class="text-red-500 text-xs mt-1">{{ errors.indicator3 }}</p>
+          <span class="text-red-500 text-sm">{{ formStore.errors.question3 }}</span>
         </div>
 
         <div class="md:col-span-2">
           <label class="font-semibold">Skill Description*</label>
-          <textarea v-model="skill.description" rows="3" placeholder="Description of the skill..."
+          <textarea v-model="skill.description_skill" rows="3" placeholder="Description of the skill..."
             class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"></textarea>
-          <p v-if="errors.description" class="text-red-500 text-xs mt-1">{{ errors.description }}</p>
+          <span class="text-red-500 text-sm">{{ formStore.errors.description_skill }}</span>
+          <span class="text-red-500 text-sm">{{ formStore.errors.id_admin }}</span>
         </div>
 
         <div class="md:col-span-2 flex justify-end items-center gap-4 mt-4">
@@ -71,41 +79,97 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref,onMounted } from 'vue'
 import { useFormStore } from '@/stores/form'
-import { useRouter } from 'vue-router'
+import { useRouter ,useRoute } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import SkillSchema from '@/schemas/CreateSkill.schema';
+
 
 const formStore = useFormStore()
 const router = useRouter()
+const route = useRoute()
+const isEditMode = route.params.skill_name !== undefined;
+const auth = useAuthStore()
+const OriginalData = {}
+
 
 const isOpen = ref(true)
 
 const skill = ref({
-  name: '',
-  indicator1: '',
-  indicator2: '',
-  indicator3: '',
-  description: ''
+  skill_name: '',
+  question1: '',
+  question2: '',
+  question3: '',
+  description_skill: '',
+  id_admin: auth.ID
 })
 
-const errors = ref({})
-
+console.log(auth.ID)
 function closeModal() {
   isOpen.value = false
   router.push('/Skills')
 }
 
 async function submitForm() {
-  const { valid, errors: formErrors } = formStore.validateForm(skill.value, [
-    'name', 'indicator1', 'indicator2', 'indicator3', 'description'
-  ])
-  errors.value = formErrors
-  if (!valid) return
-
-  await formStore.submitForm('/addskill', skill.value, () => {
-    closeModal()
-  })
+  if(!isEditMode){
+    try {
+    const sanitizedData = formStore.sanitizeInputs(skill.value)
+    console.log(sanitizedData)
+    const valid = await formStore.validateWithSchema(sanitizedData,SkillSchema)
+    if(valid){
+      await formStore.submitForm('/admin/skills/create', sanitizedData, () => {closeModal()})
+      if(!formStore.errors){
+        console.log('sent');
+        formStore.clearStatus();
+        router.push('/Skills');
+    }}} catch (error) {
+      console.log("Error while trying to Add the skill ",error); //bedel hadi mli kolxi yekhdem 
+    }
+  }else {
+    try {
+      // First identify what has changed
+      const UpdatedData = {}
+      for (const key in skill.value) {
+        if (skill.value[key] !== OriginalData[key]) {
+          UpdatedData[key] = skill.value[key];  
+        }
+      }
+      
+      // Only proceed if there are actual changes
+      if (Object.keys(UpdatedData).length > 0) {
+        const sanitizedPartialData = formStore.sanitizeInputs(UpdatedData);
+        
+        // Create a partial schema only for the fields being updated
+        const partialSchema = SkillSchema.pick(Object.keys(sanitizedPartialData));
+        
+        const valid = await formStore.validateWithSchema(sanitizedPartialData, partialSchema)
+        
+        if(valid) {
+          await formStore.Update(`/admin/skills/${OriginalData.skill_name}`, sanitizedPartialData)
+          if(!formStore.errors) {
+            console.log('Update successful');
+            formStore.clearStatus();
+            router.push('/Skills');
+          }
+        }
+      } else {
+        console.log('No changes detected');
+        router.push('/Skills');
+      }
+    } catch (error) {
+      console.log("Error during update: ", error);
+    }
+  }
 }
-
+onMounted(()=>{
+  if(isEditMode){
+    skill.value = formStore.SelectedSkill;
+    for (const key in skill.value ) {
+    OriginalData[key] = skill.value[key];
+  }
+  console.log(OriginalData)
+  }
+})
 formStore.clearStatus()
 </script>

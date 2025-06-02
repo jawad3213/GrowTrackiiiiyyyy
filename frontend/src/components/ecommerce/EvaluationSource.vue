@@ -14,16 +14,15 @@
   
   <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-
-  import VueApexCharts from 'vue3-apexcharts'
-  import axios from 'axios'
+import api from '@/services/api'
+import VueApexCharts from 'vue3-apexcharts'
   
   // Données par catégorie (Auto, Co-Eval, Professors, Tutors)
   const series = ref([])
 
   onMounted(async () => {
   try {
-    const res = await axios.get('http://localhost:3000/api/DashAdmin/evaluation_source_overtime')
+    const res = await api.get('http://localhost:3000/api/DashAdmin/evaluation_source_overtime')
     const data = res.data.data
 
     series.value = [

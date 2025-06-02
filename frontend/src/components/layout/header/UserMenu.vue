@@ -85,7 +85,7 @@ const signOut = async () => {
   try {
     await store.logout();
     if (!store.errorMsg) {
-      router.push('/login');
+      router.push('/');
     }else {
       console.error('Error during logout:', store.errorMsg); // Log error message if there's any
     }

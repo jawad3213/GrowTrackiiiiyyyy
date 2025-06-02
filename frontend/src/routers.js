@@ -23,6 +23,7 @@ import AddCoach from "./components/AddCoach.vue";
 import AddField from "./components/AddField.vue";
 import AddProfessorModal from "./components/AddProfessorModal.vue";
 import AddSkill from "./components/AddSkill.vue";
+import DeleteSkill from "./components/DeleteSkill.vue"
 import AddStudentModal from "./components/AddStudentModal.vue";
 import AddSupervisorModal from "./components/AddSupervisorModal.vue";
 import Evaluation from "./components/Evaluation.vue";
@@ -48,8 +49,7 @@ const routes = [
     {
         name: 'LoadingPage',
         component: LoadingPage,
-        path: '/',
-        meta: { home: true }
+        path: '/'
     },
     {
         name: 'AboutUs',
@@ -170,9 +170,30 @@ const routes = [
         path : "/AddSkill",
     },
     {
+        name : "EditSkill",
+        component : AddSkill,
+        path : "/AddSkill/:skill_name",
+        props: true,
+        meta: {edit:true},
+    },
+    {
+        name : "DeleteSkill",
+        component : DeleteSkill,
+        path : "/DeleteSkill/:skill_name",
+        props: true,
+        meta: {edit:true},
+    },
+    {
         name : "AddStudentModal",
         component : AddStudentModal,
-        path : "/AddStudent",
+        path : "/AddStudent"
+    },
+    {
+        name : "EditStudentModal",
+        component : AddStudentModal,
+        path : "/AddStudent/:cin",
+        props: true,
+        meta: {edit:true},
     },
     {
         name : "AddSupervisorModal",
@@ -203,7 +224,7 @@ const routes = [
     {
         name : "DeleteStudent",
         component : DeleteStudent,
-        path : "/DeleteStudent/:id"
+        path : "/DeleteStudent/:id_member"
     },
     {
         name : "DashboardProf",
@@ -261,8 +282,6 @@ const routes = [
     
 ];
 
-
-
 const router =createRouter({
     history: createWebHistory(),
     routes
@@ -272,7 +291,7 @@ import {useAuthStore} from '@/stores/auth'
 
 router.beforeEach(async (to, from, next)=>{
     const auth = useAuthStore();
-    if (to?.meta.requiresAuth){
+    if(to?.meta.requiresAuth){
         try {
           await auth.checkAuth();
           next();

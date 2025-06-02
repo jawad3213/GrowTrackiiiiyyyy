@@ -17,8 +17,7 @@
         <p class="text-gray-600 mb-6 text-lg">Our friendly team would love to hear from you.</p>
 
         <!-- Messages -->
-        <p v-if="store.successmsg" class="text-green-600 italic mb-3">{{ store.successmsg }}</p>
-        <p v-if="store.errormsg" class="text-red-600 italic mb-3">{{ store.errormsg }}</p>
+        <p v-if="formStore.error" class="text-red-600 italic mb-3">{{ formStore.error }}</p>
 
         <!-- Form -->
         <form @submit.prevent="contactUs" class="space-y-4">
@@ -28,42 +27,51 @@
               <label class="block text-sm font-semibold text-gray-700 mb-1">First Name</label>
               <input
               class="w-full px-8 py-2 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
-              type="text" v-model="info.FirstName" placeholder="First name" required/>
+              type="text" v-model="contactForm.FirstName" placeholder="First name" required/>
+              <span class="text-red-500 text-sm">{{ formStore.errors.FirstName }}</span>
             </div>
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-1">Last Name</label>
               <input
               class="w-full px-8 py-2 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
-              type="text" v-model="info.LastName" placeholder="Last name" required/>
+              type="text" v-model="contactForm.LastName" placeholder="Last name" required/>
+              <span class="text-red-500 text-sm">{{ formStore.errors.LastName }}</span>
+
             </div>
           </div>
 
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-1">Email</label>
             <input class="w-full px-8 py-2 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
-            type="emal" v-model="info.Email" placeholder="you@company.com" required /> 
+            type="emal" v-model="contactForm.Email" placeholder="you@company.com" required /> 
+            <span class="text-red-500 text-sm">{{ formStore.errors.Email }}</span>
           </div>
 
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-1">Phone Number</label>
             <input class="w-full px-8 py-2 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
-            type="tel" v-model="info.Phone" placeholder="Phone Number" required/> 
+            type="tel" v-model="contactForm.Phone" placeholder="Phone Number" required/> 
+            <span class="text-red-500 text-sm">{{ formStore.errors.Phone }}</span>
+
           </div>
 
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-1">Message</label>
             <textarea  class="w-full px-8 py-2 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
-            type="text" v-model="info.Message" placeholder="your message here" required ></textarea>
+            type="text" v-model="contactForm.Message" placeholder="your message here" required ></textarea>
+            <span class="text-red-500 text-sm">{{ formStore.errors.Message }}</span>
+
           </div>
 
           <!-- Politique -->
           <div class="flex items-start text-sm text-gray-700 mt-4">
-            <input type="checkbox" id="policy" v-model="info.agree" class="mt-1 mr-2" />
+            <input type="checkbox" id="policy" v-model="contactForm.agree" class="mt-1 mr-2" />
             <label for="policy" class="text-sm text-blue-600 hover:underline cursor-pointer">
               You agree to our friendly privacy policy
             </label>
           </div>
-
+          <p v-if="formStore.error" class="text-red-500 text-sm animate-pulse">{{ formStore.error }}</p>
+          <p v-if="formStore.success" class="text-green-500 text-sm animate-pulse">{{ formStore.success }}</p>
           <!-- Bouton -->
           <button
             type="submit"
@@ -111,37 +119,46 @@
 
 <script setup>
 import Header from './Header.vue'
-import { useContactStore } from '@/stores/contact' //fonction de Pinia pour accéder au store conta
 import { ref,watch,onMounted } from 'vue'
+import { useFormStore } from '@/stores/form'
+import { contactUsSchema } from '@/schemas/contactUs.schema';
 
-const store = useContactStore()
 
-const info = ref({
-    FirstName: '',
-    LastName: '',
-    Email: '',
-    Phone: '',
-    Message: '',
-    agree: false
-})
+const formStore = useFormStore()
 
-watch(info , (newinfo)=> localStorage.setItem('tempinfo',JSON.stringify(newinfo)), {deep : true})
+
+const contactForm = ref({
+  Email: '',
+  FirstName: '',
+  LastName: '',
+  Phone: '',
+  Message: ''
+});
+
+
+
+watch(contactForm , (newinfo)=> localStorage.setItem('tempinfo',JSON.stringify(newinfo)), {deep : true})
 //utiliser pour permettre le stockege des info méme aprés rechargement , deep car info est un objet
 //une fois les données sont dans localstorege on les restaure auto aprés rechargement
 
 onMounted(() => {
     const saved = localStorage.getItem('tempinfo')
     if (saved) { //s’il existe des données sauvegardées dans localStorage
-        info.value = JSON.parse(saved)
+      contactForm.value = JSON.parse(saved)
     }
 })
 
 //remove info from localstorage after sending msg
 async function contactUs() {
-    await store.sendMsg(info.value)
-    if(store.successmsg){
+  try {
+    const sanitizedData = formStore.sanitizeInputs(contactForm.value)
+    const valid = await formStore.validateWithSchema(sanitizedData,contactUsSchema)
+    if(valid){
+      await formStore.submitForm('/api/contactus/', sanitizedData)
+      if(!formStore.errors){
+      console.log('sent')
         localStorage.removeItem('tempinfo')
-        info.value ={ //nettoyer les inputs
+        contactForm.value ={ //nettoyer les inputs
           FirstName: '',
           LastName: '',
           Email: '',
@@ -149,6 +166,11 @@ async function contactUs() {
           Message: '',
           agree: false
         }
-    }
+        }
+    }  
+  } catch (error) {
+    console.error(error)
+  }
 }
+formStore.clearStatus()
 </script>

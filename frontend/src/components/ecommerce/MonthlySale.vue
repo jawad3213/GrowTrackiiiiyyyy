@@ -40,8 +40,8 @@
 import { ref, onMounted } from 'vue'
 import DropdownMenu from '../common/DropdownMenu.vue'
 import VueApexCharts from 'vue3-apexcharts'
+import api from '@/services/api'
 
-import axios from 'axios'
 const series = ref([])
 
 
@@ -53,7 +53,7 @@ const menuItems = [
 
 onMounted(async () => {
   try {
-    const res = await axios.get('http://localhost:3000/api/DashAdmin/flagged_evaluation')
+    const res = await api.get('http://localhost:3000/api/DashAdmin/flagged_evaluation')
 
     // Remplir les données de la série avec ce que l'API renvoie
     series.value = [{

@@ -5,16 +5,29 @@
 
     <!-- Contenu central -->
     <div class="bg-white rounded-xl shadow-lg max-w-md w-full p-8 sm:p-10 text-center">
-      
+
+      <div v-if="!store.validtoken"> 
+      <!-- Titre -->
+      <h1 class="text-2xl font-bold text-gray-800 mb-2">The link is invalide</h1>
+      <!-- Sous-titre -->
+      <p class="text-gray-600 text-sm">
+        Please request another link
+      </p>
+      <div v-if="store.load" class="text-gray-500 text-sm">
+        Loading...
+      </div>
+      </div>
+
+    <div v-if="store.validtoken"> 
       <!-- Titre -->
       <h1 class="text-2xl font-bold text-gray-800 mb-2">Create new password</h1>
-
       <!-- Sous-titre -->
       <p class="text-gray-600 text-sm mb-6">
         Your new password must be different from previously used passwords
       </p>
       <div v-if="store.load" class="text-gray-500 text-sm">
         Loading...
+      </div>
       </div>
       <!-- Formulaire -->
       <form>
@@ -75,7 +88,7 @@ const disallowedPasswords = [
   "12345678",
   "qwertyui",
   "abcdefgh",
-  "87654321"
+  "87654321"
 ];
 
 const passwordSchema = yup.object({
@@ -90,7 +103,7 @@ const passwordSchema = yup.object({
     value => !disallowedPasswords.includes(value?.toLowerCase())
   )
   .matches(
-    /^(?=.[A-Z])(?=.\d).+$/,
+    /^(?=.*[A-Z])(?=.*\d).+$/,
     'The password must contain at least one uppercase letter and one number.'
   )
 })
@@ -139,6 +152,7 @@ async function resetPass() {
   
 }
 onMounted(() => {
+    store.checkAuth()
     if(store.isAuthenticated){ //à répeter
         router.push('/');
     }

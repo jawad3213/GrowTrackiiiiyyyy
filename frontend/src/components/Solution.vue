@@ -9,7 +9,7 @@
         <button @click="closeModal" class="text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
       </div>
 
-      <!-- Form -->
+      <!-- Form --> 
       <form @submit.prevent class="space-y-5">
 
         <!-- Solutions -->
@@ -132,29 +132,5 @@ async function sendMonitoringNotif() {
     console.error('Notification error:', err)
     errorApi.value = err.response?.data?.message || 'Error while sending'
   }
-  
-  function goBack() {
-    router.back()
-  }
-
-    const errors = ref({})
-    const errorApi = ref('null')
-
-    async function sendMonitoringNotif() {
-        const { valid, errors: formErrors } = useFormStore.validateForm(monitor.value, [ 
-        'solutions', 'details', 'reporter', 'user', 'startDate', 'endDate','cin Reporter','cin Reported User'
-    ])
-    errors.value = formErrors
-    if (!valid) return
-
-    try {
-      await api.post('/notifications', monitor.value)
-      alert('Notification sent!')
-    } catch (err) {
-        console.error('Notification error:', err)
-        errorApi.value = err.response?.data?.message ||"error while sending"
-    }
-  }
- }
-  </script>
- 
+}
+</script>

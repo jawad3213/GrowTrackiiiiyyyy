@@ -11,17 +11,18 @@ export const useAuthStore = defineStore('auth',() =>
         const error = ref(null)
         const loading = ref(false)
         const role = ref(null);
+        const id = ref(null)
         const valide = ref(false);
 
         //pas de email pasword car sont de données temp on aurait pas besoin dans d'autres composants
         /*
         actions
         */
-        async function Login(email , password){
+        async function Login(email , password, RememberMe){
             loading.value = true
             try {
                 const response = await api.post('/api/auth/login', {email , password}); //api url !! //envoi de l'objet 
-                user.value = response?.status == 200
+                user.value = response.data?.user;
                 error.value = null;
             } catch (err) {
                 error.value = err.response?.data?.message || 'Email or password incorrect'; // vérifier que l'api envoie un message
@@ -59,13 +60,13 @@ export const useAuthStore = defineStore('auth',() =>
         async function resetPassword(password, token){
             loading.value = true
             try {
-                await api.post(`/api/resetpass?token=${token}`, { password });
+                 await api.post(`/api/resetpass?token=${token}`, {password}) 
                  error.value = null;
             } catch (err) {
                 error.value = err.response?.data?.message || 'Reset password failed'
             }finally{
-                loading.value =false
-            }
+                loading.value =false
+            }
         };
 
         async function checkAuth(){
@@ -74,6 +75,7 @@ export const useAuthStore = defineStore('auth',() =>
                 const response = await api.get('/api/auth/check')
                 role.value = response?.data?.role;
                 error.value = null;
+                id.value = response?.data?.id
                 user.value = response?.status == 200;
                 return true
             } catch (err) {
@@ -89,8 +91,8 @@ export const useAuthStore = defineStore('auth',() =>
                 const res = await api.get(`/api/validate-reset-token?token=${token}`);
                 error.value = null;
                 valide.value = true;
-            } catch (error) {
-                console.log(error.response?.data?.message);
+            } catch (err) {
+                console.log(err.response?.data?.message);
                 valide.value = false;
                 error.value = err.response?.data?.message || 'The link is invalide, Please request a new link'
             }finally{
@@ -121,11 +123,13 @@ export const useAuthStore = defineStore('auth',() =>
         const errorMsg = computed(()=>error.value);
         const load = computed(()=>loading.value);
         const Role = computed(()=>role.value);
-        const validtoken = computed(()=>valide)
+        const ID = computed(()=>id.value)
+        const validtoken = computed(()=>valide.value)
 
         return{
             user,
             validtoken,
+            ID,
             error,
             Role,
             errorMsg,

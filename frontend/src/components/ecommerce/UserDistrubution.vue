@@ -22,13 +22,13 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import VueApexCharts from 'vue3-apexcharts'
-import axios from 'axios'
+import api from '@/services/api'
 
 const series = ref([])
 
 onMounted(async () => {
   try {
-    const { data } = await axios.get('http://localhost:3000/api/DashAdmin/user_distribution_by_role')
+    const { data } = await api.get('http://localhost:3000/api/DashAdmin/user_distribution_by_role')
     series.value = [
       data.student || 0,
       data.Supervisor || 0,

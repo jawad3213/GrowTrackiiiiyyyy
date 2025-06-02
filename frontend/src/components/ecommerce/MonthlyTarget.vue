@@ -60,7 +60,7 @@
 
 
 <script setup>
-import axios from 'axios'
+import api from '@/services/api'
 import VueApexCharts from 'vue3-apexcharts'
 import { ref, onMounted, computed } from 'vue'
 
@@ -72,11 +72,11 @@ const trend = ref('')
 onMounted(async () => {
   try {
     // API 1 : Récupération du taux d'implication actuel
-    const currentRes = await axios.get('http://localhost:3000/api/DashAdmin/Stat_Involvement')
+    const currentRes = await api.get('http://localhost:3000/api/DashAdmin/Stat_Involvement')
     totalInvolvement.value = currentRes.data.percentage
 
     // API 2 : Récupération de la différence et tendance
-    const diffRes = await axios.get('http://localhost:3000/api/DashAdmin/Stat_Involvement_target')
+    const diffRes = await api.get('http://localhost:3000/api/DashAdmin/Stat_Involvement_target')
     growth.value = diffRes.data.percentage
     trend.value = diffRes.data.trend
   } catch (error) {

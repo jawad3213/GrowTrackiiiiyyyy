@@ -5,7 +5,7 @@
 
         <!-- Graphique -->
         <div class="mb-6">
-          <StatisticsChart />
+          <!--<StatisticsChart /> -->
         </div>
 
         <!-- Header tableau -->
@@ -41,12 +41,13 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="evaluation in filteredEvaluations" :key="evaluation.id" class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
-                <td class="px-6 py-4">{{ evaluation.id }}</td>
-                <td class="px-6 py-4">{{ evaluation.evaluatorName }}</td>
-                <td class="px-6 py-4">{{ evaluation.evaluatedName }}</td>
-                <td class="px-6 py-4">{{ evaluation.submittedDate }}</td>
-                <td class="px-6 py-4">{{ evaluation.type }}</td>
+              
+              <tr v-for="evaluation in filteredEvaluations" :key="evaluation.id_evaluation" class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
+                <td class="px-6 py-4">{{ evaluation.id_evaluation }}</td>
+                <td class="px-6 py-4">{{ evaluation.evaluator_full_name }}</td>
+                <td class="px-6 py-4">{{ evaluation.student_full_name }}</td>
+                <td class="px-6 py-4">{{new Date(evaluation.date_add).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric'  }) }}</td> <!-- Date formating -->
+                <td class="px-6 py-4">{{ evaluation.type_evaluation }}</td>
                 <td class="px-6 py-4">
                   <button @click="openEvaluation(evaluation)" class="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -99,39 +100,33 @@ const error = ref(null)
 const search = ref('')
 const showModal = ref(false)
 const selectedEvaluation = ref(null)
-
 // Données statiques pour tester
-const evaluations = ref([
-  { id: 1, evaluatorName: 'Dr. Sarah Ali', evaluatedName: 'Amine B.', submittedDate: '2024-01-15', type: 'Soft Skill' },
-  { id: 2, evaluatorName: 'Mohamed L.', evaluatedName: 'Yasmine K.', submittedDate: '2024-02-10', type: 'Technical' }
-])
+const evaluations = ref([{}])
 
 // Pour tester le filtre dynamique
-const filteredEvaluations = computed(() => {
-  return evaluations.value.filter(evaluation =>
-    evaluation.evaluatorName.toLowerCase().includes(search.value.toLowerCase()) ||
-    evaluation.evaluatedName.toLowerCase().includes(search.value.toLowerCase())
-  )
+
+ const filteredEvaluations = computed(() => {
+  const filtered = evaluations.value.result
+  return filtered
 })
+
 
 // Afficher modal
 function openEvaluation(evaluation) {
-  selectedEvaluation.value = evaluation.id;
+  selectedEvaluation.value = evaluation.id_evaluation;
   showModal.value = true;
 }
 
-// Appel API (futur)
-async function fetchEvaluations() {
-  loading.value = true
+
+onMounted(async () => {
+  loading.value = true;
   try {
-    const res = await api.get('/evaluations')
+    const res = await api.get('/api/GlobalOverView/all_evaluation')
     evaluations.value = res.data
-  } catch (err) {
-    error.value = err.message || 'An error occurred'
-  } finally {
+  } catch (error) {
+    console.error('Erreur lors du chargement des étudiants :', error)
+  }finally{
     loading.value = false
   }
-}
-
-// onMounted(fetchEvaluations)  // décommente quand l'API est prête
+});
 </script>

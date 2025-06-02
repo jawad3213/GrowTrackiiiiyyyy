@@ -52,7 +52,7 @@
               <select v-model="form.field"
                 class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
                 <option disabled value="">-- select field --</option>
-                <option>GINF</option>
+                <option>GINF1</option>
                 <option>GSEA</option>
                 <option>CYS</option>
                 <option>GSR</option>

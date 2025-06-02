@@ -20,8 +20,8 @@
   const studentStore = useStudentStore()
   
   async function deleteStudent() {
-    const id = route.params.id
-    await studentStore.deleteStudent(id)
+    const id_member = route.params.id_member
+    await studentStore.deleteStudent(id_member)
     router.push('/Student') // après suppression retourner vers liste
   }
   

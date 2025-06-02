@@ -17,8 +17,10 @@ async function start() {
     app.use(router);
 
     const auth = useAuthStore();
-    await auth.checkAuth(); 
+    await auth.checkAuth();
     console.log(auth.Role)
+    console.log(auth.ID)
+
   
     app.mount('#app');
   }

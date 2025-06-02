@@ -1,45 +1,37 @@
 const authModel = require("../models/authModel");
-const { body, validationResult } = require('express-validator');
 const JWT = require('jsonwebtoken');
 require('dotenv').config();
 const bcrypt = require('bcrypt');
-const PORT = process.env.PORT;
 const nodemailer = require('nodemailer');
-const {authlimiter} = require('../middlewares/Limiter')
-
+const {Authlimiter} = require('../middlewares/Limiter')
 
 exports.Login =
-
 async (req , res) =>{
-  console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
-  const errors = validationResult(req);
   const {password, email} = req.body;
-
   try {
       const user = await authModel.LoginModel(email, password);
-      console.log("user", user);
       if(user){
-      
-      const Access_Token = JWT.sign(
-          { id: user.id_member, role: user.role, fullname: user.fullname },
-          process.env.ACCESS_SECRET,
-          { expiresIn: '15m'})
-      const refresh_token = JWT.sign(
-          {id: user.id_member, type:"refresh"}
-          ,process.env.REFRESH_SECRET,
-          { expiresIn: '7d'})
-
-          res.cookie("access_token", Access_Token,{
-              httpOnly: true,
-              secure:false,
-              sameSite:"strict"
-          });
-          res.cookie("refresh_token", refresh_token,{
-              httpOnly: true,
-              secure:false,
-              sameSite:"strict",
-              path:"/auth"
-          });
+          Authlimiter.resetKey(req.ip);
+          const Access_Token = JWT.sign(
+            { id: user.id_member, role: user.role, fullname: user.fullname },
+            process.env.ACCESS_SECRET,
+            { expiresIn: '15m'})
+        const refresh_token = JWT.sign(
+            {id: user.id_member, type:"refresh"}
+            ,process.env.REFRESH_SECRET,
+            { expiresIn: '7d'})
+  
+            res.cookie("access_token", Access_Token,{
+                httpOnly: true,
+                secure:false,
+                sameSite:"strict"
+            });
+            res.cookie("refresh_token", refresh_token,{
+                httpOnly: true,
+                secure:false,
+                sameSite:"strict"
+            });
+  
           return res.status(200).json({message: "Connected Successfully !"});
       }else{
           return res.status(401).json({message: "Email or Password is incorrect"})
@@ -105,7 +97,7 @@ exports.Logout=(req, res)=>{
     }
 }
 
-/*const transporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
       user: process.env.EMAIL_USER, 
@@ -121,8 +113,8 @@ exports.ResetPass =
             if(!user) {return res.status(400).json({ message: "User not found with this email ❌" });}
             else {
                 const Reset_Token = JWT.sign(
-                    { id: user.id_member},
-                    process.env.RESET_SECRET,
+                    { id: user.id_member, role: user.role, fullname: user.fullname},
+                    process.env.ACCESS_SECRET,
                     { expiresIn: '15m'})
             
                     const resetLink = `http://localhost:5173/resetpass?token=${Reset_Token}`;
@@ -144,7 +136,9 @@ exports.ResetPass =
                 return res.status(200).json({
                   message: "A password reset email has been sent. Please check your inbox or spam folder ✅",
                 });
-              }
+            } else {
+                return res.status(500).json({ message: "Failed to send reset email " });
+            }
         }
         }
          catch (error) {
@@ -152,54 +146,6 @@ exports.ResetPass =
             return res.status(500).json({message: "Server Error, Please try again later!"});
         }
     }
-*/
-exports.transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER, 
-    pass: process.env.EMAIL_PASS 
-  }
-});
-
-exports.ResetPass = 
-  async (req,res)=>{
-      const {email} = req.body;
-      try {
-      const user = await authModel.FindUserByEmail(email);
-          if(!user) {return res.status(400).json({ message: "User not found with this email ❌" });}
-          else {
-              const Reset_Token = JWT.sign(
-                  { id: user.id_member},
-                  process.env.RESET_SECRET,
-                  { expiresIn: '15m'})
-          
-                  const resetLink = `http://localhost:5173/resetpass?token=${Reset_Token}`;
-                  const mailOptions = {
-              from: process.env.EMAIL_USER,
-              to: email,
-              subject: "Password Reset Request 🔒",
-              html: `
-                <h2>Password Reset</h2>
-                <p>Click the link below to reset your password:</p>
-                <a href="${resetLink}">Reset My Password</a>
-                <p>This link will expire in 15 minutes.</p>
-              `
-            };
-            
-            const sent = await exports.transporter.sendMail(mailOptions);
-            
-            if (sent) {
-              return res.status(200).json({
-                message: "A password reset email has been sent. Please check your inbox or spam folder ✅",
-              });
-            }
-      }
-      }
-       catch (error) {
-          console.log(error);
-          return res.status(500).json({message: "Server Error, Please try again later!"});
-      }
-  }
 
 exports.ResetPassEmail= 
     async (req,res)=>{
@@ -215,23 +161,13 @@ exports.ResetPassEmail=
         }
         } catch (error) {
             console.error(error);
-            return res.status(500).json({ message: "Internal Server Error " });
+            return res.status(500).json({ message: "Interne Servel Error " });
         }
     }
 
-    /*
 exports.check = (req,res)=>{
   if (req.user) {
-    return res.status(200).json({ message: 'Authenticated' });
-  } else {
-    return res.status(401).json({ message: 'Not authenticated' });
-  }
-}
-  */
-
-exports.check = (req,res)=>{
-  if (req.user) {
-    return res.status(200).json({ valid: true, role : req.user.role , message: 'Authenticated' });
+    return res.status(200).json({ valid: true, id: req.user.id ,role : req.user.role , message: 'Authenticated' });
   } else {
     return res.status(401).json({valid: false, role : null, message: 'Not authenticated' });
   }
