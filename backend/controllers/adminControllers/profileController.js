@@ -18,7 +18,7 @@ exports.profileadmin = async (req,res) => {
 
       return res.status(200).json({
         message: "admin retrieved successfully.",
-        data: admin,
+        data: updatedadmin,
       });
     }catch (error) {
         console.error("Error retrieving admin:", error);

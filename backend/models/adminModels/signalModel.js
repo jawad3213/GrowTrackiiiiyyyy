@@ -37,6 +37,7 @@ exports.getAllSignals = async () => {
         //     })
         // );
 
+
         return result;
     } catch (error) {
         console.error("Error retrieving signals:", error);
