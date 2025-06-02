@@ -6,43 +6,47 @@
       </h1>
   
       <!-- Filtres niveaux -->
-      <div class="mt-10 flex gap-0 border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden w-max text-sm font-medium">
-    <button
-      v-for="level in levels"
-      :key="level"
-      @click="selected = level"
-      :class="[
-        'px-4 py-2 transition',
-        selected === level
-          ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
-          : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700',
-        'border-r border-gray-300 dark:border-gray-600 last:border-r-0'
-      ]"
-    >
-      {{ level }}
-    </button>
-  </div>
+        <div class="mt-10 flex gap-0 border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden w-max text-sm font-medium">
+          <button
+            v-for="level in Object.keys(levels)"
+            :key="level"
+            @click="selectedlevel = level; selectedClass = ''; displayedStudents = []"
+            :class="[
+              'px-4 py-2 transition',
+              selectedlevel === level
+                ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
+                : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700',
+              'border-r border-gray-300 dark:border-gray-600 last:border-r-0'
+            ]"
+          >
+            {{ level }}
+          </button>
+        </div>
   
-  <div class="flex flex-wrap items-center justify-between gap-4 mb-6 border-b border-gray-200 dark:border-gray-700 pb-2">
-
-<!-- Filtres classes -->
-<div class="flex flex-wrap gap-4 text-sm font-medium mt-10">
-  <span class="cursor-pointer text-gray-600 border-b-2 border-purple-600 dark:text-purple-300">
-    GINF1 <span class="bg-purple-100 text-purple-600 dark:bg-purple-200/10 dark:text-purple-300 px-3 rounded-full">(15 students)</span>
-  </span>
-  <span class="cursor-pointer text-gray-600 dark:text-gray-300">
-    GCYS1 <span class="bg-purple-100 text-purple-600 dark:bg-purple-200/10 dark:text-purple-300 px-3 rounded-full">(20 students)</span>
-  </span>
-  <span class="cursor-pointer text-gray-600 dark:text-gray-300">
-    GIND1 <span class="bg-purple-100 text-purple-600 dark:bg-purple-200/10 dark:text-purple-300 px-3 rounded-full">(40 students)</span>
-  </span>
-  <span class="cursor-pointer text-gray-600 dark:text-gray-300">
-    GSTR1 <span class="bg-purple-100 text-purple-600 dark:bg-purple-200/10 dark:text-purple-300 px-3 rounded-full">(50 students)</span>
-  </span>
-</div>
+        <!-- Filtres classes dynamiques -->
+        <div class="flex flex-wrap gap-4 text-sm font-medium mt-10">
+          <span
+            v-for="classe in levels[selectedlevel]"
+            :key="classe"
+            class="cursor-pointer"
+            :class="[
+              selectedClass === classe
+                ? 'text-gray-600 border-b-2 border-purple-600 dark:text-purple-300'
+                : 'text-gray-600 dark:text-gray-300'
+            ]"
+            @click="selectClasse(classe)"
+          >
+            {{ classe }}
+            <span
+              class="bg-purple-100 text-purple-600 dark:bg-purple-200/10 dark:text-purple-300 px-3 rounded-full"
+            >
+              ({{ getTotalStudents(classe) }} students)
+            </span>
+          </span>
+        </div>
 
 <!-- Recherche  -->
-<div class="flex items-center gap-3">
+<div class="mt-10 flex items-center gap-3">
     <div class="relative w-[400px]">
   <!-- Icône de recherche -->
   <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 dark:text-white/30">
@@ -60,7 +64,6 @@
   />
 </div>
 
-</div>
 </div>
   
       <!-- Tableau -->
@@ -116,7 +119,7 @@
   import { ref, onMounted, computed } from 'vue'
   import axios from 'axios'
   import { useRouter } from 'vue-router'
-  import ProfLayout from '../layout/ProfLayout.vue'
+  import ProfLayout from '@/components/layout/ProfLayout.vue'
   
   const router = useRouter()
   const search = ref('')
@@ -140,16 +143,37 @@
   }
   
   const goToNewEvaluation = (id) => {
-    router.push(`/newevaluation?id=${id}`)
+    router.push(`/ChooseSkills`)
   }
   
   const goToViewReport = (id) => {
-    router.push(`/viewreport?id=${id}`)
+    router.push(`/Rapport`)
   }
 
 
-  const levels = ['AP1', 'AP2', 'CI1', 'CI2', 'CI3']
-const selected = ref('AP1') // par défaut sélectionné
+const selectedlevel = ref('AP1')
+const selectedClass = ref('')
+const displayedStudents = ref([])
+
+const levels = {
+  AP1: ['TD1', 'TD2', 'TD3', 'TD4', 'TD5'],
+  AP2: ['TD1', 'TD2', 'TD3', 'TD4', 'TD5'],
+  CI1: ['GINF1', 'GCYS1', 'GIND1', 'GSTR1'],
+  CI2: ['GINF1', 'GCYS1', 'GIND1', 'GSTR1'],
+  CI3: ['GSTR1', 'GCYS1', 'GIND1', 'GSTR1']
+}
+
+function selectClasse(classe) {
+  selectedClass.value = classe
+  localStorage.setItem('selectedClass', classe) // ✅ mémorise dans le navigateur
+  fetchStudents(classe)
+}
+
+const getTotalStudents = (classe) => {
+  return selectedClass.value === classe ? displayedStudents.value.length : 0
+}
+
+
   </script>
   
   

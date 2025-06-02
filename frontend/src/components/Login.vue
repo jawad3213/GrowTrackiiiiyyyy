@@ -172,7 +172,6 @@ onMounted(() => {
     store.Clearstatus();
 });
 
-
 </script>
 <style scoped>
 .error {

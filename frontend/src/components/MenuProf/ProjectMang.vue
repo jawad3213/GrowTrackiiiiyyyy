@@ -21,42 +21,43 @@
         <table class="min-w-full text-sm border divide-y divide-gray-200 dark:divide-gray-700">
           <thead class="bg-gray-100 dark:bg-gray-800">
             <tr>
-              <th class="p-3 text-left"><input type="checkbox" /></th>
               <th class="p-3 text-left">Name</th>
-              <th class="p-3 text-left">Level</th>
               <th class="p-3 text-left">Field</th>
               <th class="p-3 text-left">Start Date</th>
               <th class="p-3 text-left">End Date</th>
               <th class="p-3 text-left">Group</th>
-              <th class="p-3 text-left">Notes</th>
               <th class="p-3 text-left">Actions</th>
   
             </tr>
           </thead>
           <tbody>
-            <tr
-              v-for="project in projects"
-              :key="project.id"
-              class="hover:bg-gray-50 dark:hover:bg-gray-800"
-            >
-              <td class="p-3"><input type="checkbox" /></td>
+           <tr
+  v-for="project in projects"
+  :key="project.id"
+  @click="goToProject(project.id)"
+  class="hover:bg-gray-100 dark:hover:bg-gray-800 active:bg-gray-200 dark:active:bg-gray-700 cursor-pointer transition transform duration-150 ease-in-out active:scale-[0.98]"
+>
+
               <td class="p-3">
                 <div class="font-medium">{{ project.name }}</div>
                 <div class="text-xs text-gray-500 dark:text-gray-400">{{ project.id }}</div>
               </td>
               <td class="p-3">{{ project.level }}</td>
-              <td class="p-3">{{ project.field }}</td>
               <td class="p-3">{{ project.start_date }}</td>
-              <td class="p-3">{{ project.end_date }}</td>
-              <td class="p-3">
+              <td class="p-3">{{ project.end_date }}</td> 
+              <td class="p-3">{{ project.subgroups }}</td> 
+
+              <!-- <td class="p-3">
                 <div v-for="g in project.groups" :key="g.name">
                   {{ g.name }}
                 </div>
-              </td>
-              <td class="p-3">{{ project.description }}</td>
+              </td> -->
+
               <td class="p-3 flex space-x-2">
-                <button @click="editProject(project)" class="text-blue-500 hover:text-blue-700">✏️</button>
-                <button @click="confirmDelete(project.id)" class="text-red-500 hover:text-red-700">🗑️</button>
+               <td class="p-3 flex space-x-2">
+                <button @click.stop="editProject(project)" class="text-blue-500 hover:text-blue-700">✏️</button>
+                <button @click.stop="confirmDelete(project.id)" class="text-red-500 hover:text-red-700">🗑️</button>
+              </td>
               </td>
             </tr>
           </tbody>
@@ -102,6 +103,13 @@
   const editProject = (project) => {
   router.push({ path: '/AddProject', query: { id: project.id } })
 }
+
+//selectionner le group
+const goToProject = (id) => {
+  router.push({ name: 'ProjectDetails', query: { id } })
+}
+
+
 
   
   // Appel au montage

@@ -249,7 +249,7 @@
           ]
         },
         { 
-          name: "Institution Settings", icon: PageIcon, path : "/Institution" },
+          name: "Notification", icon: PageIcon, path : "/Notification" },
           { 
             name: "Rapport", icon: PageIcon, path : "/Rapport" },
       ]

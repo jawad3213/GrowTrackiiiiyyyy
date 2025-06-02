@@ -233,45 +233,16 @@ exports.user_distribution_by_role_Model = async () => {
     };
 };
 ///////////////////
-exports.total_evaluation_Model = async () => {
-  const currentMonth = new Date().getMonth() + 1; 
-  const currentYear = new Date().getFullYear();
-
-  let months = [];
-  let years = [];
-
-  if (currentMonth <= 6) {
-
-    for (let m = 9; m <= 12; m++) {
-      months.push(m);
-      years.push(currentYear - 1);
-    }
-    
-    for (let m = 1; m <= 6; m++) {
-      months.push(m);
-      years.push(currentYear);
-    }
-  } else {
-    
-    for (let m = 9; m <= 12; m++) {
-      months.push(m);
-      years.push(currentYear);
-    }
-    
-    for (let m = 1; m <= 6; m++) {
-      months.push(m);
-      years.push(currentYear + 1);
-    }
-  }
-
-  const data = [];
-  for (let i = 0; i < months.length; i++) {
-    const res = await DashModel.evaluation_type_in_month(months[i], years[i]);
-    data.push(res.result);
-  }
-
-  return {
-    data
-  };
+exports.news_admin_Model = async () => {
+  const news = await pool.query(
+    "SELECT * FROM public.news WHERE type='admin' ORDER BY date DESC"
+  );   
+  return news.rows
 };
-///////////////////
+//////////////
+exports.news_professor_Model = async () => {
+  const news = await pool.query(
+    "SELECT * FROM public.news WHERE type='Professor' ORDER BY date DESC"
+  );   
+  return news.rows
+};

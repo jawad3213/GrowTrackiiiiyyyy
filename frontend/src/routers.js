@@ -30,19 +30,49 @@ import Evaluation from "./components/Evaluation.vue";
 import Personalized from "./components/Personalized.vue";
 import Solution from "./components/Solution.vue";
 import DeleteStudent from "./components/DeleteStudent.vue";
-
 import SignalEvaluationModal from "./components/SignalEvaluationModal.vue";
-
 import DashboardProf from "./components/DashboardProf.vue";
-import ClassesEval from "./components/MenuProf/ClassesEval.vue";
-import ClassesSignal from "./components/MenuProf/ClassesSignal.vue";
-import HistoriqueEval from "./components/MenuProf/HistoriqueEval.vue";
-import HistoriqueSignal from "./components/MenuProf/HistoriqueSignal.vue";
+
+import ClassesEval from "./components/MenuProf/ClassesEval/ClassesEval.vue";
+import ClassesSignal from "./components/MenuProf/signal/ClassesSignal.vue";
+
+
+import HistoriqueEval from "./components/MenuProf/ClassesEval/HistoriqueEval.vue";
+import HistoriqueSignal from "./components/MenuProf/signal/HistoriqueSignal.vue";
 import ProjectMang from "./components/MenuProf/ProjectMang.vue";
 import Rapport from "./components/MenuProf/Rapport.vue";
-import Institution from "./components/MenuProf/Institution.vue";
+import Notification from "./components/MenuProf/Notification.vue";
 import AddProject from "./components/MenuProf/AddProject.vue";
 import AddMembers from "./components/MenuProf/AddMembers.vue";
+import NewSignal from "./components/MenuProf/signal/NewSignal.vue";
+import ViewHistory from "./components/MenuProf/signal/ViewHistory.vue";
+import SolutionSignal from "./components/MenuProf/signal/SolutionSignal.vue";
+import SolutionErrror from "./components/MenuProf/signal/SolutionErrror.vue";
+
+import ChooseSkills from "./components/MenuProf/ClassesEval/ChooseSkills.vue";
+import SkillsChoosen from "./components/MenuProf/ClassesEval/SkillsChoosen.vue";
+import courseEvaluation from "./components/MenuProf/ClassesEval/courseEvaluation.vue";
+import EndEval from "./components/MenuProf/ClassesEval/EndEval.vue";
+import Thanku from "./components/MenuProf/ClassesEval/Thanku.vue";
+import ViewEval from "./components/MenuProf/ClassesEval/ViewEval.vue";
+import ProjectDetails from "./components/MenuProf/ProjectDetails.vue";
+
+import CompletionRate from "./components/MenuStudent/dashStudent/CompletionRate.vue";
+import StudEvals from "./components/MenuStudent/Evaluations/StudEvals.vue";
+import dashstud from "./components/MenuStudent/dashStudent/dashstud.vue";
+import StudProjects from "./components/MenuStudent/Evaluations/StudProjects.vue";
+import StudSignals from "./components/MenuStudent/Evaluations/StudSignals.vue";
+import skillsChoseen from "./components/MenuStudent/SelfEval/skillsChoseen.vue";
+import evalSkills from "./components/MenuStudent/SelfEval/evalSkills.vue";
+import skillsEnd from "./components/MenuStudent/SelfEval/skillsEnd.vue";
+import end from "./components/MenuStudent/SelfEval/end.vue";
+
+import StudRapport from "./components/MenuStudent/StudRapport.vue";
+import StudNotif from "./components/MenuStudent/StudNotif.vue";
+import StudSolution from "./components/MenuStudent/StudSolution.vue";
+import StudReason from "./components/MenuStudent/StudReason.vue";
+import selfEval from "./components/MenuStudent/selfEval.vue";
+
 
 
 const routes = [
@@ -263,9 +293,9 @@ const routes = [
         path : "/Rapport"
     },
     {
-        name : "Institution",
-        component : Institution,
-        path : "/Institution"
+        name : "Notification",
+        component : Notification,
+        path : "/Notification"
     },
     {
         name : "AddProject",
@@ -277,7 +307,133 @@ const routes = [
         component : AddMembers,
         path : "/AddMembers"
     },
+    {
 
+        name : "NewSignal",
+        component : NewSignal,
+        path : "/newsignal"
+    },
+    {
+        name : "ViewHistory",
+        component : ViewHistory,
+        path : "/viewhistory"
+    },
+    {
+        name : "SolutionSignal",
+        component : SolutionSignal,
+        path : "/SolutionSignal"
+    },
+    {
+        name : "SolutionError",
+        component : SolutionErrror,
+        path : "/SolutionError"
+    },
+
+    {
+        name : "ChooseSkills",
+        component : ChooseSkills,
+        path : "/ChooseSkills"
+    },
+    {
+        name : "SkillsChoosen",
+        component : SkillsChoosen,
+        path : "/SkillsChoosen"
+    },
+    {
+        name : "courseEvaluation",
+        component : courseEvaluation,
+        path : "/courseEvaluation"
+    },
+    {
+        name : "EndEval",
+        component : EndEval,
+        path : "/EndEval"
+    },
+    {
+        name : "Thanku",
+        component : Thanku,
+        path : "/Thanku"
+    },
+    {
+        name : "ViewEval",
+        component : ViewEval,
+        path : "/ViewEval"
+    },
+     {
+        name : "StudEvals",
+        component : StudEvals,
+        path : "/StudEvals"
+    },
+     {
+        name : "StudProject",
+        component : StudProjects,
+        path : "/StudProject"
+    },
+     {
+        name : "StudRapport",
+        component : StudRapport,
+        path : "/StudRapport"
+    },
+     {
+        name : "StudSignals",
+        component : StudSignals,
+        path : "/StudSignals"
+    },
+     {
+        name : "StudNotif",
+        component : StudNotif,
+        path : "/StudNotif"
+    },
+     {
+        name : "skillsChoseen",
+        component : skillsChoseen,
+        path : "/skillsChoseen"
+    },
+     {
+        name : "evalSkills",
+        component : evalSkills,
+        path : "/evalSkills"
+    },
+     {
+        name : "StudSolution",
+        component : StudSolution,
+        path : "/StudSolution"
+    },
+     {
+        name : "StudReason",
+        component : StudReason,
+        path : "/StudReason"
+    },
+    {
+        name : "skillsEnd",
+        component : skillsEnd,
+        path : "/skillsEnd"
+    },
+    {
+        name : "end",
+        component : end,
+        path : "/end"
+    },
+    {
+        name : "CompletionRate",
+        component : CompletionRate,
+        path : "/CompletionRate"
+    },
+    {
+        name : "dashstud",
+        component : dashstud,
+        path : "/dashstud"
+    },
+    {
+        name : "selfEval",
+        component : selfEval,
+        path : "/selfEval"
+    },
+{
+        name : "ProjectDetails",
+        component : ProjectDetails,
+        path : "/ProjectDetails"
+    },
 
     
 ];

@@ -35,10 +35,10 @@ router.get('/evaluation_source_overtime',DashController.evaluation_source_overti
 //comapraison entre distribution des student-prof-supervisor
 router.get('/user_distribution_by_role',DashController.user_distribution_by_role_Controller);
 
-//total evaluation
-router.get('/total_evaluation',DashController.total_evaluation_Controller);
+//news de table admin
+router.get('/news_admin',DashController.news_admin_Controller);
 
-//
-
+//news de table prof
+router.get('/news_prof',DashController.news_professor_Controller);
 
 module.exports = router;

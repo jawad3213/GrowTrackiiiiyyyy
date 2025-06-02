@@ -36,6 +36,7 @@
 
 
 
+
 </admin-layout>
 </template>
 
@@ -47,6 +48,7 @@ import MonthlySale from '@/components/ecommerce/MonthlySale.vue'
 import EvaluationSource from './ecommerce/EvaluationSource.vue'
 import UserDistrubution from './ecommerce/UserDistrubution.vue'
 
+
 export default {
   components: {
     UserDistrubution,
@@ -55,6 +57,7 @@ export default {
     EcommerceMetrics,
     MonthlyTarget,
     MonthlySale,
+
   },
   name: 'Ecommerce',
 }

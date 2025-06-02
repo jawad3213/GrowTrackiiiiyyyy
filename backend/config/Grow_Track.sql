@@ -88,6 +88,21 @@ CREATE TABLE solution (
 );
 
 --DONEE--
+CREATE TABLE signal (
+   id_signal SERIAL PRIMARY KEY,
+   approved BOOLEAN,
+   message VARCHAR(1000),
+   anony BOOLEAN,
+   option_signal VARCHAR(100),
+   id_solution INT ,
+   id_member VARCHAR(100) ,
+   date_add DATE DEFAULT CURRENT_DATE,
+   solution_state VARCHAR(100),
+   FOREIGN KEY(id_solution) REFERENCES solution(id_solution),
+   FOREIGN KEY(id_member) REFERENCES member(id_member)
+);
+
+--DONEE--
 CREATE TABLE report (
   id_reporter VARCHAR(100),   
   id_reported VARCHAR(100),
@@ -101,21 +116,6 @@ CREATE TABLE report (
 );
 
 
---DONEE--
-CREATE TABLE signal (
-   id_signal SERIAL PRIMARY KEY,
-   approved BOOLEAN,
-   message VARCHAR(1000),
-   anony BOOLEAN,
-   option_signal VARCHAR(100),
-   prove BYTEA,
-   id_solution INT ,
-   id_member VARCHAR(100) ,
-   date_add DATE DEFAULT CURRENT_DATE,
-   solution_state VARCHAR(100),
-   FOREIGN KEY(id_solution) REFERENCES solution(id_solution),
-   FOREIGN KEY(id_member) REFERENCES member(id_member)
-);
 
 --DONEE--
 CREATE TABLE follow_up (
@@ -136,10 +136,17 @@ CREATE TABLE follow_up (
 --DONEE--
 CREATE TABLE project (
    id_project SERIAL PRIMARY KEY,
+   name_project VARCHAR(100), --new
    description_project VARCHAR(1000),
    date_project DATE,
+   end_date DATE, --new
    subject_project VARCHAR(1000),
    id_prof VARCHAR(100) NOT NULL,
+   id_class VARCHAR(100), --new
+   id_sector VARCHAR(100),
+   group_number INT, --new
+   FOREIGN KEY(id_class) REFERENCES class(id_class),
+   FOREIGN KEY(id_sector) REFERENCES sector(id_sector),
    FOREIGN KEY(id_prof) REFERENCES professor(id_member)
 );
 
@@ -157,6 +164,7 @@ CREATE TABLE team (
    note DOUBLE PRECISION,
    id_prof VARCHAR(100) NOT NULL,
    id_project INT,
+   team_name VARCHAR(100),
    FOREIGN KEY(id_prof) REFERENCES professor(id_member),
    FOREIGN KEY(id_project) REFERENCES project(id_project)
 );
@@ -210,22 +218,30 @@ CREATE TABLE skill (
 
 --DONEE--
 CREATE TABLE skill_evaluation (
-   id_evaluation SERIAL PRIMARY KEY,
-   note_evaluation DOUBLE PRECISION,
+   id_evaluation SERIAL PRIMARY KEY, 
+   note_evaluation DOUBLE PRECISION, --note total de l'evaluation
    type_evaluation VARCHAR(100) CHECK (type_evaluation IN ('Pair', 'Self', 'Supervisor', 'Professor')),
    comment_evaluation VARCHAR(1000),
-   id_internship INT,
-   id_class VARCHAR(100),
+   evaluation_context VARCHAR(100) CHECK (evaluation_context IN ('class', 'project', 'internship')),
+   id_internship INT, 
+   id_class VARCHAR(100), 
    id_team INT,
    id_student VARCHAR(100),
    id_evaluator VARCHAR(100),
-   skill_name VARCHAR(100),
    date_add DATE DEFAULT CURRENT_DATE,
    FOREIGN KEY(id_internship) REFERENCES internship(id_internship),
    FOREIGN KEY(id_class) REFERENCES class(id_class),
    FOREIGN KEY(id_team) REFERENCES team(id_team),
    FOREIGN KEY(id_student) REFERENCES student(id_member),
    FOREIGN KEY(id_evaluator) REFERENCES member(id_member),
+);
+
+CREATE TABLE evaluations (
+   id_evaluation INT, 
+   note_skill DOUBLE PRECISION,
+   skill_name VARCHAR(100),
+   PRIMARY KEY (id_evaluation,skill_name),
+   FOREIGN KEY(id_evaluation) REFERENCES skill_evaluation(id_evaluation),
    FOREIGN KEY(skill_name) REFERENCES skill(skill_name)
 );
 
@@ -250,3 +266,51 @@ CREATE TABLE rate (
    FOREIGN KEY(id_member) REFERENCES member(id_member)
 );
 
+--News
+--DONEE--
+CREATE TABLE news (
+   id_news SERIAL PRIMARY KEY,
+   id_member VARCHAR(100) REFERENCES member(id_member),
+   message VARCHAR(1000) ,
+   type VARCHAR(50) CHECK (type IN ('admin', 'Professor')),
+   date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+--Insertion des skill
+
+INSERT INTO skill (skill_name, description_skill, question1, question2, question3, id_admin) VALUES
+('Communication', 'Ability to convey ideas clearly and understandably.',
+ 'Does this person express their ideas clearly and understandably?',
+ 'Do they listen actively and let others finish speaking?',
+ 'Do they adapt their communication style depending on the audience?',
+ 'M001'),
+
+('Teamwork', 'Ability to collaborate and contribute effectively in group settings.',
+ 'Does this person collaborate effectively with teammates?',
+ 'Are they open to others ideas and feedback?',
+ 'Do they support the team in achieving common goals?',
+ 'M001'),
+
+('Problem-solving', 'Ability to address challenges analytically and effectively.',
+ 'Does this person approach problems calmly and analytically?',
+ 'Do they contribute useful solutions when challenges arise?',
+ 'Are they willing to seek help or input when needed?',
+ 'M001'),
+
+('Time Management', 'Skill in prioritizing and managing tasks efficiently.',
+ 'Does this person prioritize tasks effectively to meet deadlines?',
+ 'Does this person allocate time appropriately across multiple responsibilities?',
+ 'Does this person avoid unnecessary delays or procrastination?',
+ 'M001'),
+
+('Critical Thinking', 'Capacity to analyze and evaluate information constructively.',
+ 'Does this person analyze information carefully before forming conclusions?',
+ 'Does this person question assumptions or challenge ideas constructively?',
+ 'Does this person evaluate the strengths and weaknesses of arguments or solutions?',
+ 'M001'),
+
+('Creativity', 'Ability to generate and explore innovative ideas and solutions.',
+ 'Does this person generate original or innovative ideas?',
+ 'Does this person approach tasks with imagination or out-of-the-box thinking?',
+ 'Does this person explore multiple possibilities before settling on a solution?',
+ 'M001');

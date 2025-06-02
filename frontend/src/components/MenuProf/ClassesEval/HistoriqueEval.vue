@@ -57,9 +57,8 @@
                   <td class="px-4 py-2">{{ evaluation.classe }}</td>
                   <td class="px-4 py-2">{{ evaluation.type }}</td>
                   <td class="px-4 py-2">{{ evaluation.submittedIn }}</td>
-                  <td class="px-4 py-2">
-                    <button class="text-blue-600 dark:text-blue-400 hover:underline text-sm">✏️</button>
-                  </td>
+                  
+                  <td class="p-3 text-purple-600 hover:underline cursor-pointer" @click="goToViewReport(evaluation.id)">View evaluation →</td>
                 </tr>
               </tbody>
             </table>
@@ -73,9 +72,13 @@
   <script setup>
   import { ref, onMounted } from 'vue'
   import axios from 'axios'
-  import AdminLayout from '../layout/ProfLayout.vue'
+  import AdminLayout from '@/components/layout/ProfLayout.vue'
+  import { useRouter } from 'vue-router'
   
   const evaluations = ref([])
+
+
+  const router = useRouter()
   
   const fetchEvaluations = async () => {
     try {
@@ -84,6 +87,11 @@
     } catch (error) {
       console.error('Erreur lors du chargement des évaluations:', error)
     }
+  }
+
+  const goToViewReport = (id) => {
+    //router.push(`/viewreport?id=${id}`)
+    router.push('/ViewEval')
   }
   
   onMounted(fetchEvaluations)
