@@ -54,43 +54,65 @@
   
   // Envoi au backend
   const saveMembers = async () => {
-    try {
-      const payload = {
-        members: members.value.filter(m => m.trim() !== '') // filtrer les vides
-      }
-  
-      if (payload.members.length === 0) {
-        alert('Please enter at least one member')
-        return
-      }
-    
-      if (groupname.value) {
-      // Mode modification (UPDATE)
-      await axios.put(`http://localhost:3001/projects/${groupname.value}`, payload)
-    } else {
-        // Mode création (CREATE)
-    const response = await axios.post('http://localhost:3001/projects', payload)
-    }
-    router.push('/AddProject')
+  try {
+    const payload = members.value.filter(m => m.trim() !== '') // filtrer les vides
 
-    } catch (error) {
-      console.error('Error saving members:', error)
+    if (payload.length === 0) {
+      alert('Please enter at least one member')
+      return
     }
+
+    const projectId = route.query.id         // id du projet
+    const groupName = route.query.name   
+        // nom du groupe à modifier
+    console.log('hello')
+    // Récupérer le projet existant
+    const { data: project } = await axios.get(`http://localhost:3001/projects/${projectName}`)
+
+    // Modifier les membres du bon groupe
+    project.groups = project.groups.map(group => {
+      if (group.name === groupName) {
+        return {
+          ...group,
+          members: payload.length
+        }
+      }
+      return group
+    })
+    
+    // Envoyer la mise à jour complète
+    await axios.put(`http://localhost:3001/projects/${projectId}`, project)
+    console.log(error)
+
+    router.push('/AddProject')
+  } catch (error) {
+    console.error('Erreur lors de l’enregistrement des membres :', error)
   }
+}
+
 
   const groupname = ref(null)
 
   onMounted(async () => {
+  const projectId = route.query.id
   groupname.value = route.query.name
 
-  if (groupname.value) {
+  if (projectId && groupname.value) {
     try {
-      const { data } = await axios.get(`http://localhost:3001/projects/${groupname.value}`)
-      members.value = data
+      const { data: project } = await axios.get(`http://localhost:3001/projects/${projectId}`)
+      const group = project.groups.find(g => g.name === groupname.value)
+
+      if (group && group.members && Array.isArray(group.members)) {
+        members.value = group.members
+      } else if (group && typeof group.members === 'string') {
+        // Si members est juste un nombre (comme "2"), on initialise des champs vides
+        members.value = Array(parseInt(group.members)).fill('')
+      }
     } catch (error) {
-      console.error('Erreur de chargement du projet à éditer :', error)
+      console.error('Erreur de chargement du projet :', error)
     }
   }
 })
+
   </script>
   
