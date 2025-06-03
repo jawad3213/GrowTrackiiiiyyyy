@@ -103,6 +103,9 @@ app.use("/api/dashprof", dashprof);
 const dashstudent = require("./routes/studentRoutes/dashRoutes");
 app.use("/student/dashboard", dashstudent);
 
+const prjectStudent = require("./routes/studentRoutes/projectRoute");
+app.use("/student/projects", prjectStudent);
+
 
 
 
