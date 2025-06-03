@@ -81,6 +81,18 @@ app.use("/api/signal_classes", prof_signal_classes)
 const student_report = require("./routes/professorRoutes/student_report");
 app.use("/api/report", student_report)
 
+//student evaluation history
+const student_evaluation = require("./routes/studentRoutes/history_evaluation_route");
+app.use("/api/student_evaluation_history", student_evaluation)
+
+//student signal history
+const student_signal = require("./routes/studentRoutes/signal_history_route");
+app.use("/api/student_signal_history", student_signal)
+
+//student evaluation byself
+const student_evaluationself = require("./routes/studentRoutes/evaluation_byself_route");
+app.use("/api/student_evaluation_byself", student_evaluationself)
+
 app.listen(PORT, () => {
     console.log(`Server Running on http://localhost:${PORT}`);
 });

@@ -231,7 +231,7 @@ CREATE TABLE skill_evaluation (
    date_add DATE DEFAULT CURRENT_DATE,
    FOREIGN KEY(id_internship) REFERENCES internship(id_internship),
    FOREIGN KEY(id_class) REFERENCES class(id_class),
-   FOREIGN KEY(id_team) REFERENCES team(id_team),
+   FOREIGN KEY(id_team) REFEREfiNCES team(id_team),
    FOREIGN KEY(id_student) REFERENCES student(id_member),
    FOREIGN KEY(id_evaluator) REFERENCES member(id_member),
 );
