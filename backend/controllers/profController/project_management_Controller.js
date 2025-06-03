@@ -51,7 +51,7 @@ exports.add_project_Controller =  async (req, res) => {
     end_date.setMonth(end_date.getMonth() + parseInt(month_number), 0); // jour 0 = dernier jour du mois precedent
 
     const result = await project_Model.add_project_Model(id,name,start_date,end_date,description,level,field);
-
+    
     if (result) {
       return res.status(200).json({
         result
@@ -132,3 +132,77 @@ exports.add_member_Controller =  async (req, res) => {
   }
 };
 
+//////////
+exports.update_project_Controller = async (req, res) => {
+  try {
+    const id_project = req.params.id;
+    const { start_date, month_number } = req.body;
+
+    if (!start_date && !month_number) {
+      return res.status(400).json({ message: "Provide at least one field to update." });
+    }
+
+    const result = await project_Model.update_project_Model(id_project, start_date, month_number);
+    return res.status(200).json({ message: "Project updated successfully", result });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server Error, Please try again later!" });
+  }
+};
+
+/////////
+exports.all_group_Controller =  async (req, res) => {
+      try {
+        const {id_project} = req.params;
+        const result = await project_Model.all_group_Model(id_project);
+        if(result.length>0){
+          const number = result.length;
+          return res.status(200).json({
+            number,
+            result
+          });
+        }else return res.status(404).json({message: "something went wrong"});
+  
+      } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Server Error, Please try again later!" });
+      }
+};
+
+/////////
+exports.delete_team_Controller = async (req, res) => {
+  try {
+    const id_team = req.params.id;
+
+    const deleted = await project_Model.delete_team_Model(id_team);
+
+    if (deleted === 0) {
+      return res.status(404).json({ message: "Team not found." });
+    }
+
+    return res.status(200).json({ message: "Team deleted successfully." });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server Error. Please try again later." });
+  }
+};
+
+/////////
+exports.all_member_Controller = async (req, res) => {
+  try {
+        const id_team = req.params.id_group;
+        const result = await project_Model.all_member_Model(id_team);
+        if(result.length>0){
+          const number = result.length;
+          return res.status(200).json({
+            number,
+            result
+          });
+        }else return res.status(404).json({message: "something went wrong"});
+  
+      } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Server Error, Please try again later!" });
+      }
+};

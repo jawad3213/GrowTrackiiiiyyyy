@@ -104,9 +104,19 @@ app.use("/api/signal_history", prof_signal_history)
 const prof_signal_classes = require("./routes/professorRoutes/signal_classes_Route");
 app.use("/api/signal_classes", prof_signal_classes)
 
+<<<<<<< HEAD:backend/server.js
 const dashRoute = require("./routes/profRoutes/dashRoute");
 app.use("/prof/dashboard", dashRoute );
 
+=======
+//rapport student
+const student_report = require("./routes/professorRoutes/student_report");
+app.use("/api/report", student_report)
+
+app.listen(PORT, () => {
+    console.log(`Server Running on http://localhost:${PORT}`);
+});
+>>>>>>> origin/backendNada:server.js
 
 const pool = require('./config/db');
 
