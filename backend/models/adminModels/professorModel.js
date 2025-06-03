@@ -51,7 +51,7 @@ exports.createProfessor = async (id_user, name, cin, email, pass, departement, c
 exports.getAllProfessor = async () => {
   try {
     const result = await pool.query(
-      `SELECT m.cin, m.full_name, p.code, m.email, p.department, c.id_class, m.date_add, m.profile_picture
+      `SELECT m.id_member, m.cin, m.full_name, p.code, m.email, p.department, c.id_class, m.date_add, m.profile_picture
        FROM public.member m
        JOIN public.professor p ON m.id_member = p.id_member
        JOIN public.teach t ON p.id_member = t.id_member

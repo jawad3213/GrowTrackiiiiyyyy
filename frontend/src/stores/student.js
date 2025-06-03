@@ -63,6 +63,41 @@ export const useStudentStore = defineStore('student', ()=>{
         loading.value = false
       }
       }
+    async function deleteProf(id_member) {
+      loading.value = true
+      try {
+        await api.delete(`/admin/professors/delete/${id_member}`)
+        success.value = true;
+        errors.value=null;
+        error.value =null;
+      }
+      catch (err) {
+        error.value = err.response?.data?.message || err.response?.data?.error || "Couldn't delete the student. Please retry again later"
+        success.value = false;
+        console.log(err)
+      }
+      finally {
+        loading.value = false
+      }
+      }
+      
+    async function deleteSupervisor(id_member) {
+      loading.value = true
+      try {
+        await api.delete(`/admin/supervisors/${id_member}`)
+        success.value = true;
+        errors.value=null;
+        error.value =null;
+      }
+      catch (err) {
+        error.value = err.response?.data?.message || err.response?.data?.error || "Couldn't delete the student. Please retry again later"
+        success.value = false;
+        console.log(err)
+      }
+      finally {
+        loading.value = false
+      }
+      }
 
     async function NumberOfStudents() {
       try {
@@ -126,6 +161,8 @@ export const useStudentStore = defineStore('student', ()=>{
     success,
     errors,
     GetStudentsByClass,
+    deleteProf,
+    deleteSupervisor,
     deleteStudent,
     GetStudentsBySector,
     updateStudent,

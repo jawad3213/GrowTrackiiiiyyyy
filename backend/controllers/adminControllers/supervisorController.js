@@ -4,12 +4,12 @@ const { v4: uuidv4 } = require("uuid");
 
 // Générer l'URL complète de l'image
 const generateImageUrl = (path) => {
-  return path ? `http://localhost:8080/${path.replace(/\\/g, "/")}` : null;
+  return path ? `http://localhost:3000/${path.replace(/\\/g, "/")}` : null;
 };
 
 exports.createSupervisor = async (req, res) => {
   console.log("Received data:", req.body);
-  const { name, cin_sepervisor, email, pass, company, number, position, cin_student, name_internship, date_start, date_done, subject, note } = req.body;
+  const { name, cin_sepervisor, email, pass, company, number, position, cin_student, date_start, date_done, subject, note } = req.body;
   const imagePath = req.file ? req.file.path : null; // Gestion image
 
   try {
@@ -18,7 +18,7 @@ exports.createSupervisor = async (req, res) => {
     const hashedPassword = await bcrypt.hash(pass, 10);
 
     const supervisors = await supervisorModel.createSupervisor(
-      id_user,name, cin_sepervisor, email, hashedPassword, company, number, position, cin_student, name_internship, date_start, date_done, subject, note, role, imagePath
+      id_user,name, cin_sepervisor, email, hashedPassword, company, number, position, cin_student, date_start, date_done, subject, note, role, imagePath
     );
 
     res.status(201).json({
@@ -129,10 +129,10 @@ exports.updateSupervisor = async (req, res) => {
 };
 
 exports.deleteSupervisor = async (req, res) => {
-  const { id_supervisor } = req.params;
+  const { id_member } = req.params;
 
   try {
-    const result = await supervisorModel.deleteSupervisorById(id_supervisor);
+    const result = await supervisorModel.deleteSupervisorById(id_member);
 
     if (result.rowCount === 0) {
       return res.status(404).json({

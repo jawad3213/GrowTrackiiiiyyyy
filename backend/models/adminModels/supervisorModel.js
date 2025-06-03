@@ -1,6 +1,6 @@
 const pool = require("../../config/db");
 
-exports.createSupervisor = async (id_user, name, cin_sepervisor, email, pass, company, number, position, cin_student, name_internship, date_start, date_done, subject, note, role, imagePath) => {
+exports.createSupervisor = async (id_user, name, cin_sepervisor, email, pass, company, number, position, cin_student, date_start, date_done, subject, note, role, imagePath) => {
   try {
     // Insert into the member table
     const result = await pool.query(
@@ -51,7 +51,7 @@ exports.createSupervisor = async (id_user, name, cin_sepervisor, email, pass, co
 exports.getAllSupervisors = async () => {
   try {
     const result = await pool.query(
-      `SELECT m.cin, m.full_name, s.registration_number, m.email, s.company, s.position, m.date_add, m.profile_picture
+      `SELECT m.id_member, m.cin, m.full_name, s.registration_number, m.email, s.company, s.position, m.date_add, m.profile_picture
        FROM public.member m 
        JOIN public.supervisor s ON m.id_member = s.id_member`
     );

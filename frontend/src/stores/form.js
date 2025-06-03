@@ -20,7 +20,6 @@ export const useFormStore = defineStore('form', () => {
     loading.value = true
     error.value = null
     success.value = null
-
     try {
       const res = await api.post(endpoint, data)
       success.value = 'Submitted successfully'

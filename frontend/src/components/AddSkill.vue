@@ -136,7 +136,6 @@ async function submitForm() {
         }
       }
       
-      // Only proceed if there are actual changes
       if (Object.keys(UpdatedData).length > 0) {
         const sanitizedPartialData = formStore.sanitizeInputs(UpdatedData);
         

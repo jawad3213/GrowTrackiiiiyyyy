@@ -30,6 +30,8 @@ import Evaluation from "./components/Evaluation.vue";
 import Personalized from "./components/Personalized.vue";
 import Solution from "./components/Solution.vue";
 import DeleteStudent from "./components/DeleteStudent.vue";
+import DeleteProf from "./components/DeleteProf.vue";
+import DeleteSupervisor from "./components/DeleteSupervisor.vue";
 
 import SignalEvaluationModal from "./components/SignalEvaluationModal.vue";
 
@@ -225,6 +227,16 @@ const routes = [
         name : "DeleteStudent",
         component : DeleteStudent,
         path : "/DeleteStudent/:id_member"
+    },
+    {
+        name : "DeleteProf",
+        component : DeleteProf,
+        path : "/Deleteprof/:id_member"
+    },
+    {
+        name : "DeleteSupervisor",
+        component : DeleteSupervisor,
+        path : "/DeleteSupervisor/:id_member"
     },
     {
         name : "DashboardProf",

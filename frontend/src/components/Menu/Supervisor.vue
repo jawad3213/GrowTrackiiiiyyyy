@@ -20,9 +20,43 @@
             Filters
           </button>
         </div>
+<!-- Table -->
+        <div v-if="sups.length > 0" class="p-6 overflow-x-auto">
+          <table class="min-w-full bg-white dark:bg-gray-800 shadow text-gray-800 dark:text-gray-100">
+            <thead class="bg-gray-100 dark:bg-gray-700">
+              <tr>
+                <th class="py-3 px-4 text-left text-sm font-semibold">Full Name</th>
+                <th class="py-3 px-4 text-left text-sm font-semibold">Regestration Number</th>
+                <th class="py-3 px-4 text-left text-sm font-semibold">Email</th>
+                <th class="py-3 px-4 text-left text-sm font-semibold">Company</th>
+                <th class="py-3 px-4 text-left text-sm font-semibold">Position</th>
+                <th class="py-3 px-4 text-left text-sm font-semibold">Registration Date</th>
+                <th class="py-3 px-4 text-center text-sm font-semibold">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="sup in Allsups"
+                :key="sup.cin"
+                class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
+              >
+                <td class="py-3 px-4">{{ sup.full_name }}</td>
+                <td class="py-3 px-4">{{ sup.registration_number }}</td>
+                <td class="py-3 px-4">{{ sup.email }}</td>
+                <td class="py-3 px-4">{{ sup.company }} </td>
+                <td class="py-3 px-4">{{ sup.position }} </td>
+                <td class="py-3 px-4">{{new Date(sup.date_add).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric'  })}}</td>
+          
+                <td class="py-3 px-4 flex justify-center space-x-2">
+                <router-link :to="`/DeleteSupervisor/${sup.id_member}`" class="text-red-500 hover:text-red-700">🗑️</router-link>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
         <!-- No Data -->
-        <div class="flex-1 flex flex-col items-center justify-center text-center text-gray-600 dark:text-gray-300 py-12">
+        <div v-else class="flex-1 flex flex-col items-center justify-center text-center text-gray-600 dark:text-gray-300 py-12">
           <div class="text-5xl mb-4">🔍</div>
           <p class="text-lg font-semibold mb-2">No supervisors found</p>
           <p class="mb-6">
@@ -51,14 +85,36 @@
 </template>
 
 <script setup>
+import {ref, computed, onMounted} from 'vue'
 import AdminLayout from '@/components/layout/AdminLayout.vue'
+import api from '@/services/api'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+
+const sups = ref([{}])
+
+
+const Allsups = computed(() => {
+  const all = sups.value
+  return all
+ })
+
+ 
+
 
 function navigate(link) {
   if (link.path) {
     router.push(link.path)
   }
 }
+
+onMounted(async() => {
+  try{
+  const res = await api.get('/admin/supervisors')
+  sups.value = res.data.data;
+  }catch(error){
+  console.error('Erreur lors du chargement des profs :', error)
+  }
+  })
 </script>
