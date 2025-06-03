@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import LoadingPage from "@/components/Home/LoadingPage.vue";
 import AboutUs from "./components/AboutUs.vue";
 import ContactUs from "./components/ContactUs.vue";
-import Teachers from "./components/Home/Teachers.vue";
+//import Teachers from "./components/Home/Teachers.vue";
 import Students from "./components/Home/Students.vue";
 import Login from "./components/Login.vue";
 import resetPassword from "./components/resetPassword.vue";
