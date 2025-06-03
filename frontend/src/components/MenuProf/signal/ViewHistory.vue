@@ -56,7 +56,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import axios from 'axios'
+import api from '@/services/api'
 
 const router = useRouter()
 const route = useRoute()
@@ -73,8 +73,21 @@ const classId = route.query.classId
 
 const fetchHistory = async () => {
   try {
-    const res = await axios.get(`http://localhost:3001/signals?studentId=${studentId}`)
-    signalHistory.value = res.data
+    const token = localStorage.getItem('token')
+    const res = await api.get(
+      `/api/signal_classes/history_signal/${studentId}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
+    // Mapping pour le template
+    signalHistory.value = Array.isArray(res.data)
+      ? res.data.map(s => ({
+          date: s.date_add ? new Date(s.date_add).toLocaleDateString() : '',
+          reportedBy: 'You', // ou récupère le nom du prof si besoin
+          role: 'Professor',
+          status: s.signal_state,
+          solution: s.solution_state || 'No Action Taken'
+        }))
+      : []
   } catch (err) {
     console.error("Erreur chargement historique:", err)
   }

@@ -116,12 +116,21 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
-import axios from 'axios'
-import { useRouter } from 'vue-router'
+  import { useRouter, useRoute } from 'vue-router'
+import api from '@/services/api'
 import html2pdf from 'html2pdf.js'
-
 import VueApexCharts from 'vue3-apexcharts'
 
+const route = useRoute()
+const studentId = ref('')
+
+
+if (route.query.id) {
+  studentId.value = route.query.id
+}
+    console.log('studentId:', studentId.value)
+
+    
 // 🧭 Navigation
 const router = useRouter()
 const reportContent = ref(null)
@@ -163,17 +172,17 @@ const comments = ref({})
 onMounted(async () => {
   try {
     // 1. Évaluations compétences par date
-    const evalRes = await axios.get('http://localhost:3001/skillEvaluations')
+    const evalRes = await axios.get(`/api/Profile_Section/${studentId.value}`)
     evaluations.value = evalRes.data
 
     // 2. Graphique sources d'évaluations
-    const { data: pieData } = await axios.get('http://localhost:3001/evaluationSources')
+    const { data: pieData } = await axios.get(`/api/Evaluation_Section/${studentId.value}`)
     console.log('soukaina')
     chartOptions.value.labels = Object.keys(pieData)
     chartSeries.value = Object.values(pieData)
 
     // 3. Signaux
-    const { data: signalData } = await axios.get('http://localhost:3001/signals')
+    const { data: signalData } = await axios.get(`/api/Signal_History/${studentId.value}`)
     signals.value = signalData.map(s => ({
       date: new Date(s.date).toLocaleDateString(),
       reporter: s.reporter,
@@ -184,7 +193,7 @@ onMounted(async () => {
     }))
 
     // 4. Commentaires
-    const { data: commentData } = await axios.get('http://localhost:3001/comments')
+    const { data: commentData } = await axios.get(`/api/Comment_Section/${studentId.value}`)
     comments.value = commentData.reduce((acc, c) => {
       if (!acc[c.role]) acc[c.role] = []
       acc[c.role].push(c.text)
@@ -192,7 +201,7 @@ onMounted(async () => {
     }, {})
 
     //profile
-    const res = await axios.get('http://localhost:3001/ProfileStudents')
+    const res = await axios.get(`/api/profile_section/${studentId.value}`)
     console.log('hello guys')
     profile.value = res.data[0] || {}
 

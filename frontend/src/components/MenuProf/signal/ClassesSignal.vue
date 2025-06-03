@@ -6,7 +6,7 @@
         </h1>
   
         <!-- Filtres niveaux -->
-        <div class="mt-10 flex gap-0 border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden w-max text-sm font-medium">
+        <!-- <div class="mt-10 flex gap-0 border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden w-max text-sm font-medium">
           <button
             v-for="level in Object.keys(levels)"
             :key="level"
@@ -21,15 +21,35 @@
           >
             {{ level }}
           </button>
+        </div> -->
+
+        <!-- Filtres niveaux dynamiques -->
+        <div class="mt-10 flex gap-0 border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden w-max text-sm font-medium">
+          <button
+            v-for="level in levels"
+            :key="level"
+            @click="selectLevel(level)"
+            :class="[
+
+              'px-4 py-2 transition',
+              selectedLevel === level
+                ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
+                : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700',
+              'border-r border-gray-300 dark:border-gray-600 last:border-r-0'
+            ]"
+          >
+            {{ level }}
+          </button>
         </div>
   
         <!-- Filtres classes dynamiques -->
         <div class="flex flex-wrap gap-4 text-sm font-medium mt-10">
           <span
-            v-for="classe in levels[selectedlevel]"
+            v-for="classe in classes"
             :key="classe"
             class="cursor-pointer"
             :class="[
+
               selectedClass === classe
                 ? 'text-gray-600 border-b-2 border-purple-600 dark:text-purple-300'
                 : 'text-gray-600 dark:text-gray-300'
@@ -37,11 +57,6 @@
             @click="selectClasse(classe)"
           >
             {{ classe }}
-            <span
-              class="bg-purple-100 text-purple-600 dark:bg-purple-200/10 dark:text-purple-300 px-3 rounded-full"
-            >
-              ({{ getTotalStudents(classe) }} students)
-            </span>
           </span>
         </div>
   
@@ -52,7 +67,7 @@
             <input
               type="text"
               v-model="search"
-              placeholder="Search by Student ID, Course Status or Project Status"
+              placeholder="Search by student name"
               class="h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 pl-10 pr-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-[#692CF3] focus:outline-none focus:ring-2 focus:ring-[#692CF3]/30 hover:border-[#692CF3] transition-colors duration-200 dark:border-gray-800 dark:bg-gray-900 dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-[#692CF3]"
             />
           </div>
@@ -104,39 +119,83 @@
   <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import axios from 'axios'
+import api from '@/services/api'
 import ProfLayout from '@/components/layout/ProfLayout.vue'
 
 const router = useRouter()
 const route = useRoute()
 
 const search = ref('')
-const selectedlevel = ref('AP1')
+const levels = ref([])
+const classes = ref([])
+const selectedLevel = ref('')
 const selectedClass = ref('')
 const displayedStudents = ref([])
 
-const levels = {
-  AP1: ['TD1', 'TD2', 'TD3', 'TD4', 'TD5'],
-  AP2: ['TD1', 'TD2', 'TD3', 'TD4', 'TD5'],
-  CI1: ['GINF1', 'GCYS1', 'GIND1', 'GSTR1'],
-  CI2: ['GINF2', 'GCYS2', 'GIND2', 'GSTR2'],
-  CI3: ['GINF3', 'GCYS3', 'GIND3', 'GSTR3']
+onMounted(fetchLevels)
+
+async function fetchLevels() {
+  try {
+    const token = localStorage.getItem('token')
+    const res = await api.get('/api/signal_classes/get_sector', {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    console.log('Données reçues (levels) :', res.data)
+    levels.value = Array.isArray(res.data.result) ? res.data.result.map(l => l.sector_id) : []
+    if (levels.value.length) {
+      selectedLevel.value = levels.value[0]
+      fetchClasses(selectedLevel.value)
+    }
+  } catch (error) {
+    console.error('Erreur lors du chargement des niveaux :', error)
+    levels.value = []
+  }
+}
+
+async function fetchClasses(sectorId) {
+  try {
+    const token = localStorage.getItem('token')
+    const res = await api.get(`/api/signal_classes/get_classes/${sectorId}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    console.log('Données reçues (classes) :', res.data)
+    classes.value = Array.isArray(res.data.result) ? res.data.result.map(c => c.id_class) : []
+    if (classes.value.length) {
+      selectedClass.value = classes.value[0]
+      fetchStudents(selectedClass.value)
+    }
+  } catch (error) {
+    console.error('Erreur lors du chargement des classes :', error)
+    classes.value = []
+  }
+}
+
+function selectLevel(level) {
+  selectedLevel.value = level
+  fetchClasses(level)
 }
 
 function selectClasse(classe) {
   selectedClass.value = classe
-  localStorage.setItem('selectedClass', classe) // ✅ mémorise dans le navigateur
   fetchStudents(classe)
 }
 
 async function fetchStudents(classe) {
-  try {
-    const res = await axios.get(`http://localhost:3001/studentss?classe=${classe}&level=${selectedlevel.value}`)
-    console.log("✅ Données reçues :", res.data)
-    displayedStudents.value = Array.isArray(res.data) ? res.data : []
-  } catch (err) {
-    console.error("❌ Erreur API :", err.message)
-  }
+  const token = localStorage.getItem('token')
+  const res = await api.get(`/api/signal_classes/get_student/${classe}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+  displayedStudents.value = Array.isArray(res.data)
+    ? res.data.result.map(s => ({
+        id: s.id_member,
+        cne: s.cne,
+        avatar: s.profile_picture,
+        lastsignal: s.last_signal_date ? new Date(s.last_signal_date).toLocaleDateString() : 'Never',
+        signalThisMonth: s.signal_this_month === 'Yes' ? 'YES' : 'NO',
+        fullName: s.full_name || '',
+        username: s.cne
+      }))
+    : []
 }
 
 const filteredDisplayedStudents = computed(() =>
@@ -144,16 +203,6 @@ const filteredDisplayedStudents = computed(() =>
     s.fullName.toLowerCase().includes(search.value.toLowerCase())
   )
 )
-
-const getTotalStudents = (classe) => {
-  return selectedClass.value === classe ? displayedStudents.value.length : 0
-}
-
-const badgeClass = (status) => {
-  return status === 'YES'
-    ? 'text-green-800 bg-green-100 dark:text-green-300 dark:bg-green-900 px-2 py-1 rounded-full text-xs font-semibold'
-    : 'text-orange-800 bg-orange-100 dark:text-orange-300 dark:bg-orange-900 px-2 py-1 rounded-full text-xs font-semibold'
-}
 
 // Navigation vers NewSignal
 const goToNewSignal = (id) => {
@@ -176,16 +225,9 @@ const goToViewHistory = (id) => {
     }
   })
 }
-
-// ✅ Lors du chargement de la page, récupérer la dernière classe
-onMounted(() => {
-  const queryClass = route.query.classId
-  const savedClass = localStorage.getItem('selectedClass')
-  const finalClass = queryClass || savedClass
-
-  if (finalClass) {
-    selectedClass.value = finalClass
-    fetchStudents(finalClass)
-  }
-})
+const badgeClass = (status) => {
+  return status === 'YES'
+    ? 'bg-green-100 text-green-800 px-2 py-1 rounded-full'
+    : 'bg-red-100 text-red-800 px-2 py-1 rounded-full'
+}
 </script>

@@ -32,7 +32,7 @@
       <!-- Actions -->
       <div class="flex justify-between">
         <button @click="goBack" class="px-4 py-2 bg-orange-500 text-white rounded">Previous Skill</button>
-        <button @click="submitFinal" class="px-4 py-2 bg-purple-600 text-white rounded">Submit</button>
+        <button @click="goToThanku" class="px-4 py-2 bg-purple-600 text-white rounded">Submit</button>
       </div>
     </div>
   </div>
@@ -41,9 +41,11 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
+const route = useRoute()
+const studentId = route.query.id // ou adapte selon ta navigation
 
 const answers = ref([])
 const averages = ref([])
@@ -52,41 +54,32 @@ const totalSteps = ref(5)
 
 onMounted(async () => {
   try {
-    const { data } = await axios.get('http://localhost:3001/answers')
-    answers.value = data
-
-    // Regrouper par compétence et calculer la moyenne
-    const grouped = {}
-    data.forEach(item => {
-      if (!grouped[item.skill]) grouped[item.skill] = []
-      item.answers.forEach(ans => grouped[item.skill].push(ans.rating))
+    const token = localStorage.getItem('token')
+    const { data } = await axios.get(`/api/prof_evaluation_classes/view_report/${studentId}`, {
+      headers: { Authorization: `Bearer ${token}` }
     })
-
-    averages.value = Object.entries(grouped).map(([skill, notes]) => ({
-      skill,
-      avg: (notes.reduce((a, b) => a + b, 0) / notes.length).toFixed(1)
-    }))
+    // data est un tableau avec les notes et skills
+    if (Array.isArray(data) && data.length > 0) {
+      const report = data[0]
+      averages.value = [
+        { skill: report.skill1, avg: report.note1 },
+        { skill: report.skill2, avg: report.note2 },
+        { skill: report.skill3, avg: report.note3 },
+        { skill: report.skill4, avg: report.note4 },
+        { skill: report.skill5, avg: report.note5 },
+        { skill: report.skill6, avg: report.note6 }
+      ]
+      feedbackComment.value = report.comment || ''
+    }
   } catch (err) {
-    console.error("❌ Erreur chargement des réponses :", err)
+    console.error("❌ Erreur chargement du rapport :", err)
   }
 })
 
 const goBack = () => {
   router.back()
 }
-
-const submitFinal = async () => {
-  try {
-    const payload = {
-      summary: averages.value,
-      comment: feedbackComment.value,
-      submittedAt: new Date().toISOString()
-    }
-
-    await axios.post('http://localhost:3001/finalFeedback', payload)
-    router.push('/Thanku') // redirection
-  } catch (err) {
-    console.error("❌ Erreur soumission finale :", err)
-  }
+const goToThanku = () => {
+  router.push('/Thanku')
 }
 </script>

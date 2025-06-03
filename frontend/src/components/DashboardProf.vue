@@ -2,7 +2,7 @@
   <admin-layout>
   
   <h1 class="text-4xl font-bold text-gray-900 mb-7">
-    Welcome to Your Admin Dashboard <span class="uppercase">SOUKAINA</span>,
+    Welcome to Your Professor Dashboard <span class="uppercase">{{storedUsername}}</span>,
     <span class="text-xl font-medium text-gray-500">
       here’s what’s happening with your Dash this month
     </span>
@@ -79,6 +79,16 @@ import DailyStudentProf from './ecommerce/DailyStudentProf.vue'
 // Déclarer la variable réactive
 const topStudents = ref([])
 
+//import username from local storage 
+
+onMounted(() => {
+  const storedUsername = localStorage.getItem('username') || ''
+  if (storedUsername) {
+    console.log('Username from local storage:', storedUsername)
+  } else {
+    console.log('No username found in local storage')
+  }
+})
 // Charger les données depuis l'API
 onMounted(async () => {
   try {

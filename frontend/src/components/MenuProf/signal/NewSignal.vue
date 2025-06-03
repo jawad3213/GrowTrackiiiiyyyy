@@ -56,7 +56,7 @@
   <script setup>
   import { ref } from 'vue'
   import { useRouter, useRoute } from 'vue-router'
-  import axios from 'axios'
+  import api from '@/services/api'
   
   const router = useRouter()
   const route = useRoute()
@@ -77,22 +77,26 @@ const classId = route.query.classId
   }
   
   async function submitSignal() {
-    if (!signal.value.title) {
-      alert("⚠️ Title is required.")
-      return
-    }
-  
-    try {
-      const res = await axios.post('http://localhost:3001/signals', {
-        studentId,
-        ...signal.value
-      })
-  
-      console.log("✅ Signal créé :", res.data)
-      router.back()
-    } catch (err) {
-      console.error("❌ Erreur lors de l'envoi du signal :", err)
-    }
+  if (!signal.value.title) {
+    alert("⚠️ Title is required.")
+    return
   }
+
+  try {
+    const token = localStorage.getItem('token')
+    await api.post(
+      `/api/signal_classes/new_signal/${studentId}`,
+      {
+        option_signal: signal.value.title,
+        message: signal.value.description,
+        anony: signal.value.anonymous
+      },
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
+
+    router.back()
+  } catch (err) {
+    console.error("❌ Erreur lors de l'envoi du signal :", err)
+  }
+}
   </script>
-  
