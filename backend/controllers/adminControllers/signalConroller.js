@@ -4,7 +4,7 @@ const signalModel = require("../../models/adminModels/signalModel");
 // Fonction pour générer l'URL complète de l'image
 const generateImageUrl = (path) => {
   if (!path) return null; // Si l'utilisateur n'a pas d'image
-  return `http://localhost:8080/uploads/${path}`; // Chemin de ton serveur + dossier d'upload
+  return `http://localhost:3000/uploads/${path}`; // Chemin de ton serveur + dossier d'upload
 };
 
 exports.getAllSignals = async (req, res) => {

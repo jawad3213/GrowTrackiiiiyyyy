@@ -149,7 +149,7 @@ exports.getAllClasses = async (req, res) => {
 
 // genere un lien d'image 
 const genarateImageUrl =(path) => {
-    return path ? `http://localhost:8080/${path.replace(/\\/g, "/")}` : null;
+    return path ? `http://localhost:3000/${path.replace(/\\/g, "/")}` : null;
 }
 
 

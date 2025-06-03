@@ -3,7 +3,7 @@ const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 require('dotenv').config();
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 const {ResetPassEmail, check} = require('./controllers/authController');
 const cors = require('cors');
 const {ServerLimiter} = require('../backend/middlewares/Limiter');
@@ -104,19 +104,13 @@ app.use("/api/signal_history", prof_signal_history)
 const prof_signal_classes = require("./routes/professorRoutes/signal_classes_Route");
 app.use("/api/signal_classes", prof_signal_classes)
 
-<<<<<<< HEAD:backend/server.js
+
 const dashRoute = require("./routes/profRoutes/dashRoute");
 app.use("/prof/dashboard", dashRoute );
-
-=======
-//rapport student
 const student_report = require("./routes/professorRoutes/student_report");
 app.use("/api/report", student_report)
 
-app.listen(PORT, () => {
-    console.log(`Server Running on http://localhost:${PORT}`);
-});
->>>>>>> origin/backendNada:server.js
+
 
 const pool = require('./config/db');
 
