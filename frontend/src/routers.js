@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import LoadingPage from "@/components/Home/LoadingPage.vue";
 import AboutUs from "./components/AboutUs.vue";
 import ContactUs from "./components/ContactUs.vue";
-import Teachers from "./components/Home/Teachers.vue";
+import TeachersGenralpage from "./components/Home/Teachers.vue";
 import Students from "./components/Home/Students.vue";
 import Login from "./components/Login.vue";
 import resetPassword from "./components/resetPassword.vue";
@@ -30,6 +30,9 @@ import Evaluation from "./components/Evaluation.vue";
 import Personalized from "./components/Personalized.vue";
 import Solution from "./components/Solution.vue";
 import DeleteStudent from "./components/DeleteStudent.vue";
+import DeleteProf from "./components/DeleteProf.vue";
+import DeleteSupervisor from "./components/DeleteSupervisor.vue";
+
 import SignalEvaluationModal from "./components/SignalEvaluationModal.vue";
 import DashboardProf from "./components/DashboardProf.vue";
 
@@ -72,6 +75,10 @@ import StudNotif from "./components/MenuStudent/StudNotif.vue";
 import StudSolution from "./components/MenuStudent/StudSolution.vue";
 import StudReason from "./components/MenuStudent/StudReason.vue";
 import selfEval from "./components/MenuStudent/selfEval.vue";
+import Team from "./components/Team.vue";
+import Error from "./components/Error.vue";
+
+
 
 
 
@@ -82,9 +89,14 @@ const routes = [
         path: '/'
     },
     {
-        name: 'AboutUs',
-        component: AboutUs,
-        path: '/AboutUs'
+        name: 'Error',
+        component: Error,
+        path: '/Error'
+    },
+    {
+        name: "OurTeam",
+        component: Team,
+        path:"/OurTeam",
     },
     {
         name: 'ContactUs',
@@ -92,12 +104,12 @@ const routes = [
         path: '/ContactUs'
     },
     {
-        name: 'Teachers',
-        component: Teachers,
+        name: 'TeachersGenralpage',
+        component: TeachersGenralpage,
         path: '/Teachers'
     },
     {
-        name: 'Students',
+        name: 'Students general page ',
         component: Students,
         path: '/Students'
     },
@@ -255,6 +267,16 @@ const routes = [
         name : "DeleteStudent",
         component : DeleteStudent,
         path : "/DeleteStudent/:id_member"
+    },
+    {
+        name : "DeleteProf",
+        component : DeleteProf,
+        path : "/Deleteprof/:id_member"
+    },
+    {
+        name : "DeleteSupervisor",
+        component : DeleteSupervisor,
+        path : "/DeleteSupervisor/:id_member"
     },
     {
         name : "DashboardProf",

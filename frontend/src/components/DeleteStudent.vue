@@ -19,6 +19,7 @@
   const router = useRouter()
   const studentStore = useStudentStore()
   
+  
   async function deleteStudent() {
     const id_member = route.params.id_member
     await studentStore.deleteStudent(id_member)

@@ -49,8 +49,7 @@
                 <td class="py-3 px-4">{{new Date(prof.date_add).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric'  })}}</td>
                 <td class="py-3 px-4">{{ prof.note }}</td>
                 <td class="py-3 px-4 flex justify-center space-x-2">
-                  <router-link :to="`/AddProfessor/${prof.cin}`" class="text-blue-500 hover:text-blue-700">✏️</router-link>
-                  <router-link :to="`/Deleteprof/${prof.cin}`" class="text-red-500 hover:text-red-700">🗑️</router-link>
+                <router-link :to="`/Deleteprof/${prof.id_member}`" class="text-red-500 hover:text-red-700">🗑️</router-link>
                 </td>
               </tr>
             </tbody>

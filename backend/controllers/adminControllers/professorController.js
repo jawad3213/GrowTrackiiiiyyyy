@@ -4,7 +4,7 @@ const { v4: uuidv4 } = require("uuid");
 
 // Fonction pour générer l'URL complète de l'image
 const generateImageUrl = (path) => {
-  return path ? `http://localhost:8080/${path.replace(/\\/g, "/")}` : null;
+  return path ? `http://localhost:3000/${path.replace(/\\/g, "/")}` : null;
 };
 
 exports.createProfessor = async (req, res) => {
@@ -148,10 +148,10 @@ exports.updateProfessor = async (req, res) => {
 };
 
 exports.deleteProfessor = async (req, res) => {
-  const { id_professor } = req.params;
+  const { id_member } = req.params;
 
   try {
-    const result = await professorModel.deleteProfessorById(id_professor);
+    const result = await professorModel.deleteProfessorById(id_member);
 
     if (result.rowCount === 0) {
       return res.status(404).json({

@@ -2,7 +2,7 @@ const profileModel = require("../../models/adminModels/profileModel");
 
 // Fonction pour générer l'URL complète de l'image
 const generateImageUrl = (path) => {
-    return path ? `http://localhost:8080/${path.replace(/\\/g, "/")}` : null;
+    return path ? `http://localhost:3000/${path.replace(/\\/g, "/")}` : null;
   };
 
 exports.profileadmin = async (req,res) => {

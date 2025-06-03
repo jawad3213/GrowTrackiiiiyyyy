@@ -25,7 +25,7 @@ router.post("/create",  upload.single('image'), supervisorController.createSuper
 router.get("/",supervisorController.getAllSupervisors);
 router.get("/search",supervisorController.getSupervisorByCin);
 router.patch("/:id_supervisor", upload.single('image'),supervisorController.updateSupervisor);
-router.delete("/:id_supervisor",supervisorController.deleteSupervisor);
+router.delete("/:id_member",supervisorController.deleteSupervisor);
 router.get("/total",supervisorController.getTotalSupervisors)
 router.get("/position",supervisorController.getSupervisorsByPosition)
 router.get("/company",supervisorController.getSupervisorsByCompany)
