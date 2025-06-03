@@ -106,6 +106,9 @@ app.use("/student/dashboard", dashstudent);
 const prjectStudent = require("./routes/studentRoutes/projectRoute");
 app.use("/student/projects", prjectStudent);
 
+const notifiRoute = require("./routes/studentRoutes/notifiRoute");
+app.use("/student/notifications", notifiRoute);
+
 
 
 
