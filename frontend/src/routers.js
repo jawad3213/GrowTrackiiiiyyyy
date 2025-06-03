@@ -76,6 +76,7 @@ import StudSolution from "./components/MenuStudent/StudSolution.vue";
 import StudReason from "./components/MenuStudent/StudReason.vue";
 import selfEval from "./components/MenuStudent/selfEval.vue";
 import Team from "./components/Team.vue";
+import Error from "./components/Error.vue";
 
 
 
@@ -84,6 +85,11 @@ const routes = [
         name: 'LoadingPage',
         component: LoadingPage,
         path: '/'
+    },
+    {
+        name: 'Error',
+        component: Error,
+        path: '/Error'
     },
     {
         name: "OurTeam",

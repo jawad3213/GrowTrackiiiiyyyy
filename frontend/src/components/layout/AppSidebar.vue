@@ -234,7 +234,7 @@ const menuGroups = [
       { icon: CalenderIcon, name: "Calendar", path: "/Calendar" },
       { 
         icon: UserAdd, 
-        name: "UserManagement",
+        name: "User Management",
         subItems: [
           { name: "Students", path: "/Student" },
           { name: "Professors", path: "/Professor" },
