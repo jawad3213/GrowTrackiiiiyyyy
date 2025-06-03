@@ -117,6 +117,9 @@ import Footer from '@/components/Footer.vue'
 import jaouad from '../assets/personal/jaouad.jpg'
 import sara from '../assets/personal/sara.jpg'
 import soukaina from '../assets/personal/soukaina.jpg'
+import nada from '../assets/personal/nada.jpg'
+import nour from '../assets/personal/nour.jpg'
+
 
 export default {
   name: 'Team',
@@ -151,17 +154,17 @@ export default {
         },
         {
           name: 'El Oukili Nada',
-          position: 'Frontend Developer',
-          bio: 'Former frontend dev for Linear, Coinbase, et Postscript.',
-          image: '/images/team/demi.jpg',
+          position: 'Backend Developer',
+          bio: 'Secure, scalable Node.js/Express/PostgreSQL APIs.',
+          image: nada,
           linkedin: 'https://www.linkedin.com/in/nada-el-oukili-5a929b2b5/',
         },
         {
-          name: 'Ouhba NourElHouda',
-          position: 'Backend Developer',
-          bio: 'Lead backend dev at Clearbit. Ancienne chez Clearbit & Loom.',
-          image: '/images/team/candice.jpg',
-          linkedin: 'https://linkedin.com/in/candicewu',
+          name: 'Ouhba Nourelhouda',
+          position: 'CI/CD and Deployment Responsible',
+          bio: 'utomates testing, building, and deployment using CI/CD pipelines and Docker.',
+          image: nour,
+          linkedin: 'https://www.linkedin.com/in/nourelhouda-ouhba-18996a265?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app',
         },
         {
           name: 'El Ghrich Salman',
@@ -180,8 +183,8 @@ export default {
         },
         {
           name: 'Kaddoura Hamza',
-          position: 'Customer Success',
-          bio: 'Lead CX chez Wealthsimple. Ancien PagerDuty & Sqreen.',
+          position: 'Backend Developer',
+          bio: 'Secure, scalable Node.js/Express/PostgreSQL APIs.',
           image: '/images/team/orlando.jpg',
           linkedin: 'https://linkedin.com/in/orlandodiggs',
           

@@ -245,6 +245,7 @@ import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import HeaderPage from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
 import j from '@/assets/photo1.png'
+import k from '@/assets/photo2.webp'
 
 export default {
   name: 'Students',
@@ -267,25 +268,25 @@ export default {
         quote:
           "GrowTrack really helped me understand my strengths and areas to improve. The platform is easy to use and the feedback from my peers was incredibly valuable. I would love to see even more features in the future!”",
         img: j,
-        name: 'Sarah LA'
+        name: 'Rania EL jabri'
       },
       {
         quote:
           "Using GrowTrack was an amazing experience! It made me much more aware of my soft skills and how to develop them. The dashboard is clear, the feedback is motivating, and I genuinely feel more confident in my teamwork and communication skills.",
-        img: j,
-        name: 'Soukaina EL'
+        img: k,
+        name: 'Manal El Hassani'
       },
       {
         quote:
           "The interactive exercises on GrowTrack guided me every step of the way. I went from zero knowledge to mastering core soft skills in just weeks.",
         img: j,
-        name: 'Alex M.'
+        name: 'Narimane Roumani'
       },
       {
         quote:
           "I loved seeing my progress visualized daily. GrowTrack’s community support kept me motivated, even on tough days.",
-        img: j,
-        name: 'Maria K.'
+        img: k,
+        name: 'Aya El Hassani '
       }
     ]
     const currentIndex = ref(0)

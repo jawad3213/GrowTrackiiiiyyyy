@@ -27,7 +27,7 @@
 
         <div class="mt-4">
           <router-link
-            to="/ContactUs"
+            to="/Login"
             class="inline-block px-8 py-4 text-white text-xl font-semibold rounded-full"
             style="background: linear-gradient(to right, #692CF3, #F97316);"
           >
@@ -40,7 +40,7 @@
         <img
           id="heroImg1"
           class="transition-all duration-300 ease-in-out hover:scale-105 lg:w-5/6 sm:mx-auto sm:w-5/6 sm:pb-12 lg:pb-0"
-          src="@/assets/LoadingPage.jpg"
+          src="@/assets/profo.png"
           alt="Awesome hero page image"
           width="500"
           height="888"
@@ -314,25 +314,25 @@ export default {
         quote:
           "GrowTrack is an excellent tool for evaluating students' soft skills. It allows clear tracking of skills that are often difficult to measure. I especially appreciate the quality of the feedback and how it encourages student autonomy. Some small visual improvements could make the platform even smoother to use!",
         img: prof1,
-        name: 'Mr. John'
+        name: 'Mr. Khalid Alami'
       },
       {
         quote:
           "GrowTrack has greatly helped me guide my students in developing their soft skills. The assessments are well-structured, the dashboards are clear, and the personalized feedback is highly valuable. It’s a complete and motivating platform, both for teachers and for students!",
         img: prof2,
-        name: 'Ms. Sara'
+        name: 'Mme. Sara Bennani'
       },
       {
         quote:
           "The interactive modules for teachers are fantastic. I can track class-wide performance and provide targeted support instantly. My students love the immediate insights!",
         img: prof3,
-        name: 'Dr. Lee'
+        name: 'Mr. Ahmed El Idrissi'
       },
       {
         quote:
           "Using GrowTrack in my classroom transformed how I evaluate soft skills. Real-time updates and peer-feedback features keep everyone engaged and accountable.",
         img: prof2,
-        name: 'Prof. Martinez'
+        name: 'Mme Fatima Zahra Toukali' 
       }
     ]
     const currentIndex = ref(0)
