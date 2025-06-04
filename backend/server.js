@@ -2,6 +2,7 @@ const express = require("express")
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 require('dotenv').config();
+<<<<<<< HEAD
 
 const PORT = process.env.PORT || 3000;
 const {ResetPassEmail, check} = require('./controllers/authController');
@@ -11,6 +12,24 @@ const { verifyResetToken }=require('./middlewares/VerifyToken')
 const path = require('path')
 
 
+=======
+const path = require("path");
+const authController = require('./controllers/authController');
+const verify=require('./middlewares/VerifyToken');
+const cors = require('cors');
+const rateLimit = require('express-rate-limit');
+
+const limiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 60 minutes
+    max: 150, // 100 requests per ip in the current window
+    message: {
+      status: 429,
+      message: "Too many requests from this IP, please try again after 60 minutes."
+    },
+    standardHeaders: true, 
+    legacyHeaders: false, 
+});
+>>>>>>> origin/dash_student
 
 const corsOptions = {
     origin:["http://localhost:3000", "http://localhost:5173"],
@@ -73,8 +92,8 @@ const DashAdminRoute = require("./routes/adminRoutes/AdminDashboardRoute");
 app.use("/api/DashAdmin", DashAdminRoute)
 
 //PROFILE
-const ProfileAdminRoute = require("./routes/adminRoutes/AdminProfile");
-app.use("/api/ProfileAdmin", ProfileAdminRoute)
+// const ProfileAdminRoute = require("./routes/adminRoutes/AdminProfile");
+// app.use("/api/ProfileAdmin", ProfileAdminRoute)
 
 //Global Over View
 const EvaluationAdminRoute = require("./routes/adminRoutes/GlobalOverView_Route");
@@ -112,11 +131,7 @@ app.use("/api/report", student_report)
 
 
 
-const pool = require('./config/db');
 
-app.get('/testbackend',(req,res)=>{
-    res.send('connexion reussie to backend !! ');
-})
 
 app.listen(PORT, () => {
     console.log(`✅ Server Running on http://localhost:${PORT}`);
