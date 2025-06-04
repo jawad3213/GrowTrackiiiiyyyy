@@ -36,23 +36,30 @@
   </template>
   
   <script setup>
-  import { ref, onMounted } from 'vue'
-  import { useRouter } from 'vue-router'
+
+import { ref, onMounted } from 'vue'
+  import { useRouter, useRoute } from 'vue-router'
   
   
   const router = useRouter()
+  const route = useRoute()
   const isOpen = ref(true)
   
   const selectedSkills = ref([])
   const evaluatedName = ref('this student')
-  
+  const studentId = ref('')
+
   // récupération des données depuis localStorage ou route
   onMounted(() => {
     const skillsFromStorage = localStorage.getItem('selectedSkills')
     if (skillsFromStorage) {
       selectedSkills.value = JSON.parse(skillsFromStorage)
     }
-    console.log('hola')
+    // Récupère l'id de l'étudiant depuis la query
+    if (route.query.id) {
+      studentId.value = route.query.id
+    }
+    console.log('studentId:', studentId.value)
    /* const storedName = localStorage.getItem('evaluatedName')
     if (storedName) {
       evaluatedName.value = storedName
@@ -65,11 +72,10 @@
   }
   
   function startProjectEvaluation() {
-    router.push({ path: '/projectEvaluation', query: { type: 'project' } })
+    router.push({ path: '/courseEvaluation', query: { type: 'project', id: studentId.value  } })
   }
   
   function startCourseEvaluation() {
-    router.push({ path: '/courseEvaluation', query: { type: 'course' } })
+    router.push({ path: '/courseEvaluation', query: { type: 'course', id: studentId.value  } })
   }
   </script>
-  
