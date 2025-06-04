@@ -10,7 +10,7 @@ const disallowedPasswords = [
 
 const fieldsByYear = {
   AP: ['TD1', 'TD2', 'TD3'],
-  CI: ['GINF1', 'GSEA', 'CYS', 'GSR', 'GINL']
+  CI: ['GINF1', 'GSEA1', 'CYS1', 'GSR1', 'GINL1']
 }
 
 export const AddStudentSchema = yup.object({

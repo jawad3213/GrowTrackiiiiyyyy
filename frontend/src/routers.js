@@ -134,6 +134,11 @@ const routes = [
         path:"/check",
     },
     {
+        name: "AddSupervisorModal ",
+        component: AddSupervisorModal ,
+        path:"/AddSupervisorModal",
+    },
+    {
         name: "Skills",
         component: Skills,
         path:"/Skills",

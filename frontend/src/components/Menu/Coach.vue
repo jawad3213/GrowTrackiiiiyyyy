@@ -7,23 +7,13 @@
 
         <!-- Search -->
         <div class="flex items-center justify-between p-6 border border-gray-300 dark:border-gray-700 rounded-md">
-          <div class="flex items-center border border-gray-300 dark:border-gray-700 rounded-md px-4 py-2 w-full max-w-md">
-            <input
-              type="text"
-              placeholder="Search"
-              class="w-full outline-none text-gray-700 dark:text-white dark:bg-transparent"
-            />
-            <button class="ml-2 text-purple-500 dark:text-purple-300">🔍</button>
-          </div>
+          
           <router-link to="/AddCoach">
             <button class="bg-[#F97316] hover:bg-[#FA9148] text-white font-bold py-2.5 px-10 rounded-md">
               + Add Coach
             </button>
           </router-link>
-          <button
-            class="ml-4 flex items-center border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 text-gray-700 dark:text-white">
-            Filters
-          </button>
+          
         </div>
         <!-- Table -->
         <div v-if="coaches.length > 0" class="p-6 overflow-x-auto">
@@ -72,13 +62,7 @@
         </div>
 
         <!-- Pagination -->
-        <div class="flex items-center justify-between p-4 text-gray-600 dark:text-gray-300">
-          <span>Page 1 of 10</span>
-          <div class="flex items-center space-x-2">
-            <button class="px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md">Previous</button>
-            <button class="px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md">Next</button>
-          </div>
-        </div>
+        
       </main>
     </div>
   </admin-layout>

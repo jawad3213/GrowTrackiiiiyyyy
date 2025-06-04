@@ -98,7 +98,7 @@
   @click="closeModal"
   class="flex w-full justify-center rounded-md border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-300 transition sm:w-auto"
 >
-  ✖ Close
+  Close
 </button>
 
 <!-- Add / Update Button -->
@@ -106,7 +106,7 @@
   @click="handleAddOrUpdateEvent"
   class="flex w-full justify-center rounded-md border border-purple-500 bg-purple-500 px-5 py-2.5 text-sm font-medium text-white hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-300 transition sm:w-auto"
 >
-  {{ selectedEvent ? '💾 Update Changes' : '➕ Add Event' }}
+  {{ selectedEvent ? 'Update Changes' : 'Add Event' }}
 </button>
 
 <!-- Delete Button (visible only if selectedEvent exists) -->
@@ -374,7 +374,7 @@ const calendarOptions = reactive({
   eventContent: renderEventContent,
   customButtons: {
     addEventButton: {
-      text: 'Add Event +',
+      text: 'Add Event',
       click: openModal,
     },
   },

@@ -31,7 +31,7 @@
         <table class="w-full text-sm bg-white dark:bg-gray-800 rounded shadow">
           <thead class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200">
             <tr>
-              <th class="p-3 text-left">Select</th>
+              
               <th class="p-3 text-left">Signal ID</th>
               <th class="p-3 text-left">Reason</th>
               <th class="p-3 text-left">Reported By</th>
@@ -88,13 +88,7 @@
       </div>
 
       <!-- Pagination -->
-      <div class="flex justify-between items-center py-4 text-sm text-gray-600 dark:text-gray-300">
-        <span>Page 1 of 10</span>
-        <div class="flex gap-2">
-          <button class="px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md">Previous</button>
-          <button class="px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md">Next</button>
-        </div>
-      </div>
+     
 
       <!-- Modal -->
       <SignalEvaluationModal v-if="showModal" :signal="selectedSignal" @fermer="showModal = false" />
