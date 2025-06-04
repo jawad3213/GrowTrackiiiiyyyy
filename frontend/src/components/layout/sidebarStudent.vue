@@ -218,6 +218,7 @@
     ChevronDownIcon,
     HorizontalDots,
     PageIcon,
+    PaperclipIcon
   } from "@/components/icons";
   
   import { useSidebar } from "@/composables/useSidebar";
@@ -241,8 +242,8 @@
           ],
         },
         { icon: UserSittings, name: "Self Evaluation", path: "/SelfEval" },
-        { name: "Notifications", icon: PageIcon, path : "/StudNotif" },
-        { name: "Rapport", icon: PageIcon, path : "/StudRapport" },
+        { name: "Notifications", icon: PaperclipIcon, path : "/StudNotif" },
+        { name: "Rapport", icon:PageIcon, path : "/StudRapport" },
       ]
     }
   ];
