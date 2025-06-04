@@ -81,8 +81,6 @@ const EvaluationAdminRoute = require("./routes/adminRoutes/GlobalOverView_Route"
 app.use("/api/GlobalOverView", EvaluationAdminRoute)
 
 
-//Global Over View
-
 
 //prof_Evaluation history
 const prof_evaluation_history = require("./routes/professorRoutes/Evaluation_Route_history");
@@ -109,7 +107,6 @@ const dashRoute = require("./routes/profRoutes/dashRoute");
 app.use("/prof/dashboard", dashRoute );
 const student_report = require("./routes/professorRoutes/student_report");
 app.use("/api/report", student_report)
-
 
 
 

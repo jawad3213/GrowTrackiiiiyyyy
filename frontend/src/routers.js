@@ -103,19 +103,11 @@ const routes = [
         component: ContactUs,
         path: '/ContactUs'
     },
-<<<<<<< HEAD
     {
         name: 'TeachersGenralpage',
         component: TeachersGenralpage,
         path: '/Teachers'
     },
-=======
-    // {
-    //     name: 'Teachers',
-    //     component: Teachers,
-    //     path: '/Teachers'
-    // },
->>>>>>> origin/dash_student
     {
         name: 'Students general page ',
         component: Students,
