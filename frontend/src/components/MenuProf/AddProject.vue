@@ -254,7 +254,11 @@ const submitForm = async () => {
 
     const payload = {
       name: form.value.name,
-      month_start: form.value.month_start.replace('-', '/'), // Convert YYYY-MM to MM/YYYY
+      // Convert YYYY-MM to MM/YYYY
+      month_start: (() => {
+        const [year, month] = form.value.month_start.split('-');
+        return `${month}/${year}`;
+      })(),
       month_number: form.value.month_number,
       description: form.value.description,
       level: form.value.level,
@@ -280,20 +284,19 @@ const submitForm = async () => {
         localStorage.setItem(`groups_${newProjectId}`, JSON.stringify(form.value.groups));
       }
     } else {
-      // Commented out due to missing endpoint: PUT /project/:id_project
-      /*
-      await api.put(`/api/prof_project_management/project/${projectId.value}`, payload, {
+
+      await api.patch(`/api/prof_project_management/project/${projectId.value}`, payload, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      */
+
       console.warn('Project update not supported by backend');
-      // TODO: Add user feedback, e.g., toast.error('Project editing is not supported');
+      
       return;
     }
     router.push('/ProjectMang');
   } catch (error) {
     console.error('Erreur lors de la création du projet :', error);
-    // TODO: Add user feedback, e.g., toast.error('Failed to save project');
+    
   }
 };
 
@@ -304,8 +307,7 @@ const editGroup = (group, index) => {
   });
 };
 
-// Commented out due to missing endpoint: GET /projects/:id
-/*
+
 const fetchMembers = async () => {
   try {
     const response = await api.get('http://localhost:3001/Members');
@@ -315,7 +317,6 @@ const fetchMembers = async () => {
 
   }
 };
-*/
 
 onMounted(async () => {
   if (projectId.value) {
@@ -326,6 +327,10 @@ onMounted(async () => {
       });
       const project = response.data.result.find((p) => p.id_project === parseInt(projectId.value));
       if (project) {
+        // Charger les groupes depuis le backend
+        const groupRes = await api.get(`/api/prof_project_management/all_group/${projectId.value}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
         form.value = {
           name: project.name_project,
           subgroups: project.team_count,
@@ -336,12 +341,16 @@ onMounted(async () => {
           description: project.description,
           level: project.id_sector,
           field: project.id_class,
-          groups: JSON.parse(localStorage.getItem(`groups_${projectId.value}`)) || [],
+          groups: (groupRes.data.result || []).map(g => ({
+            ...g,
+            name: g.team_name,
+            id_group: g.id_team,
+            member_count: g.number_of_member
+          })),
         };
       }
     } catch (error) {
       console.error('Erreur de chargement du projet à éditer :', error);
-
     }
   }
 });

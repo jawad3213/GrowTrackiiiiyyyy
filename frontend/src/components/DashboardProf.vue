@@ -34,28 +34,27 @@
           <th class="text-left px-6 py-3">Level</th>
           <th class="text-left px-6 py-3">Classe</th>
           <th class="text-left px-6 py-3">Average Score</th>
-          <th class="text-left px-6 py-3">Badge</th>
+         <!-- <th class="text-left px-6 py-3">Badge</th>  -->
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-900 dark:divide-gray-700">
-        <tr v-for="student in topStudents" :key="student.fullName" class="hover:bg-gray-50 dark:hover:bg-gray-800">
+        <tr v-for="student in topStudents" :key="student.full_name" class="hover:bg-gray-50 dark:hover:bg-gray-800">
           <td class="p-4">
             <input type="checkbox" class="rounded border-gray-300 dark:border-gray-600" />
           </td>
           <td class="px-6 py-4 flex items-center gap-3">
-            <img :src="student.avatar" alt="avatar" class="w-10 h-10 rounded-full object-cover" />
+            <img :src="student.profile_picture_url || student.profile_picture" alt="avatar" class="w-10 h-10 rounded-full object-cover" />
             <div>
-              <div class="font-medium text-gray-900 dark:text-white">{{ student.fullName }}</div>
-              <div class="text-sm text-gray-500">{{ student.username }}</div>
+              <div class="font-medium text-gray-900 dark:text-white">{{ student.full_name }}</div>
             </div>
           </td>
-          <td class="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">{{ student.level }}</td>
-          <td class="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">{{ student.classe }}</td>
+          <td class="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">{{ student.sector_id }}</td>
+          <td class="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">{{ student.id_class }}</td>
           <td class="px-6 py-4 text-sm font-semibold text-yellow-600 flex ml-10 mb-5 gap-1">
-            {{ student.score }}
+            {{ student.average }}
             <svg class="w-4 h-4 fill-yellow-500" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.571L24 9.748l-6 5.849 1.416 8.26L12 18.896 4.584 23.857 6 15.597 0 9.748l8.332-1.59z"/></svg>
           </td>
-          <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">{{ student.badge }}</td>
+         <!-- <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">{{ student.badge }}</td> -->
         </tr>
       </tbody>
     </table>
@@ -68,32 +67,35 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
-
+import api from '@/services/api'
+import { useAuthStore } from '@/stores/auth'
 import AdminLayout from '@/components/layout/ProfLayout.vue'
 import EcommerceMetricsProf from './ecommerce/EcommerceMetricsProf.vue'
 import MonthlyTargetProf from './ecommerce/MonthlyTargetProf.vue'
 import MonthlySaleProf from './ecommerce/MonthlySaleProf.vue'
 import DailyStudentProf from './ecommerce/DailyStudentProf.vue'
 
+const authStore = useAuthStore()
+const idProf = authStore.ID
 // Déclarer la variable réactive
 const topStudents = ref([])
 
 //import username from local storage 
 
 onMounted(() => {
-  const storedUsername = localStorage.getItem('username') || ''
+  const storedUsername = authStore.user.full_name || ''
   if (storedUsername) {
-    console.log('Username from local storage:', storedUsername)
+    console.log('Username ', storedUsername)
   } else {
-    console.log('No username found in local storage')
+    console.log('No username found ')
   }
 })
-// Charger les données depuis l'API
+// Charger les données depuis l'AP I
 onMounted(async () => {
   try {
-    const response = await axios.get('http://localhost:3001/TopStudents')
-    topStudents.value = response.data
+    const response = await api.get(`/prof/dashboard/classement/${idProf}` )
+    topStudents.value = response.data.topByClass
+    console.log('Top Students:', topStudents.value)
   } catch (error) {
     console.error('Erreur lors du chargement des étudiants :', error)
   }

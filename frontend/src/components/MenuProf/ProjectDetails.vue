@@ -41,8 +41,7 @@
         </table>
       </div>
 
-      <!-- Members Table (Commented out due to missing endpoint) -->
-      <!--
+      <!-- Members Table -->
       <div v-if="members.length" class="mt-8">
         <h2 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Group Members</h2>
         <table class="min-w-full text-sm border divide-y divide-gray-200 dark:divide-gray-700">
@@ -72,7 +71,6 @@
           </tbody>
         </table>
       </div>
-      -->
     </div>
   </ProfLayout>
 </template>
@@ -87,7 +85,7 @@ const route = useRoute();
 const router = useRouter();
 const project = ref(null);
 const groups = ref([]);
-// const members = ref([]);
+const members = ref([]);
 
 const fetchProject = async () => {
   try {
@@ -99,13 +97,29 @@ const fetchProject = async () => {
     project.value = projects.find((p) => p.id_project === parseInt(route.query.id));
     if (!project.value) {
       console.error('Project not found');
-
+      return;
     }
-    // Load groups from localStorage since backend doesn't provide them
-    groups.value = JSON.parse(localStorage.getItem(`groups_${route.query.id}`)) || [];
+    await fetchGroups();
   } catch (error) {
     console.error('Erreur de récupération:', error);
   
+  }
+};
+
+const fetchGroups = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await api.get(`/api/prof_project_management/all_group/${route.query.id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    groups.value = (response.data.result || []).map(g => ({
+      id_group: g.id_team,
+      name: g.team_name,
+      member_count: g.number_of_member
+    }));
+  } catch (error) {
+    console.error('Erreur de récupération des groupes:', error);
+    groups.value = [];
   }
 };
 
@@ -127,25 +141,26 @@ const confirmDelete = async (id_group) => {
   }
 };
 
-// Commented out due to missing endpoint: GET /group/:id_group/members
-/*
 const viewMembers = async (groupId) => {
   try {
     const token = localStorage.getItem('token');
-    const response = await api.get(`/api/prof_project_management/add_member/${groupId}`, {
+    const response = await api.get(`/api/prof_project_management/all_member/${groupId}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
-    members.value = response.data;
+    members.value = (response.data.result || []).map(m => ({
+      name: m.full_name,
+      cne: m.cne,
+      lastEvaluation: m.last_evaluation,
+      status: m.isp // ou m.isP selon le backend
+    }));
   } catch (error) {
     console.error('Erreur lors de la récupération des membres :', error);
-
+    members.value = [];
   }
 };
-*/
-const viewMembers = (groupId) => {
-  // Navigate to AddMembers to view/edit members stored in localStorage
-  router.push({ path: '/AddMembers', query: { projectId: route.query.id, groupId } });
-};
 
-onMounted(fetchProject);
+onMounted(() => {
+  fetchProject();
+  fetchGroups();
+});
 </script>

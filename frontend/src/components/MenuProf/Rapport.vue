@@ -140,10 +140,7 @@ const reportContent = ref(null)
 const joinedProjects = computed(() => profile.value.projects?.join(', ') || 'No projects')
 const profile = ref({
   name: '',
-  cne: '',
-  level: '',
-  field: '',
-  projects: []
+ 
 })
 
 // 🔸 Évaluations par date et par compétence
@@ -171,40 +168,53 @@ const comments = ref({})
 // 🟡 Initialisation des données
 onMounted(async () => {
   try {
-    // 1. Évaluations compétences par date
-    const evalRes = await axios.get(`/api/Profile_Section/${studentId.value}`)
-    evaluations.value = evalRes.data
+    // 1. Profile
+    const token = localStorage.getItem('token');
+    const response = await api.get(`/api/report/profile_section/${studentId.value}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = response.data.result || [];
+    if (data.length > 0) {
+      profile.value = {
+        name: data[0].full_name,
+        cne: data[0].cne,
+        level: data[0].id_sector,
+        field: data[0].id_class,
+        projects: Array.isArray(data[0].id_project) ? data[0].id_project : [data[0].id_project]
+      }
+    }
 
-    // 2. Graphique sources d'évaluations
-    const { data: pieData } = await axios.get(`/api/Evaluation_Section/${studentId.value}`)
-    console.log('soukaina')
-    chartOptions.value.labels = Object.keys(pieData)
-    chartSeries.value = Object.values(pieData)
+    // 2. Evaluations
+    const { data: evalData } = await api.get(`/api/report/Evaluation_Section/${studentId.value}`)
+    evaluations.value = (evalData.skill_evaluation || []).map(e => ({
+      date: e.date,
+      skill: e.skill_name,
+      ratings: [e.note_skill]
+    }))
+    evaluations.completed = evalData.completed
+    evaluations.received = evalData.received
+    evaluations.average = evalData.average_score
+    chartOptions.value.labels = (evalData.evaluation_sources || []).map(e => e.type_evaluation)
+    chartSeries.value = (evalData.evaluation_sources || []).map(e => e.count)
 
     // 3. Signaux
-    const { data: signalData } = await axios.get(`/api/Signal_History/${studentId.value}`)
+    const { data: signalData } = await api.get(`/api/report/Signal_History/${studentId.value}`)
     signals.value = signalData.map(s => ({
-      date: new Date(s.date).toLocaleDateString(),
-      reporter: s.reporter,
+      date: new Date(s.date_add).toLocaleDateString(),
+      reporter: s.full_name,
       role: s.role,
-      status: s.state,
-      solution: s.solution,
-      solutionTaken: s.solution_taken
+      status: s.signal_state,
+      solution: s.id_solution,
+      solutionTaken: s.solution_state
     }))
 
     // 4. Commentaires
-    const { data: commentData } = await axios.get(`/api/Comment_Section/${studentId.value}`)
-    comments.value = commentData.reduce((acc, c) => {
-      if (!acc[c.role]) acc[c.role] = []
-      acc[c.role].push(c.text)
-      return acc
-    }, {})
-
-    //profile
-    const res = await axios.get(`/api/profile_section/${studentId.value}`)
-    console.log('hello guys')
-    profile.value = res.data[0] || {}
-
+    const { data: commentData } = await api.get(`/api/report/Comment_Section/${studentId.value}`)
+    comments.value = {
+      professor: (commentData.professor || []).map(c => c.comment_evaluation),
+      supervisor: (commentData.supervisor || []).map(c => c.comment_evaluation),
+      student: (commentData.student || []).map(c => c.comment_evaluation)
+    }
   } catch (error) {
     console.error("❌ Erreur chargement données:", error)
   }
@@ -239,6 +249,34 @@ const downloadPdf = () => {
   html2pdf().from(reportContent.value).save('Rapport.pdf')
   console.log('hello hassan')
 }
+
+// pour les couleurs metionnee dans le tableau
+const getStatusClass = (status) => {
+  switch (status) {
+    case 'Approved':
+      return 'bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold';
+    case 'Rejected':
+      return 'bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-xs font-semibold';
+    default:
+      return 'bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-xs font-semibold';
+  }
+}
+
+const getSolutionClass = (solution) => {
+  switch (solution) {
+    case 'Resolved':
+      return 'bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold';
+    case 'In Progress':
+      return 'bg-pink-100 text-pink-700 px-3 py-1 rounded-full text-xs font-semibold';
+    case 'Blocked':
+      return 'bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-xs font-semibold';
+    case 'No Action Taken':
+      return 'bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs font-semibold';
+    default:
+      return 'bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-xs font-semibold';
+  }
+}
+
 </script>
 
 
