@@ -3,6 +3,9 @@
   
   <h1 class="text-3xl font-bold text-gray-900 mb-7">
     Good to see you again <span class="uppercase">user name</span>
+    <span class="text-xl font-medium text-gray-500">
+      , Here’s what’s happening this month:
+    </span>
     
   </h1>
   <div class="mb-20 grid grid-cols-12 gap-4 md:gap-6">

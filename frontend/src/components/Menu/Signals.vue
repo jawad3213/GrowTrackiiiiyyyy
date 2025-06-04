@@ -11,19 +11,7 @@
         </h1>
 
         <!-- Recherche -->
-        <div class="flex items-center gap-3">
-          <div class="relative w-[300px]">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 dark:text-gray-500">🔍</span>
-            <input
-              v-model="search"
-              placeholder="Search"
-              class="h-11 w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 py-2.5 pl-10 pr-4 text-sm text-gray-800 dark:text-white placeholder:text-gray-400 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-300"
-            />
-          </div>
-          <button class="px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md text-sm bg-white dark:bg-gray-800 text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-            Filters
-          </button>
-        </div>
+        
       </div>
 
       <!-- Tableau -->

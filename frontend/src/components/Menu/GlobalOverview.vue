@@ -6,9 +6,23 @@
       <div :class="{ 'blur-sm pointer-events-none': showModal }">
 
         <!-- Titre du tableau -->
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-xl font-bold">Evaluations</h2>
-          <!-- (Éventuellement, un bouton ou un champ de recherche) -->
+        <div
+          class="flex items-center justify-between p-6 mb-4
+                 bg-white dark:bg-gray-800
+                 border border-gray-200 dark:border-gray-700
+                 rounded-md shadow-sm"
+        >
+          <h1 class="text-2xl font-bold flex items-center space-x-2 text-gray-800 dark:text-gray-100">
+            <span>Evaluations</span>
+            <span
+              class="bg-purple-100 text-purple-600 text-sm font-semibold px-3 py-1 rounded-full
+                     dark:bg-purple-200/10 dark:text-purple-300"
+            >
+              {{ filteredEvaluations.length }} Evaluations for this month
+            </span>
+          </h1>
+              
+          
         </div>
 
         <!-- Loader (affiché tant que loading == true) -->
