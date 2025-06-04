@@ -1,10 +1,15 @@
 const express = require("express");
 const router = express.Router();
-const {validate_student,validations,validate} = require("../../validations/adminValidation")
-const studentController = require("../../controllers/adminControllers/studentController")
+const {validate_student,validations,validate} = require("../../validations/adminValidation");
+const studentController = require("../../controllers/adminControllers/studentController");
 const path = require("path");
 const multer = require ("multer");
 
+const verifyRolee = require('../../middlewares/verificationRole');
+const {verifyToken}=require('../../middlewares/VerifyToken')
+
+router.use(verifyToken)
+router.use(verifyRolee("admin"))
 
 // Config multer
 const storage = multer.diskStorage({

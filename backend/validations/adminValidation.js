@@ -136,8 +136,6 @@ const validate_student = [
     .escape()
 ];
 
-module.exports = validations;
-
 module.exports = {
     validate_student,
     validations,

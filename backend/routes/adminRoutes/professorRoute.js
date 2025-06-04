@@ -4,6 +4,11 @@ const {validate_student,validations,validate} = require("../../validations/admin
 const professorController = require("../../controllers/adminControllers/professorController")
 const path = require("path");
 const multer = require ("multer");
+const verifyRolee = require('../../middlewares/verificationRole');
+const {verifyToken}=require('../../middlewares/VerifyToken')
+
+router.use(verifyToken)
+router.use(verifyRolee("admin"))
 
 
 // Config multer

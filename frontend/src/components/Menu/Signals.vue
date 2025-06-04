@@ -52,19 +52,20 @@
               <td class="p-3">{{ signal.reason }}</td>
 
               <td class="p-3 flex items-center gap-2">
-                <img :src="signal.reporterAvatar" class="w-8 h-8 rounded-full object-cover" />
+                <img :src="signal.reporder_profile_picture_url" class="w-8 h-8 rounded-full object-cover" loading="lazy" />
                 <div>
                   <div class="font-semibold">{{ signal.reporder_name }}</div>
                   <div class="text-xs text-gray-500 dark:text-gray-400">{{ signal.reporder_role }}</div>
                 </div>
               </td>
-              
+              <td>
               <td class="p-3 flex items-center gap-2">
-                <img :src="signal.userAvatar" class="w-8 h-8 rounded-full object-cover" />
+                <img :src="signal.reported_profile_picture_url" crossorigin="anonymous" class="w-8 h-8 rounded-full object-cover" loading="lazy" />
                 <div>
                   <div class="font-semibold">{{ signal.reported_name }}</div>
                   <div class="text-xs text-gray-500 dark:text-gray-400">{{ signal.reported_role }}</div>
                 </div>
+              </td>
               </td>
             
 

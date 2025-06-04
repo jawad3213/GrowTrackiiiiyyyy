@@ -114,7 +114,16 @@ const handlelogin = async () => {
 };
 
 onMounted(() => {
-  if (store.isAuthenticated) router.push('/');
+  if (store.isAuthenticated){
+    switch (store.Role) {
+      case 'admin': router.push('/dashboard'); break;
+      case 'student' : router.push('/dashStudent'); break;
+      case 'supervisor': router.push('/dashSupervisor'); break;
+      case 'prof' : router.push('/DashboardProf'); break;
+      default:
+        router.push('/Login')
+    }
+}
   store.Clearstatus();
 });
 </script>

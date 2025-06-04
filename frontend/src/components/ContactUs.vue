@@ -1,5 +1,4 @@
 <template>
-  < class="min-h-screen bg-gray-50 font-inter flex flex-col">
     <!-- Header -->
     <Header />
 

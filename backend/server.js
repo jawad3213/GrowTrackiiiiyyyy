@@ -22,7 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // Pour les formulaires HTML classiques
 app.use(cookieParser());
 app.use(cors(corsOptions));
-app.use(helmet({hsts: false})); // Leaves Default options that come with helmet and removes the one that forces https 
+app.use(helmet({hsts: false, crossOriginResourcePolicy: { policy: "cross-origin" },})); // Leaves Default options that come with helmet and removes the one that forces https 
 
 // The routes of Authentication
 const AuthRoute = require("./routes/AuthRoute");
@@ -80,10 +80,6 @@ app.use("/api/ProfileAdmin", ProfileAdminRoute)
 const EvaluationAdminRoute = require("./routes/adminRoutes/GlobalOverView_Route");
 app.use("/api/GlobalOverView", EvaluationAdminRoute)
 
-
-//Global Over View
-
-
 //prof_Evaluation history
 const prof_evaluation_history = require("./routes/professorRoutes/Evaluation_Route_history");
 app.use("/api/prof_evaluation_history", prof_evaluation_history)
@@ -107,6 +103,8 @@ app.use("/api/signal_classes", prof_signal_classes)
 
 const dashRoute = require("./routes/profRoutes/dashRoute");
 app.use("/prof/dashboard", dashRoute );
+
+//Student report
 const student_report = require("./routes/professorRoutes/student_report");
 app.use("/api/report", student_report)
 

@@ -45,14 +45,3 @@ exports.verifyResetToken = (req, res, next) => {
     next();
   });
 };
-exports.verifyResetToken = (req, res, next) => {
-  const token = req.query.token;
-
-  if (!token) return res.status(400).json({ message: 'Missing reset token' });
-
-  JWT.verify(token, process.env.RESET_SECRET, (err, decoded) => {
-    if (err) return res.status(401).json({ message: 'Invalid or expired token' });
-    req.user = decoded;
-    next();
-  });
-};

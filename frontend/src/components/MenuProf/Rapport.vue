@@ -116,7 +116,7 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
-import axios from 'axios'
+import api from '../../services/api'
 import { useRouter } from 'vue-router'
 import html2pdf from 'html2pdf.js'
 
@@ -163,17 +163,17 @@ const comments = ref({})
 onMounted(async () => {
   try {
     // 1. Évaluations compétences par date
-    const evalRes = await axios.get('http://localhost:3001/skillEvaluations')
+    const evalRes = await api.get('http://localhost:3001/skillEvaluations')
     evaluations.value = evalRes.data
 
     // 2. Graphique sources d'évaluations
-    const { data: pieData } = await axios.get('http://localhost:3001/evaluationSources')
+    const { data: pieData } = await api.get('http://localhost:3001/evaluationSources')
     console.log('soukaina')
     chartOptions.value.labels = Object.keys(pieData)
     chartSeries.value = Object.values(pieData)
 
     // 3. Signaux
-    const { data: signalData } = await axios.get('http://localhost:3001/signals')
+    const { data: signalData } = await api.get('http://localhost:3001/signals')
     signals.value = signalData.map(s => ({
       date: new Date(s.date).toLocaleDateString(),
       reporter: s.reporter,
@@ -184,7 +184,7 @@ onMounted(async () => {
     }))
 
     // 4. Commentaires
-    const { data: commentData } = await axios.get('http://localhost:3001/comments')
+    const { data: commentData } = await api.get('http://localhost:3001/comments')
     comments.value = commentData.reduce((acc, c) => {
       if (!acc[c.role]) acc[c.role] = []
       acc[c.role].push(c.text)
@@ -192,7 +192,7 @@ onMounted(async () => {
     }, {})
 
     //profile
-    const res = await axios.get('http://localhost:3001/ProfileStudents')
+    const res = await api.get('http://localhost:3001/ProfileStudents')
     console.log('hello guys')
     profile.value = res.data[0] || {}
 
