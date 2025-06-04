@@ -28,7 +28,7 @@ exports.Password =[
       if (disallowedPasswords.includes(value.toLowerCase())) {
         throw new Error('The password is weak.');
       }
-      if (!/^(?=.[A-Z])(?=.\d).*$/.test(value)) {
+      if (!/^(?=.*[A-Z])(?=.*\d).*$/.test(value)) {
           throw new Error("The password must contain at least one uppercase letter and one number.");
       }
       return true;

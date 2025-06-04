@@ -105,6 +105,8 @@ const transporter = nodemailer.createTransport({
     }
   });
 
+  /*
+
 exports.ResetPass = 
     async (req,res)=>{
         const {email} = req.body;
@@ -114,7 +116,7 @@ exports.ResetPass =
             else {
                 const Reset_Token = JWT.sign(
                     { id: user.id_member, role: user.role, fullname: user.fullname},
-                    process.env.ACCESS_SECRET,
+                    process.env.RESET_SECRET,
                     { expiresIn: '15m'})
             
                     const resetLink = `http://localhost:5173/resetpass?token=${Reset_Token}`;
@@ -136,8 +138,6 @@ exports.ResetPass =
                 return res.status(200).json({
                   message: "A password reset email has been sent. Please check your inbox or spam folder ✅",
                 });
-            } else {
-                return res.status(500).json({ message: "Failed to send reset email " });
             }
         }
         }
@@ -145,6 +145,46 @@ exports.ResetPass =
             console.log(error);
             return res.status(500).json({message: "Server Error, Please try again later!"});
         }
+    }*/
+
+exports.ResetPass = 
+  async (req,res)=>{
+      const {email} = req.body;
+      try {
+      const user = await authModel.FindUserByEmail(email);
+          if(!user) {return res.status(400).json({ message: "User not found with this email ❌" });}
+          else {
+              const Reset_Token = JWT.sign(
+                  { id: user.id_member},
+                  process.env.RESET_SECRET,
+                  { expiresIn: '15m'})
+          
+                  const resetLink = `http://localhost:5173/resetpass?token=${Reset_Token}`;
+                  const mailOptions = {
+              from: process.env.EMAIL_USER,
+              to: email,
+              subject: "Password Reset Request 🔒",
+              html: `
+                <h2>Password Reset</h2>
+                <p>Click the link below to reset your password:</p>
+                <a href="${resetLink}">Reset My Password</a>
+                <p>This link will expire in 15 minutes.</p>
+              `
+            };
+            
+            const sent = await exports.transporter.sendMail(mailOptions);
+            
+            if (sent) {
+              return res.status(200).json({
+                message: "A password reset email has been sent. Please check your inbox or spam folder ✅",
+              });
+            }
+      }
+      }
+       catch (error) {
+          console.log(error);
+          return res.status(500).json({message: "Server Error, Please try again later!"});
+      }
     }
 
 exports.ResetPassEmail= 
@@ -161,7 +201,7 @@ exports.ResetPassEmail=
         }
         } catch (error) {
             console.error(error);
-            return res.status(500).json({ message: "Interne Servel Error " });
+            return res.status(500).json({ message: "Internal Server Error " });
         }
     }
 

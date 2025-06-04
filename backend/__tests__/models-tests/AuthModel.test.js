@@ -1,10 +1,11 @@
 // auth.model.test.js
+jest.mock('../../config/db'); // Mock the database pool
 const { LoginModel, FindUserByEmail, GetUserById, UpdatePassById } = require('../../models/authModel');
 const pool = require('../../config/db');
 const bcrypt = require('bcrypt');
 
 // Mock the external dependencies
-jest.mock('../../config/db'); // Mock the database pool
+
 jest.mock('bcrypt'); // Mock bcrypt for password hashing and comparison
 
 describe('Auth Model', () => {
