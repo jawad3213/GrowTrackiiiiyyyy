@@ -23,6 +23,7 @@ export const useAuthStore = defineStore('auth',() =>
             try {
                 const response = await api.post('/api/auth/login', {email , password}); //api url !! //envoi de l'objet 
                 user.value = response.data?.user;
+                localStorage.setItem('username', user.fullname);
                 error.value = null;
             } catch (err) {
                 error.value = err.response?.data?.message || 'Email or password incorrect'; // vérifier que l'api envoie un message

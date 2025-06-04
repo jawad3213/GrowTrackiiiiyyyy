@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-50 font-inter flex flex-col">
+  < class="min-h-screen bg-gray-50 font-inter flex flex-col">
     <!-- Header -->
     <Header />
 
@@ -157,40 +157,18 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-gradient-to-r from-[#692CF3] to-[#F97316] text-white py-6 px-4">
-      <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-        <!-- Logo -->
-        <div class="flex items-center space-x-2">
-          <img src="../assets/logo3.jpg" alt="Logo" class="w-50 h-10 object-contain" />
-        </div>
 
-        <div class="flex space-x-8 justify-center gap-4 text-lg font-medium">
-          <span>© Copyright 2025 GrowTrack</span>
-          <router-link to="/AboutUs" class="hover:underline">About Us</router-link>
-          <router-link to="/ContactUs" class="hover:underline">Contact Us</router-link>
-          <router-link to="/Teachers" class="hover:underline">Teachers</router-link>
-          <router-link to="/Students" class="hover:underline">Students</router-link>
-          <router-link to="/" class="hover:underline">Home</router-link>
-        </div>
+        
 
-        <div class="flex space-x-4">
-          <a href="https://x.com/i/flow/login"
-            ><img src="../assets/twitter.png" alt="Twitter" class="w-6 h-6" />
-          </a>
-          <a href="https://fr-fr.facebook.com/login/web/"
-            ><img src="../assets/facebook.png" alt="Facebook" class="w-6 h-6" />
-          </a>
-          <a href="https://www.instagram.com/?flo=true"
-            ><img src="../assets/instagram.png" alt="Instagram" class="w-6 h-6" />
-          </a>
-        </div>
-      </div>
-    </footer>
-  </div>
+        
+      
+      <Footer />
+  
 </template>
 
 <script setup>
 import Header from './Header.vue'
+import Footer from './Footer.vue'
 import { ref, watch, onMounted } from 'vue'
 import { useFormStore } from '@/stores/form'
 import { contactUsSchema } from '@/schemas/contactUs.schema'

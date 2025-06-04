@@ -114,7 +114,7 @@ const handlelogin = async () => {
 };
 
 onMounted(() => {
-  if (store.isAuthenticated) router.push('/');
+  if (store.isAuthenticated) router.push('/dashboard');
   store.Clearstatus();
 });
 </script>

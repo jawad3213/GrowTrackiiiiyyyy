@@ -2,13 +2,13 @@ const express = require("express")
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 require('dotenv').config();
-const PORT = process.env.PORT;
+
+const PORT = process.env.PORT || 3000;
 const {ResetPassEmail, check} = require('./controllers/authController');
 const cors = require('cors');
 const {ServerLimiter} = require('../backend/middlewares/Limiter');
 const { verifyResetToken }=require('./middlewares/VerifyToken')
 const path = require('path')
-
 
 
 
@@ -105,6 +105,13 @@ const prof_signal_classes = require("./routes/professorRoutes/signal_classes_Rou
 app.use("/api/signal_classes", prof_signal_classes)
 
 
+const dashRoute = require("./routes/profRoutes/dashRoute");
+app.use("/prof/dashboard", dashRoute );
+const student_report = require("./routes/professorRoutes/student_report");
+app.use("/api/report", student_report)
+
+
+
 const pool = require('./config/db');
 
 app.get('/testbackend',(req,res)=>{
@@ -114,4 +121,5 @@ app.get('/testbackend',(req,res)=>{
 app.listen(PORT, () => {
     console.log(`✅ Server Running on http://localhost:${PORT}`);
 });
+
 

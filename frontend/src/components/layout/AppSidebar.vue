@@ -1,4 +1,4 @@
-<template>
+hover<template>
   <aside
     :class="[ 
       'fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-99999 border-r border-gray-200',
@@ -69,7 +69,7 @@
                   v-if="item.subItems"
                   @click="toggleSubmenu(groupIndex, index)"
                   :class="[
-    'menu-item group w-full hover:text-[#8B5CF6] transition-colors duration-200',
+    'menu-item group w-full hover:text-[#8B5CF6] transition-color duration-200',
     {
       'menu-item-active': isSubmenuOpen(groupIndex, index),
       'menu-item-inactive': !isSubmenuOpen(groupIndex, index),
@@ -96,7 +96,7 @@
                     :class="[
                       'ml-auto w-5 h-5 transition-transform duration-200',
                       {
-                        'rotate-180 text-brand-500': isSubmenuOpen(
+                        'rotate-180 text-brand-600': isSubmenuOpen(
                           groupIndex,
                           index
                         ),
@@ -147,7 +147,7 @@
                         <router-link
                           :to="subItem.path"
                           :class="[
-    'menu-dropdown-item hover:text-[#AD8CF9] transition-colors duration-200',
+    'menu-dropdown-item hover:text-[#8B5CF6] transition-colors duration-200',
     {
       'menu-dropdown-item-active': isActive(subItem.path),
       'menu-dropdown-item-inactive': !isActive(subItem.path),
@@ -208,9 +208,7 @@
 // ton script est bon ! tu n'as pas besoin de changer.
 import { ref, computed } from "vue";
 import { useRoute } from "vue-router";
-
-
-import {
+import{
   UserSittings,
   UserAdd,
   GridIcon,
@@ -218,6 +216,7 @@ import {
   ChevronDownIcon,
   HorizontalDots,
   PageIcon,
+  PieChartIcon,
 } from "@/components/icons";
 
 import { useSidebar } from "@/composables/useSidebar";
@@ -234,7 +233,7 @@ const menuGroups = [
       { icon: CalenderIcon, name: "Calendar", path: "/Calendar" },
       { 
         icon: UserAdd, 
-        name: "UserManagement",
+        name: "User Management",
         subItems: [
           { name: "Students", path: "/Student" },
           { name: "Professors", path: "/Professor" },
@@ -252,7 +251,7 @@ const menuGroups = [
       },
       { 
         name: "Institution Settings", 
-        icon: PageIcon,
+        icon: PieChartIcon,
         subItems: [
           { name: "Fields & Groups", path: "/Group" },
           { name: "Coach", path: "/Coach" },

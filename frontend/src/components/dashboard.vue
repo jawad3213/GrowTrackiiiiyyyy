@@ -1,10 +1,10 @@
 <template>
   <admin-layout>
   
-  <h1 class="text-4xl font-bold text-gray-900 mb-7">
-    Welcome to Your Admin Dashboard <span class="uppercase">SOUKAINA</span>,
+  <h1 class="text-3xl font-bold text-gray-900 mb-7">
+    Welcome to Your Admin Dashboard <span class="uppercase">SOUKAINA  </span>,
     <span class="text-xl font-medium text-gray-500">
-      here’s what’s happening with your School this month 
+      here’s what’s happening with your Plateform this month 
     </span>
   </h1>
 
@@ -40,7 +40,7 @@
 </admin-layout>
 </template>
 
-<script>
+<script setup>
 import AdminLayout from '@/components/layout/AdminLayout.vue'
 import EcommerceMetrics from '@/components/ecommerce/EcommerceMetrics.vue'
 import MonthlyTarget from '@/components/ecommerce/MonthlyTarget.vue'
@@ -49,16 +49,5 @@ import EvaluationSource from './ecommerce/EvaluationSource.vue'
 import UserDistrubution from './ecommerce/UserDistrubution.vue'
 
 
-export default {
-  components: {
-    UserDistrubution,
-    EvaluationSource,
-    AdminLayout,
-    EcommerceMetrics,
-    MonthlyTarget,
-    MonthlySale,
 
-  },
-  name: 'Ecommerce',
-}
 </script>

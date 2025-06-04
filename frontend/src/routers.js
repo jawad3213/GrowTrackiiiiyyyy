@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import LoadingPage from "@/components/Home/LoadingPage.vue";
 import AboutUs from "./components/AboutUs.vue";
 import ContactUs from "./components/ContactUs.vue";
-import Teachers from "./components/Home/Teachers.vue";
+import TeachersGenralpage from "./components/Home/Teachers.vue";
 import Students from "./components/Home/Students.vue";
 import Login from "./components/Login.vue";
 import resetPassword from "./components/resetPassword.vue";
@@ -76,6 +76,9 @@ import StudSolution from "./components/MenuStudent/StudSolution.vue";
 import StudReason from "./components/MenuStudent/StudReason.vue";
 import selfEval from "./components/MenuStudent/selfEval.vue";
 import Team from "./components/Team.vue";
+import Error from "./components/Error.vue";
+
+
 
 
 
@@ -84,6 +87,11 @@ const routes = [
         name: 'LoadingPage',
         component: LoadingPage,
         path: '/'
+    },
+    {
+        name: 'Error',
+        component: Error,
+        path: '/Error'
     },
     {
         name: "OurTeam",
@@ -96,12 +104,12 @@ const routes = [
         path: '/ContactUs'
     },
     {
-        name: 'Teachers',
-        component: Teachers,
+        name: 'TeachersGenralpage',
+        component: TeachersGenralpage,
         path: '/Teachers'
     },
     {
-        name: 'Students',
+        name: 'Students general page ',
         component: Students,
         path: '/Students'
     },
@@ -124,6 +132,11 @@ const routes = [
         name: "check",
         component: check,
         path:"/check",
+    },
+    {
+        name: "AddSupervisorModal ",
+        component: AddSupervisorModal ,
+        path:"/AddSupervisorModal",
     },
     {
         name: "Skills",

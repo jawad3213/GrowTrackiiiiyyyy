@@ -32,8 +32,12 @@
   </template>
   
   <script setup>
+
+  //hada mab9axiiii
+
+  
   import { ref, onMounted } from 'vue'
-  import axios from 'axios'
+  import api from '@/services/api'
   import { useRouter } from 'vue-router'
   
   const router = useRouter()
@@ -51,7 +55,7 @@ const isOpen = ref(true)
   
   const fetchSkills = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/ChooseSkills')
+      const response = await api.get('http://localhost:3001/ChooseSkills')
       skills.value = response.data
     } catch (error) {
       console.error('Erreur lors de la récupération des compétences :', error)
