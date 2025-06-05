@@ -1,15 +1,15 @@
 const bcrypt = require("bcrypt");
 const { v4: uuidv4 } = require("uuid");
-const professorController = require("../../controllers/adminControllers/professorController");
-const professorModel = require("../../models/adminModels/professorModel");
+const professorController = require("../../../controllers/adminControllers/professorController");
+const professorModel = require("../../../models/adminModels/professorModel");
 
 // Mock dependencies
 jest.mock("bcrypt");
 jest.mock("uuid");
-jest.mock("../../models/adminModels/professorModel");
+jest.mock("../../../models/adminModels/professorModel");
 
 // Mock the database connection to prevent actual DB connections during tests
-jest.mock("../../config/db", () => ({
+jest.mock("../../../config/db", () => ({
   query: jest.fn(),
   connect: jest.fn(),
   end: jest.fn()

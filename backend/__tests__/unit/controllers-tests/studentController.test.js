@@ -1,10 +1,10 @@
-jest.mock('../../config/db'); // Mock the database pool
-const studentController = require("../../controllers/adminControllers/studentController");
-const studentModel = require("../../models/adminModels/studentModel");
+jest.mock('../../../config/db'); // Mock the database pool
+const studentController = require("../../../controllers/adminControllers/studentController");
+const studentModel = require("../../../models/adminModels/studentModel");
 const bcrypt = require("bcrypt");
 const { v4: uuidv4 } = require("uuid");
 
-jest.mock("../../models/adminModels/studentModel");
+jest.mock("../../../models/adminModels/studentModel");
 jest.mock("bcrypt");
 jest.mock("uuid");
 

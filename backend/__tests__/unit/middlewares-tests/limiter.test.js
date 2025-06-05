@@ -8,7 +8,7 @@ const mockRateLimitFn = jest.fn().mockImplementation(config => {
   });
   
   const rateLimit = require('express-rate-limit');
-  const { Authlimiter, ServerLimiter } = require('../../middlewares/Limiter');
+  const { Authlimiter, ServerLimiter } = require('../../../middlewares/Limiter');
   
   describe('Rate Limiters', () => {
     beforeEach(() => {

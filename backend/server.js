@@ -118,8 +118,17 @@ app.get('/testbackend',(req,res)=>{
     res.send('connexion reussie to backend !! ');
 })
 
+/*
 app.listen(PORT, () => {
     console.log(`✅ Server Running on http://localhost:${PORT}`);
-});
+});*/
 
+// Only start server if this file is run directly (not imported) Rim for integration tests
+if (require.main === module) {
+  app.listen(PORT, () => {
+   console.log(`✅ Server Running on http://localhost:${PORT}`);
+  });
+}
 
+// Export the app for testing
+module.exports = app;

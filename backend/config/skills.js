@@ -33,7 +33,7 @@ async function copyDatabase() {
          `pg_dump "${process.env.DATABASE_URL}" -F p -f ${dumpFile} --no-owner --no-privileges`,
           (error, stdout, stderr) => {
             if (error) {
-              console.error("❌ Erreur lors de l'exportation : ${error.message}");
+              console.error(`❌ Erreur lors de l'exportation : ${error.message}`);
               reject(error);
             } else {
               console.log("✅ Exportation réussie !");
@@ -58,7 +58,7 @@ async function copyDatabase() {
     await new Promise((resolve, reject) => {
       exec(`psql -U postgres -d skills -f ${dumpFile}`, (error, stdout, stderr) => {
         if (error) {
-          console.error("❌ Erreur lors de la restauration : ${error.message}");
+          console.error(`❌ Erreur lors de la restauration : ${error.message}`);
           reject(error);
         } else {
           console.log("✅ Base de test créée avec succès !");
@@ -82,6 +82,4 @@ if (require.main === module) {
 
 
 module.exports = localDB;
-
-
 

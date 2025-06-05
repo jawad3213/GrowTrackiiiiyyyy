@@ -5,10 +5,10 @@ const {
   updateField,
   deleteClass,
   getTotalfield
-} = require('../../controllers/adminControllers/classController'); // Adjust path as needed
+} = require('../../../controllers/adminControllers/classController'); // Adjust path as needed
 
 // Mock the classModel
-jest.mock('../../models/adminModels/classModel', () => ({
+jest.mock('../../../models/adminModels/classModel', () => ({
   createClass: jest.fn(),
   getAllSectors: jest.fn(),
   getClassByName: jest.fn(),
@@ -17,7 +17,7 @@ jest.mock('../../models/adminModels/classModel', () => ({
   totalClasses: jest.fn(),
 }));
 
-const classModel = require('../../models/adminModels/classModel');
+const classModel = require('../../../models/adminModels/classModel');
 
 describe('ClassController', () => {
   let req, res;

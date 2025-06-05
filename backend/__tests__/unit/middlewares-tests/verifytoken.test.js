@@ -1,4 +1,4 @@
-const { verifyToken, verifyResetToken } = require('../../middlewares/VerifyToken');
+const { verifyToken, verifyResetToken } = require('../../../middlewares/VerifyToken');
 const JWT = require('jsonwebtoken');
 
 jest.mock('jsonwebtoken');

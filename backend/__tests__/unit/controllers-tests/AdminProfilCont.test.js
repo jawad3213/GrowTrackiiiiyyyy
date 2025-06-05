@@ -1,16 +1,16 @@
-jest.mock('../../config/db'); // Mock the database pool
+jest.mock('../../../config/db'); // Mock the database pool
 const {
   picture_controller,
   personnal_information_controller
-} = require('../../controllers/adminControllers/AdminProfile_Controller.js'); 
+} = require('../../../controllers/adminControllers/AdminProfile_Controller.js'); 
 
 // Mock the ProfileModel
-jest.mock('../../models/adminModels/AdminProfile_Model.js', () => ({
+jest.mock('../../../models/adminModels/AdminProfile_Model.js', () => ({
   picture_model: jest.fn(),
   personnal_information_model: jest.fn(),
 }));
 
-const ProfileModel = require('../../models/adminModels/AdminProfile_Model.js');
+const ProfileModel = require('../../../models/adminModels/AdminProfile_Model.js');
 
 describe('AdminProfileController', () => {
   let req, res;

@@ -3,7 +3,7 @@ const mockLoginValidator = jest.fn((req, res, next) => next());
 const mockEmailValidator = jest.fn((req, res, next) => next());
 
 // Mock controllers and middleware
-jest.mock('../../controllers/authController', () => ({
+jest.mock('../../../controllers/authController', () => ({
   Login: jest.fn((req, res) => res.sendStatus(200)),
   ResetPass: jest.fn((req, res) => res.sendStatus(200)),
   Logout: jest.fn((req, res) => res.sendStatus(200)),
@@ -11,16 +11,16 @@ jest.mock('../../controllers/authController', () => ({
   check: jest.fn((req, res) => res.sendStatus(200)),
 }));
 
-jest.mock('../../middlewares/Limiter', () => ({
+jest.mock('../../../middlewares/Limiter', () => ({
   Authlimiter: jest.fn((req, res, next) => next()),
 }));
 
-jest.mock('../../middlewares/VerifyToken', () => ({
+jest.mock('../../../middlewares/VerifyToken', () => ({
   verifyToken: jest.fn((req, res, next) => next()),
 }));
 
 // Mock the validate middleware to return our test validators
-jest.mock('../../middlewares/validate', () => {
+jest.mock('../../../middlewares/validate', () => {
   const validateModule = {
     validate: jest.fn((rules) => {
       if (rules === 'Login') {
@@ -38,21 +38,21 @@ jest.mock('../../middlewares/validate', () => {
 });
 
 // Mock the auth rules
-jest.mock('../../validators/authrules', () => ({
+jest.mock('../../../validators/authrules', () => ({
   Login: 'Login',
   Email: 'Email',
 }));
 
 const request = require('supertest');
 const express = require('express');
-const authController = require('../../controllers/authController');
-const { Authlimiter } = require('../../middlewares/Limiter');
-const { verifyToken } = require('../../middlewares/VerifyToken');
-const { validate } = require('../../middlewares/validate');
-const authRules = require('../../validators/authrules');
+const authController = require('../../../controllers/authController');
+const { Authlimiter } = require('../../../middlewares/Limiter');
+const { verifyToken } = require('../../../middlewares/VerifyToken');
+const { validate } = require('../../../middlewares/validate');
+const authRules = require('../../../validators/authrules');
 
 // This needs to be required AFTER all mocks are set up
-const authRoutes = require('../../routes/AuthRoute');
+const authRoutes = require('../../../routes/AuthRoute');
 
 describe('Auth Routes', () => {
   let app;

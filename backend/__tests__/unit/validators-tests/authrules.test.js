@@ -1,5 +1,5 @@
 const { body, validationResult } = require('express-validator');
-const { Login, Password, Email } = require('../../validators/authrules'); // Adjust the path as needed
+const { Login, Password, Email } = require('../../../validators/authrules'); // Adjust the path as needed
 
 describe('Login Validator', () => {
   it('should return an error if email is missing', async () => {

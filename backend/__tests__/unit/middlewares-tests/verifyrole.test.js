@@ -1,4 +1,4 @@
-const verifyRolee = require('../../middlewares/verificationRole'); // Adjust path as needed
+const verifyRolee = require('../../../middlewares/verificationRole'); // Adjust path as needed
 
 describe('verifyRolee middleware', () => {
   let req, res, next;

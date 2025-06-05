@@ -1,4 +1,4 @@
-jest.mock('../../config/db'); // Mock the database pool
+jest.mock('../../../config/db'); // Mock the database pool
 const {
   Total_User,
   differenceUserController,
@@ -11,10 +11,10 @@ const {
   user_distribution_by_role_Controller,
   news_admin_Controller,
   news_professor_Controller
-} = require('../../controllers/adminControllers/AdminDashboardController'); // Adjust path as needed
+} = require('../../../controllers/adminControllers/AdminDashboardController'); 
 
 // Mock the DashModel
-jest.mock('../../models/adminModels/AdminDashboardModel', () => ({
+jest.mock('../../../models/adminModels/AdminDashboardModel', () => ({
   TotalUserModel: jest.fn(),
   differenceUserModel: jest.fn(),
   TotalEvaluationModel: jest.fn(),
@@ -28,7 +28,7 @@ jest.mock('../../models/adminModels/AdminDashboardModel', () => ({
   news_professor_Model: jest.fn(),
 }));
 
-const DashModel = require('../../models/adminModels/AdminDashboardModel');
+const DashModel = require('../../../models/adminModels/AdminDashboardModel');
 
 describe('AdminDashboardController', () => {
   let req, res;

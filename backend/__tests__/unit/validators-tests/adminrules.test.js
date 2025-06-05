@@ -1,5 +1,5 @@
 const { check, validationResult } = require('express-validator');
-const { id_evaluation, type } = require('../../validators/adminInputsRules'); // Adjust the path as needed
+const { id_evaluation, type } = require('../../../validators/adminInputsRules'); // Adjust the path as needed
 
 describe('ID Evaluation Validator', () => {
   it('should return an error if id_evaluation is missing', async () => {

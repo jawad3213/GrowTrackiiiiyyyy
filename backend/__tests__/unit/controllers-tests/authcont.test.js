@@ -1,19 +1,19 @@
-const authController = require('../../controllers/authController');
-const authModel = require('../../models/authModel');
+const authController = require('../../../controllers/authController');
+const authModel = require('../../../models/authModel');
 const JWT = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
-const { Authlimiter } = require('../../middlewares/Limiter');
+const { Authlimiter } = require('../../../middlewares/Limiter');
 
 // Mock all external dependencies
-jest.mock('../../models/authModel');
+jest.mock('../../../models/authModel');
 jest.mock('jsonwebtoken');
 jest.mock('bcrypt');
 jest.mock('nodemailer');
-jest.mock('../../middlewares/Limiter');
+jest.mock('../../../middlewares/Limiter');
 
 // Mock the database configuration to prevent real DB connection
-jest.mock('../../config/db.js', () => ({}));
+jest.mock('../../../config/db.js', () => ({}));
 
 // Mock environment variables
 process.env.ACCESS_SECRET = 'test-access-secret';

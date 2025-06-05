@@ -1,4 +1,4 @@
-const { validate } = require('../../middlewares/validate');
+const { validate } = require('../../../middlewares/validate');
 const { validationResult } = require('express-validator');
 
 jest.mock('express-validator', () => ({
