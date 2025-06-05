@@ -37,6 +37,7 @@ exports.getAllSignals = async () => {
         //     })
         // );
 
+
         return result;
     } catch (error) {
         console.error("Error retrieving signals:", error);
@@ -61,25 +62,41 @@ exports.total = async () => {
 
 
 exports.getSignalById = async (id_signal) => {
-    const result = await pool.query(
-        `SELECT 
-            reporder.full_name AS reported_by,
-            reporder.role AS reporter_role,
+  try {
+    const { rows } = await pool.query(
+      `
+      SELECT
+        r.id_signal,
 
-            reported.full_name AS reported_user,
-            reported.role AS reported_role,
+        -- Infos du signaleur (reporter)
+        reporter.profile_picture  AS reporter_picture,
+        reporter.full_name        AS reporter_name,
+        reporter.role             AS reporter_role,
 
-            s.date_add AS submitted_date,
-            s.option_signal AS reason
+        -- Infos de l’utilisateur signalé
+        reported.profile_picture  AS reported_picture,
+        reported.full_name        AS reported_name,
+        reported.role             AS reported_role,
 
-            FROM report r
-            JOIN signal s ON r.id_signal = s.id_signal
-            JOIN member reporder ON reporder.id_member = r.id_reporter
-            JOIN member reported ON reported.id_member = r.id_reported;
-            `
-    )
-    return result.rows[0];
-}
+        -- Métadonnées du signal
+        s.date_add                AS submitted_date,
+        s.option_signal           AS reason
+      FROM public.report  r
+      JOIN public.signal  s        ON s.id_signal = r.id_signal
+      JOIN public.member  reporter ON reporter.id_member = r.id_reporter
+      JOIN public.member  reported ON reported.id_member = r.id_reported
+      WHERE r.id_signal = $1
+      LIMIT 1;
+      `,
+      [id_signal]
+    );
+
+    return rows[0] || null; // null si non trouvé
+  } catch (err) {
+    // On remonte l’erreur au contrôleur
+    throw err;
+  }
+};
 
 
 exports.solution = async (id_signal, option_solution, details, name_coach, start_date, date_done) => {

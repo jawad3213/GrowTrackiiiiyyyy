@@ -27,7 +27,7 @@
                      transform hover:scale-105 hover:shadow-lg
                      transition-transform duration-200"
             >
-              {{ students.length > 0 ? '+ Create' : '+ Add a student' }}
+              {{ students.length > 0 ? '+ Add Student' : '+ Crete Student' }}
             </button>
           </router-link>
         </div>

@@ -6,9 +6,21 @@
       <div :class="{ 'blur-sm pointer-events-none': showModal }">
 
         <!-- Titre du tableau -->
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-xl font-bold">Evaluations</h2>
-          <!-- (Éventuellement, un bouton ou un champ de recherche) -->
+        <div
+          class="flex items-center justify-between p-6 mb-4
+                 bg-white dark:bg-gray-800
+                 border border-gray-200 dark:border-gray-700
+                 rounded-md shadow-sm"
+        >
+          <h1 class="text-2xl font-bold flex items-center space-x-2 text-gray-800 dark:text-gray-100">
+            <span>Evaluations</span>
+            <span
+              class="bg-purple-100 text-purple-600 text-sm font-semibold px-3 py-1 rounded-full
+                     dark:bg-purple-200/10 dark:text-purple-300"
+            >
+              {{ filteredEvaluations.length }} Evaluations for this month
+            </span>
+          </h1>
         </div>
 
         <!-- Loader (affiché tant que loading == true) -->
@@ -25,18 +37,26 @@
           <table class="min-w-full text-sm text-left">
             <thead class="bg-gray-100 dark:bg-gray-700">
               <tr>
+                <!-- Évaluation ID -->
                 <th class="px-6 py-3 font-semibold text-gray-600 dark:text-gray-200">
                   Evaluation ID
                 </th>
+
+                <!-- Colonne Evaluator unique -->
                 <th class="px-6 py-3 font-semibold text-gray-600 dark:text-gray-200">
-                  Evaluator name
+                  Evaluator
                 </th>
+
+                <!-- Colonne Student unique -->
                 <th class="px-6 py-3 font-semibold text-gray-600 dark:text-gray-200">
-                  Evaluated name
+                  Student
                 </th>
+
+                <!-- Submitted Date -->
                 <th class="px-6 py-3 font-semibold text-gray-600 dark:text-gray-200">
-                  Submitted date
+                  Submitted Date
                 </th>
+                <!-- Type -->
                 <th class="px-6 py-3 font-semibold text-gray-600 dark:text-gray-200">
                   Type
                 </th>
@@ -52,15 +72,54 @@
                        transition-colors duration-150 cursor-pointer"
                 @click="openEvaluation(evaluation)"
               >
+                <!-- Evaluation ID -->
                 <td class="px-6 py-4 text-gray-800 dark:text-gray-100">
                   {{ evaluation.id_evaluation }}
                 </td>
-                <td class="px-6 py-4 text-gray-800 dark:text-gray-100">
-                  {{ evaluation.evaluator_full_name }}
+
+                <!-- Evaluator (photo + nom + rôle) -->
+                <td class="px-6 py-4">
+                  <div class="flex items-center space-x-3">
+                    <!-- Avatar -->
+                    <img
+                      :src="evaluation.evaluator_profile_picture"
+                      alt="Evaluator picture"
+                      class="w-8 h-8 rounded-full object-cover border border-gray-200"
+                    />
+                    <!-- Nom + Rôle -->
+                    <div>
+                      <p class="font-medium text-gray-800 dark:text-gray-100">
+                        {{ evaluation.evaluator_full_name }}
+                      </p>
+                      <p class="text-xs text-gray-500 dark:text-gray-300">
+                        {{ evaluation.evaluator_role }}
+                      </p>
+                    </div>
+                  </div>
                 </td>
-                <td class="px-6 py-4 text-gray-800 dark:text-gray-100">
-                  {{ evaluation.student_full_name }}
+
+                <!-- Student (photo + nom + rôle) -->
+                <td class="px-6 py-4">
+                  <div class="flex items-center space-x-3">
+                    <!-- Avatar -->
+                    <img
+                      :src="evaluation.student_profile_picture"
+                      alt="Student picture"
+                      class="w-8 h-8 rounded-full object-cover border border-gray-200"
+                    />
+                    <!-- Nom + Rôle -->
+                    <div>
+                      <p class="font-medium text-gray-800 dark:text-gray-100">
+                        {{ evaluation.student_full_name }}
+                      </p>
+                      <p class="text-xs text-gray-500 dark:text-gray-300">
+                        {{ evaluation.student_role }}
+                      </p>
+                    </div>
+                  </div>
                 </td>
+
+                <!-- Submitted Date -->
                 <td class="px-6 py-4 text-gray-800 dark:text-gray-100">
                   {{
                     new Date(evaluation.date_add).toLocaleDateString('en-US', {
@@ -70,6 +129,7 @@
                     })
                   }}
                 </td>
+                <!-- Type -->
                 <td class="px-6 py-4 text-gray-800 dark:text-gray-100">
                   {{ evaluation.type_evaluation }}
                 </td>
@@ -88,7 +148,6 @@
           <p class="text-lg font-semibold mb-2">No evaluations found</p>
           <p class="mb-6">There are no evaluations to display.</p>
         </div>
-
       </div>
 
       <!-- Overlay sombre si la modale est ouverte -->
@@ -125,7 +184,7 @@ const selectedEvaluation = ref(null)
 // Contiendra la réponse brute de l’API : { result: [...] }
 const rawEvaluations = ref([])
 
-// Computed pour extraire la liste des évaluations sans planter si rawEvaluations n’est pas encore défini
+// Computed pour extraire la liste des évaluations
 const filteredEvaluations = computed(() => {
   return Array.isArray(rawEvaluations.value.result)
     ? rawEvaluations.value.result
@@ -142,7 +201,7 @@ onMounted(async () => {
   loading.value = true
   try {
     const res = await api.get('/api/GlobalOverView/all_evaluation')
-    // Ici on suppose que l’API renvoie un objet { result: [ ... ] }
+    // On suppose que l’API renvoie { result: [...] }
     rawEvaluations.value = res.data
   } catch (err) {
     console.error('Erreur lors du chargement des évaluations :', err)

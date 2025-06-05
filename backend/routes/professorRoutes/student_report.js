@@ -9,7 +9,7 @@ router.get('/Profile_Section/:id',verifyToken,report_Controller.Profile_Section_
 //rapport evaluation section 
 router.get('/Evaluation_Section/:id',verifyToken,report_Controller.Evaluatuion_Section_Controller);
 
-//rapport evaluation section 
+//rapport evaluation sectio
 router.get('/Signal_History/:id',verifyToken,report_Controller.Signal_History_Controller);
 
 //comment section

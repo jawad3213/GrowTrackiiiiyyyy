@@ -19,79 +19,47 @@
       </div>
     </div>
 
-    <div class="flex items-center justify-center gap-6 sm:gap-12 px-6 py-5">
+    <div class="flex items-center justify-center gap-8 sm:gap-12 px-6 py-5">
 
-      <div>
-        <p class="mb-1 text-gray-500 text-theme-xs dark:text-gray-400 sm:text-lg">Evaluation assigned </p>
-        <span
-        :class="[
-          'flex items-center gap-1 rounded-full px-3 py-1 text-lg font-medium',
-          trend === 'increased'
-            ? 'bg-green-50 text-green-700 dark:bg-green-500/10 dark:text-green-400'
-            : trend === 'decreased'
-            ? 'bg-red-50 text-red-700 dark:bg-red-500/10 dark:text-red-400'
-            : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
-        ]"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-4 h-4"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            :d="trendUser === 'increased'
-              ? 'M5 10l7-7m0 0l7 7m-7-7v18'
-              : trendUser === 'decreased'
-              ? 'M19 14l-7 7m0 0l-7-7m7 7V3'
-              : ''"
-          />
-        </svg>
-        {{ `${growth}` }}
-      </span>
+      <div class="flex flex-col items-center justify-center">
+  <p class="mb-1 text-gray-500 text-theme-xs text-center dark:text-gray-400 sm:text-lg">
+    Evaluation Assigned
+  </p>
+  <span
+    :class="[
+      'bg-gray-300 flex items-center justify-center gap-1 rounded-full px-2 py-1 text-lg font-medium',
+      trend === 'increased'
+        ? 'bg-green-50 text-green-700 dark:bg-green-500/10 dark:text-green-400'
+        : trend === 'decreased'
+        ? 'bg-red-50 text-red-700 dark:bg-red-500/10 dark:text-red-400'
+        : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
+    ]"
+  >
+    {{ `${growth}` }}
+  </span>
+</div>
 
-      </div>
 
-      <div class="h-10 w-px bg-gray-300"></div>
+      <div class="h-10 w-px bg-gray-300 "></div>
 
-      <div>
-        <p class="mb-1 text-gray-500 text-theme-xs dark:text-gray-400 sm:text-lg">Evaluation Submitted</p>
-        <span
-        :class="[
-          'flex items-center gap-1 rounded-full px-3 py-1 text-lg font-medium',
-          trend === 'increased'
-            ? 'bg-green-50 text-green-700 dark:bg-green-500/10 dark:text-green-400'
-            : trend === 'decreased'
-            ? 'bg-red-50 text-red-700 dark:bg-red-500/10 dark:text-red-400'
-            : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
-        ]"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-4 h-4"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            :d="trendUser === 'increased'
-              ? 'M5 10l7-7m0 0l7 7m-7-7v18'
-              : trendUser === 'decreased'
-              ? 'M19 14l-7 7m0 0l-7-7m7 7V3'
-              : ''"
-          />
-        </svg>
-        {{ `${growth}` }}
-      </span>
+      <div class="flex flex-col items-center justify-center">
+  <p class="mb-1 text-gray-500 text-theme-xs text-center dark:text-gray-400 sm:text-lg">
+    Evaluation Submitted
+  </p>
+  <span
+    :class="[
+      'bg-gray-300 flex items-center justify-center gap-1 rounded-full px-3 py-1 text-lg font-medium',
+      trend === 'increased'
+        ? 'bg-green-50 text-green-700 dark:bg-green-500/10 dark:text-green-400'
+        : trend === 'decreased'
+        ? 'bg-red-50 text-red-700 dark:bg-red-500/10 dark:text-red-400'
+        : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
+    ]"
+  >
+    {{ `${growth}` }}
+  </span>
+</div>
 
-      </div>
     </div>
   </div>
 </template>

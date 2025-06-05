@@ -185,6 +185,7 @@ const routes = [
         component : GlobalOverview,
         path : "/GlobalOverview",
     },
+    
     {
         name : "Signals",
         component : Signals,
@@ -258,9 +259,10 @@ const routes = [
         path : "/Personalized",
     },
     {
-        name : "SignalModal",
-        component : SignalEvaluationModal,
-        path : "/SignalModal",
+       path: '/SignalModal/:id',
+    name: 'SignalModal',
+    component: SignalEvaluationModal,
+    props: true
     },
     {
         name : "Solution",

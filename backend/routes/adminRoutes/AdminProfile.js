@@ -11,6 +11,6 @@ router.use(verifyRolee("admin"))
 //ne donne rien par front , id de jwt va passé directement a cette fonction , le lien est passé par back entant objet picture_URL
 router.get('/picture',verifyToken,AdminProfile.picture_controller);
 
-router.get('/personnal_information',verifyToken,AdminProfile.personnal_information_controller);
+// router.get('/personnal_information',verifyToken,AdminProfile.personnal_information_controller);
 
-module.exports = router;
+// module.exports = router;

@@ -73,15 +73,13 @@ const DashAdminRoute = require("./routes/adminRoutes/AdminDashboardRoute");
 app.use("/api/DashAdmin", DashAdminRoute)
 
 //PROFILE
-const ProfileAdminRoute = require("./routes/adminRoutes/AdminProfile");
-app.use("/api/ProfileAdmin", ProfileAdminRoute)
+// const ProfileAdminRoute = require("./routes/adminRoutes/AdminProfile");
+// app.use("/api/ProfileAdmin", ProfileAdminRoute)
 
 //Global Over View
 const EvaluationAdminRoute = require("./routes/adminRoutes/GlobalOverView_Route");
 app.use("/api/GlobalOverView", EvaluationAdminRoute)
 
-
-//Global Over View
 
 
 //prof_Evaluation history
@@ -111,12 +109,16 @@ const student_report = require("./routes/professorRoutes/student_report");
 app.use("/api/report", student_report)
 
 
+const dashstudent = require("./routes/studentRoutes/dashRoutes");
+app.use("/student/dashboard", dashstudent);
 
-const pool = require('./config/db');
+const prjectStudent = require("./routes/studentRoutes/projectRoute");
+app.use("/student/projects", prjectStudent);
 
-app.get('/testbackend',(req,res)=>{
-    res.send('connexion reussie to backend !! ');
-})
+const notifiRoute = require("./routes/studentRoutes/notifiRoute");
+app.use("/student/notifications", notifiRoute);
+
+
 
 /*
 app.listen(PORT, () => {
