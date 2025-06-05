@@ -1,7 +1,7 @@
 const JWT = require('jsonwebtoken');
 
 exports.verifyToken = (req, res, next) => {
-  const access_token = req.cookies.access_token || req.query.token;
+  const access_token = req.cookies.access_token || req.headers.authorization?.split(" ")[1] || req.query.token;
 
   if (!access_token) {
     return res.status(401).json({

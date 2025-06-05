@@ -1,6 +1,6 @@
 //auth.js 
 import { defineStore } from "pinia";
-import {ref, computed } from 'vue';
+import {ref, computed, resolveComponent } from 'vue';
 import api from '@/services/api';
 export const useAuthStore = defineStore('auth',() =>
     {
@@ -21,8 +21,9 @@ export const useAuthStore = defineStore('auth',() =>
         async function Login(email , password, RememberMe){
             loading.value = true
             try {
-                const response = await api.post('/api/auth/login', {email , password}); //api url !! //envoi de l'objet 
+                const response = await api.post('/api/auth/login', {email , password, RememberMe}); //api url !! //envoi de l'objet 
                 user.value = response.data?.user;
+                localStorage.setItem('username', response.data?.fullname);
                 error.value = null;
             } catch (err) {
                 error.value = err.response?.data?.message || 'Email or password incorrect'; // vérifier que l'api envoie un message

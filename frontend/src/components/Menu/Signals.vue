@@ -11,19 +11,7 @@
         </h1>
 
         <!-- Recherche -->
-        <div class="flex items-center gap-3">
-          <div class="relative w-[300px]">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 dark:text-gray-500">🔍</span>
-            <input
-              v-model="search"
-              placeholder="Search"
-              class="h-11 w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 py-2.5 pl-10 pr-4 text-sm text-gray-800 dark:text-white placeholder:text-gray-400 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-300"
-            />
-          </div>
-          <button class="px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md text-sm bg-white dark:bg-gray-800 text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-            Filters
-          </button>
-        </div>
+        
       </div>
 
       <!-- Tableau -->
@@ -31,9 +19,8 @@
         <table class="w-full text-sm bg-white dark:bg-gray-800 rounded shadow">
           <thead class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200">
             <tr>
-              <th class="p-3 text-left">Select</th>
+              
               <th class="p-3 text-left">Signal ID</th>
-              <th class="p-3 text-left">Reason</th>
               <th class="p-3 text-left">Reported By</th>
               <th class="p-3 text-left">Reported User</th>
               <th class="p-3 text-left">Signal State</th>
@@ -47,9 +34,7 @@
               :key="signal.id_signal"
               class="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
             >
-              <td class="p-3"><input type="checkbox" /></td>
               <td class="p-3">{{ signal.id_signal }}</td>
-              <td class="p-3">{{ signal.reason }}</td>
 
               <td class="p-3 flex items-center gap-2">
                 <img :src="signal.reporder_profile_picture_url" class="w-8 h-8 rounded-full object-cover" loading="lazy" />
@@ -89,13 +74,7 @@
       </div>
 
       <!-- Pagination -->
-      <div class="flex justify-between items-center py-4 text-sm text-gray-600 dark:text-gray-300">
-        <span>Page 1 of 10</span>
-        <div class="flex gap-2">
-          <button class="px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md">Previous</button>
-          <button class="px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md">Next</button>
-        </div>
-      </div>
+     
 
       <!-- Modal -->
       <SignalEvaluationModal v-if="showModal" :signal="selectedSignal" @fermer="showModal = false" />

@@ -142,6 +142,11 @@ const routes = [
         meta :{DoNotrequiresAuth: true}
     },
     {
+        name: "AddSupervisorModal ",
+        component: AddSupervisorModal ,
+        path:"/AddSupervisorModal",
+    },
+    {
         name: "Skills",
         component: Skills,
         path:"/Skills",

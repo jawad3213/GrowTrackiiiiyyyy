@@ -7,32 +7,43 @@ const {Authlimiter} = require('../middlewares/Limiter')
 
 exports.Login =
 async (req , res) =>{
-  const {password, email} = req.body;
+  const {password, email, RememberMe} = req.body;
+  const cookieOptions = {
+  httpOnly: true,
+  secure: false, // Change to true when HTTPS is ready 
+  sameSite: 'Strict',
+};
   try {
       const user = await authModel.LoginModel(email, password);
       if(user){
           Authlimiter.resetKey(req.ip);
           const Access_Token = JWT.sign(
-            { id: user.id_member, role: user.role, fullname: user.fullname },
+            { id: user.id_member, role: user.role, fullname: user.full_name },
             process.env.ACCESS_SECRET,
             { expiresIn: '15m'})
         const refresh_token = JWT.sign(
             {id: user.id_member, type:"refresh"}
             ,process.env.REFRESH_SECRET,
             { expiresIn: '7d'})
+            if(RememberMe){ // Normal Cookies with expiration
+                res.cookie("access_token", Access_Token,{
+                    ...cookieOptions,
+                    maxAge:  15 * 60 * 1000,
+                });
+                res.cookie("refresh_token", refresh_token,{
+                    ...cookieOptions,
+                    maxAge: 7 * 24 * 60 * 60 * 1000,
+                });
+            }else { // Session Cookies, cleared when the session is closed 
+              res.cookie("access_token", Access_Token,{
+                    ...cookieOptions
+                });
+                res.cookie("refresh_token", refresh_token,{
+                    ...cookieOptions
+                });
+            }
   
-            res.cookie("access_token", Access_Token,{
-                httpOnly: true,
-                secure:false,
-                sameSite:"strict"
-            });
-            res.cookie("refresh_token", refresh_token,{
-                httpOnly: true,
-                secure:false,
-                sameSite:"strict"
-            });
-  
-          return res.status(200).json({message: "Connected Successfully !"});
+          return res.status(200).json({message: "Connected Successfully !" ,Access_Token, refresh_token, email: user.email, fullname: user.full_name});
       }else{
           return res.status(401).json({message: "Email or Password is incorrect"})
       }
@@ -44,7 +55,7 @@ async (req , res) =>{
 
 
 exports.RefreshToken = async (req, res) => {
-    const refresh_token = req.cookies.refresh_token;
+    const refresh_token = req.cookies.refresh_token || req.headers.authorization?.split(" ")[1];
     if (!refresh_token) {
       return res.status(401).json({ message: "No token refresh was found, Please login again!" });
     }
@@ -105,46 +116,46 @@ const transporter = nodemailer.createTransport({
     }
   });
 
+  
+
 exports.ResetPass = 
-    async (req,res)=>{
-        const {email} = req.body;
-        try {
-        const user = await authModel.FindUserByEmail(email);
-            if(!user) {return res.status(400).json({ message: "User not found with this email ❌" });}
-            else {
-                const Reset_Token = JWT.sign(
-                    { id: user.id_member, role: user.role, fullname: user.fullname},
-                    process.env.ACCESS_SECRET,
-                    { expiresIn: '15m'})
+  async (req,res)=>{
+      const {email} = req.body;
+      try {
+      const user = await authModel.FindUserByEmail(email);
+          if(!user) {return res.status(400).json({ message: "User not found with this email ❌" });}
+          else {
+              const Reset_Token = JWT.sign(
+                  { id: user.id_member},
+                  process.env.RESET_SECRET,
+                  { expiresIn: '15m'})
+          
+                  const resetLink = `http://localhost:5173/resetpass?token=${Reset_Token}`;
+                  const mailOptions = {
+              from: process.env.EMAIL_USER,
+              to: email,
+              subject: "Password Reset Request 🔒",
+              html: `
+                <h2>Password Reset</h2>
+                <p>Click the link below to reset your password:</p>
+                <a href="${resetLink}">Reset My Password</a>
+                <p>This link will expire in 15 minutes.</p>
+              `
+            };
             
-                    const resetLink = `http://localhost:5173/resetpass?token=${Reset_Token}`;
-                    const mailOptions = {
-                from: process.env.EMAIL_USER,
-                to: email,
-                subject: "Password Reset Request 🔒",
-                html: `
-                  <h2>Password Reset</h2>
-                  <p>Click the link below to reset your password:</p>
-                  <a href="${resetLink}">Reset My Password</a>
-                  <p>This link will expire in 15 minutes.</p>
-                `
-              };
-              
-              const sent = await transporter.sendMail(mailOptions);
-              
-              if (sent) {
-                return res.status(200).json({
-                  message: "A password reset email has been sent. Please check your inbox or spam folder ✅",
-                });
-            } else {
-                return res.status(500).json({ message: "Failed to send reset email " });
+            const sent = await transporter.sendMail(mailOptions);
+            
+            if (sent) {
+              return res.status(200).json({
+                message: "A password reset email has been sent. Please check your inbox or spam folder ✅",
+              });
             }
-        }
-        }
-         catch (error) {
-            console.log(error);
-            return res.status(500).json({message: "Server Error, Please try again later!"});
-        }
+      }
+      }
+       catch (error) {
+          console.log(error);
+          return res.status(500).json({message: "Server Error, Please try again later!"});
+      }
     }
 
 exports.ResetPassEmail= 
@@ -161,7 +172,7 @@ exports.ResetPassEmail=
         }
         } catch (error) {
             console.error(error);
-            return res.status(500).json({ message: "Interne Servel Error " });
+            return res.status(500).json({ message: "Internal Server Error " });
         }
     }
 

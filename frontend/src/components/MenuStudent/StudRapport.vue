@@ -1,21 +1,14 @@
 <template>
-   <StudentLayout>
-  <div ref="reportContent" class="p-10 bg-white min-h-screen font-inter">
-  <div class="max-w-10xl mx-auto">
-
-    <div class="flex justify-between items-center mb-10">
-        <h1 class="text-3xl font-bold">
-            Student <span class="bg-purple-600 text-white px-2 rounded">Report</span>
-        </h1>
-        <button @click="downloadPdf" class="bg-orange-500 text-white px-8 py-2 rounded">
-            Download as PDF
-        </button>
-    </div>
+  <div ref="reportContent" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 font-inter">
+    <div class="bg-white w-[800px] max-h-[100vh] p-6 rounded-xl shadow-xl overflow-y-auto">
+      <h1 class="text-6xl font-bold text-center mb-15">
+        Student <span class="bg-purple-600 text-white px-2 rounded">Report</span>
+      </h1>
 
       <!-- Profile Section -->
       <details class="mb-4">
         <summary class="bg-purple-200 px-4 py-2 font-semibold text-xl rounded cursor-pointer">Profile Section</summary>
-        <div class="mt-10 mb-10 ml-10 text-2xl">
+        <div class="mt-10 ml-10 text-2xl">
           <p><strong>Student full name:</strong> {{ profile.name }}</p>
           <p><strong>CNE:</strong> {{ profile.cne }}</p>
           <p><strong>Level:</strong> {{ profile.level }}</p>
@@ -35,7 +28,7 @@
 
           <!-- Skills Average Table -->
           <h4 class="font-bold text-2xl mb-4 mt-8">Skill Evaluation:</h4>
-           <table class="w-full mb-10 border text-lg text-center">
+           <table class="w-full border text-lg text-center">
             <thead class="bg-gray-100">
               <tr>
                 <th class="p-2">Date</th>
@@ -51,7 +44,21 @@
               </tr>
             </tbody>
           </table>
-          
+          <!-- Source Pie Chart Placeholder -->
+          <h4 class="font-bold text-2xl mt-4">Evaluation Sources:</h4>
+          <div class="relative max-h-[195px]">
+            <div id="chartTwo" class="h-full">
+              <div class="radial-bar-chart">
+                  <VueApexCharts
+                    width="400"
+                    type="pie"
+                    :options="chartOptions"
+                    :series="chartSeries"
+                  />
+                  
+              </div>
+            </div>
+          </div>
 
         </div>
       </details>
@@ -60,7 +67,7 @@
       <details class="mb-4">
         <summary class="bg-purple-200 px-4 py-2 font-semibold text-xl rounded cursor-pointer">Signal Section</summary>
         <div class="mt-10 mb-10">
-          <table class="w-full text-lg border">
+          <table class="w-full text-sm border">
             <thead class="bg-gray-100">
               <tr>
                 <th class="p-2">Date</th>
@@ -69,7 +76,6 @@
                 <th class="p-2">Signal Status</th>
                 <th class="p-2">Solution Status</th>
                 <th class="p-2">Solution Taken</th>
-                <th class="p-2">Coach name</th>
               </tr>
             </thead>
             <tbody>
@@ -77,20 +83,9 @@
                 <td class="p-2">{{ sig.date }}</td>
                 <td class="p-2">{{ sig.reporter }}</td>
                 <td class="p-2">{{ sig.role }}</td>
-
-                <td class="p-2">
-                <span :class="getStatusClass(sig.status)">
-                    {{ sig.status }}
-                </span>
-                </td>
-                <td class="p-2">
-                <span :class="getSolutionClass(sig.solution)">
-                    {{ sig.solution }}
-                </span>
-                </td>
-
+                <td class="p-2">{{ sig.status }}</td>
+                <td class="p-2">{{ sig.solution }}</td>
                 <td class="p-2">{{ sig.solutionTaken }}</td>
-                <td class="p-2">{{ sig.coachName }}</td>
               </tr>
             </tbody>
           </table>
@@ -111,21 +106,32 @@
       </details>
 
       <!-- Actions -->
-      
+      <div class="flex justify-between mt-10">
+        <button @click="goBack" class="bg-gray-200 px-6 py-4 rounded">Back</button>
+        <button @click="downloadPdf" class="bg-orange-500 text-white px-8 py-4 rounded">Download as PDF</button>
+      </div>
     </div>
   </div>
-  </StudentLayout>
 </template>
 
 <script setup>
-import StudentLayout from '../layout/StudentLayout.vue'
 import { ref, onMounted, computed } from 'vue'
-import api from '../../services/api'
-import { useRouter } from 'vue-router'
+  import { useRouter, useRoute } from 'vue-router'
+import api from '@/services/api'
 import html2pdf from 'html2pdf.js'
-
 import VueApexCharts from 'vue3-apexcharts'
+import { useAuthStore } from '@/stores/auth'
 
+const route = useRoute()
+const studentId = useAuthStore().ID 
+
+
+if (route.query.id) {
+  studentId.value = route.query.id
+}
+    console.log('studentId:', studentId.value)
+
+    
 // 🧭 Navigation
 const router = useRouter()
 const reportContent = ref(null)
@@ -135,10 +141,7 @@ const reportContent = ref(null)
 const joinedProjects = computed(() => profile.value.projects?.join(', ') || 'No projects')
 const profile = ref({
   name: '',
-  cne: '',
-  level: '',
-  field: '',
-  projects: []
+ 
 })
 
 // 🔸 Évaluations par date et par compétence
@@ -166,41 +169,53 @@ const comments = ref({})
 // 🟡 Initialisation des données
 onMounted(async () => {
   try {
-    // 1. Évaluations compétences par date
-    const evalRes = await api.get('http://localhost:3001/skillEvaluations')
-    evaluations.value = evalRes.data
+    // 1. Profile
+    const token = localStorage.getItem('token');
+    const response = await api.get(`/api/report/profile_section/${studentId.value}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = response.data.result || [];
+    if (data.length > 0) {
+      profile.value = {
+        name: data[0].full_name,
+        cne: data[0].cne,
+        level: data[0].id_sector,
+        field: data[0].id_class,
+        projects: Array.isArray(data[0].id_project) ? data[0].id_project : [data[0].id_project]
+      }
+    }
 
-    // 2. Graphique sources d'évaluations
-    const { data: pieData } = await api.get('http://localhost:3001/evaluationSources')
-    console.log('soukaina')
-    chartOptions.value.labels = Object.keys(pieData)
-    chartSeries.value = Object.values(pieData)
+    // 2. Evaluations
+    const { data: evalData } = await api.get(`/api/report/Evaluation_Section/${studentId.value}`)
+    evaluations.value = (evalData.skill_evaluation || []).map(e => ({
+      date: e.date,
+      skill: e.skill_name,
+      ratings: [e.note_skill]
+    }))
+    evaluations.completed = evalData.completed
+    evaluations.received = evalData.received
+    evaluations.average = evalData.average_score
+    chartOptions.value.labels = (evalData.evaluation_sources || []).map(e => e.type_evaluation)
+    chartSeries.value = (evalData.evaluation_sources || []).map(e => e.count)
 
     // 3. Signaux
-    const { data: signalData } = await api.get('http://localhost:3001/signals')
-    signals.value = signalData.map(s => ({    //on transforme ses données en un nouvel objet
-      date: new Date(s.date).toLocaleDateString(),
-      reporter: s.reporter,
+    const { data: signalData } = await api.get(`/api/report/Signal_History/${studentId.value}`)
+    signals.value = signalData.map(s => ({
+      date: new Date(s.date_add).toLocaleDateString(),
+      reporter: s.full_name,
       role: s.role,
-      status: s.state,
-      solution: s.solution,
-      solutionTaken: s.solution_taken,
-      coachName: s.Coach_name
+      status: s.signal_state,
+      solution: s.id_solution,
+      solutionTaken: s.solution_state
     }))
 
     // 4. Commentaires
-    const { data: commentData } = await api.get('http://localhost:3001/comments')
-    comments.value = commentData.reduce((acc, c) => {
-      if (!acc[c.role]) acc[c.role] = []
-      acc[c.role].push(c.text)
-      return acc
-    }, {})
-
-    //profile
-    const res = await api.get('http://localhost:3001/ProfileStudents')
-    console.log('hello guys')
-    profile.value = res.data[0] || {}
-
+    const { data: commentData } = await api.get(`/api/report/Comment_Section/${studentId.value}`)
+    comments.value = {
+      professor: (commentData.professor || []).map(c => c.comment_evaluation),
+      supervisor: (commentData.supervisor || []).map(c => c.comment_evaluation),
+      student: (commentData.student || []).map(c => c.comment_evaluation)
+    }
   } catch (error) {
     console.error("❌ Erreur chargement données:", error)
   }
@@ -235,8 +250,6 @@ const downloadPdf = () => {
   html2pdf().from(reportContent.value).save('Rapport.pdf')
   console.log('hello hassan')
 }
-
-
 
 // pour les couleurs metionnee dans le tableau
 const getStatusClass = (status) => {

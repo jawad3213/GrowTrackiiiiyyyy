@@ -54,7 +54,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import axios from 'axios'
+import api from '@/services/api'
 
 const route = useRoute()
 const router = useRouter()
@@ -64,17 +64,26 @@ const solution = ref(null)
 
 const fetchSolution = async () => {
   try {
-    const response = await axios.get(`http://localhost:3001/solutions?signalId=${Number(route.query.id)}`)
-    console.log('données recues ',response.data)
-    if (response.data.length > 0) {
-      solution.value = response.data[0] //donne le premier (et souvent seul) objet correspondant à ce signal.
+    const token = localStorage.getItem('token')
+    const response = await api.get(
+      `/api/signal_history/view_solution/${Number(route.query.id)}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
+    console.log('données recues ', response.data)
+    if (Array.isArray(response.data) && response.data.length > 0) {
+      const s = response.data[0]
+      solution.value = {
+        solutionType: s.solution_type,
+        coachName: s.coach_name,
+        details: s.solution_details,
+        startDate: s.start_date ? new Date(s.start_date).toLocaleDateString() : '',
+        endDate: s.date_done ? new Date(s.date_done).toLocaleDateString() : ''
+      }
     } else {
-      // Aucune solution trouvée → redirige vers page d'erreur
       router.push('/SolutionError')
     }
   } catch (err) {
     console.error('Erreur API :', err)
-    // Erreur serveur → redirige aussi
     router.push('/SolutionError')
   }
 }

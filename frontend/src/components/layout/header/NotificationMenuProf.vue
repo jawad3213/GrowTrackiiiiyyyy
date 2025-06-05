@@ -74,7 +74,7 @@
       </ul>
 
       <!-- Voir tout -->
-      <router-link to="/ProfNotif"
+      <router-link to="/Notification"
         class="mt-4 block text-center rounded-lg border border-gray-300 bg-white py-2 text-sm font-medium text-gray-700 shadow hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-white/[0.03] dark:hover:text-white"
         @click="closeDropdown">
         View All Notifications
@@ -108,7 +108,7 @@ const handleClickOutside = (event) => {
 }
 
 const goToNotifPage = (notif) => {
-  router.push({ name: 'ProfNotif', query: { focus: notif.id } })
+  router.push({ name: 'Notification', query: { focus: notif.id } })
   closeDropdown()
 }
 
