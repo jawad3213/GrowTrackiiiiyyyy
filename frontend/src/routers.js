@@ -185,6 +185,7 @@ const routes = [
         component : GlobalOverview,
         path : "/GlobalOverview",
     },
+    
     {
         name : "Signals",
         component : Signals,

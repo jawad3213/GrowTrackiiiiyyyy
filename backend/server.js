@@ -109,6 +109,15 @@ const student_report = require("./routes/professorRoutes/student_report");
 app.use("/api/report", student_report)
 
 
+const dashstudent = require("./routes/studentRoutes/dashRoutes");
+app.use("/student/dashboard", dashstudent);
+
+const prjectStudent = require("./routes/studentRoutes/projectRoute");
+app.use("/student/projects", prjectStudent);
+
+const notifiRoute = require("./routes/studentRoutes/notifiRoute");
+app.use("/student/notifications", notifiRoute);
+
 
 
 app.listen(PORT, () => {

@@ -35,7 +35,7 @@
             <div>
               <label class="font-medium text-sm text-gray-700">Reported By</label>
               <input
-                :value="signalData.reported_by || ''"
+                :value="signalData.reporter_name|| ''"
                 readonly
                 class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm bg-gray-100"
               />
@@ -55,7 +55,7 @@
             <div>
               <label class="font-medium text-sm text-gray-700">Reported User</label>
               <input
-                :value="signalData.reported_user || ''"
+                :value="signalData.reported_name || ''"
                 readonly
                 class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm bg-gray-100"
               />
@@ -84,7 +84,7 @@
           </div>
 
           <!-- Reason -->
-          <div>
+          <div> <label class="font-medium text-sm text-gray-700">Reason</label>
              <textarea
        readonly
          rows="4"
