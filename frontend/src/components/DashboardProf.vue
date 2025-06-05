@@ -27,9 +27,7 @@
     <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
       <thead class="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm">
         <tr>
-          <th class="p-4">
-            <input type="checkbox" class="rounded border-gray-300 dark:border-gray-600" />
-          </th>
+          
           <th class="text-left px-6 py-3">Full name</th>
           <th class="text-left px-6 py-3">Level</th>
           <th class="text-left px-6 py-3">Classe</th>
@@ -39,9 +37,7 @@
       </thead>
       <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-900 dark:divide-gray-700">
         <tr v-for="student in topStudents" :key="student.full_name" class="hover:bg-gray-50 dark:hover:bg-gray-800">
-          <td class="p-4">
-            <input type="checkbox" class="rounded border-gray-300 dark:border-gray-600" />
-          </td>
+          
           <td class="px-6 py-4 flex items-center gap-3">
             <img :src="student.profile_picture_url || student.profile_picture" alt="avatar" class="w-10 h-10 rounded-full object-cover" />
             <div>
