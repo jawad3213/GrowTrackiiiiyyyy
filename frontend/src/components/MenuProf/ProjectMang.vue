@@ -36,7 +36,7 @@
             >
               <td class="p-3">
                 <div class="font-medium">{{ project.name_project }}</div>
-                <div class="text-xs text-gray-500 dark:text-gray-400">{{ project.id }}</div>
+                <div class="text-xs text-gray-500 dark:text-gray-400">{{ project.id}}</div>
               </td>
               <td class="p-3">{{ project.level }}</td>
               <td class="p-3">{{ project.date_project }}</td>
@@ -63,7 +63,7 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 const projects = ref([]);
  const errorMessage = ref('')
-
+//affichage de all project
 const fetchProjects = async () => {
   try {
     const token = localStorage.getItem('token');
@@ -92,14 +92,16 @@ const fetchProjects = async () => {
     }
   }
 };
-
+//delete project not working
 const confirmDelete = async (id) => {
   if (confirm('Voulez-vous vraiment supprimer ce projet ?')) {
     try {
-      const token = localStorage.getItem('token');
-      await api.delete(`/api/prof_project_management/delete_project/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      // console.log('Suppression projet ID:', id);
+      // const token = localStorage.getItem('token');
+      console.log('oue')
+      await api.delete(`/api/prof_project_management/delete_project/${id}`)
+      console.log('oue')
+      
       projects.value = projects.value.filter((p) => p.id !== id);
     } catch (error) {
       console.error('Erreur de suppression:', error);
@@ -107,6 +109,8 @@ const confirmDelete = async (id) => {
     }
   }
 };
+
+
 
 const editProject = (project) => {
   router.push({ path: '/AddProject', query: { id: project.id } });

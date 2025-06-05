@@ -33,38 +33,64 @@
     </div>
   </template>
   
-  <script setup>
-import { ref } from 'vue'
+ <script setup>
+import { ref, onMounted, watch } from 'vue'
 import VueApexCharts from 'vue3-apexcharts'
+import api from '@/services/api'
 
 const classes = ['Classe1', 'Classe2', 'Classe3', 'Classe4']
 const selectedClasse = ref(0)
-
-const dataParClasse = [
-  // Classe 1
-  [160, 390, 200, 290, 180, 190, 280, 100, 210, 390, 270, 100, 95, 110, 215, 185, 295, 175, 105, 385, 115, 225, 285, 235, 275, 105, 115, 275, 385, 95],
-  // Classe 2
-  [120, 200, 150, 210, 140, 160, 200, 90, 180, 250, 230, 90, 85, 100, 190, 170, 240, 150, 95, 270, 100, 210, 240, 210, 240, 100, 100, 240, 270, 80],
-  // Classe 3
-  [100, 170, 130, 190, 130, 140, 180, 85, 160, 220, 210, 80, 80, 90, 170, 150, 200, 130, 90, 240, 90, 180, 200, 190, 210, 90, 95, 200, 250, 75],
-  // Classe 4
-  [90, 150, 120, 170, 110, 130, 160, 75, 140, 200, 190, 70, 70, 80, 150, 130, 180, 110, 85, 220, 80, 160, 180, 170, 190, 80, 85, 180, 230, 65],
-]
-
 const series = ref([
   {
     name: 'Evaluations',
-    data: dataParClasse[0]
+    data: []
   }
 ])
 
+// Simulation des IDs de classe correspondants
+const classIds = [1, 2, 3, 4]
+
+// On suppose que "month" = mois actuel 
+ const currentMonth = new Date().getMonth() + 1
+
+const fetchData = async () => {
+  try {
+    const classId = classIds[selectedClasse.value]
+    const response = await api.get(`http://localhost:3000/prof/dashboard/dailyevaluation`, {
+      params: {
+        classId,
+        month: currentMonth
+      }
+    })
+
+    console.log('Données reçues:', response.data)
+
+    // Extraire uniquement les totaux pour ApexCharts
+    const data = response.data.map(item => item.total)
+
+    series.value = [{
+      name: 'Evaluations',
+      data: data
+    }]
+  } catch (error) {
+    console.error('Erreur lors de la récupération des données:', error)
+  }
+}
+
+
+// Appel initial
+onMounted(fetchData)
+
+
+
 const selectClasse = (index) => {
   selectedClasse.value = index
-  series.value = [{
-    name: 'Evaluations',
-    data: dataParClasse[index]
-  }]
 }
+
+
+// Appel à chaque changement de classe
+watch(selectedClasse, fetchData)
+
 
 const chartOptions = ref({
   colors: ['#692CF3'],

@@ -213,6 +213,7 @@ function closeModal() {
 
 const errors = ref({})
 
+
 async function submitForm() {
   const sanitizedData = formStore.sanitizeInputs(prof.value)
 

@@ -247,58 +247,54 @@ const closeModal = () => {
 
 const submitForm = async () => {
   try {
-    if (!form.value.name || !form.value.month_start || !form.value.month_number || !form.value.level || !form.value.field) {
+    const { name, month_start, month_number, description, level, field, groups } = form.value;
 
-      return;
-    }
+    // Validation des champs requis
+    if (!name || !month_start || !month_number || !level || !field) return;
 
+    // Construction du payload avec transformation de la date
     const payload = {
-      name: form.value.name,
-      // Convert YYYY-MM to MM/YYYY
-      month_start: (() => {
-        const [year, month] = form.value.month_start.split('-');
-        return `${month}/${year}`;
-      })(),
-      month_number: form.value.month_number,
-      description: form.value.description,
-      level: form.value.level,
-      field: form.value.field,
+      name,
+      month_start: month_start.split('-').reverse().join('/'), // MM/YYYY
+      month_number,
+      description,
+      level,
+      field,
     };
 
     const token = localStorage.getItem('token');
-    let newProjectId;
+    const headers = { Authorization: `Bearer ${token}` };
+
+    // Création ou mise à jour du projet
+    
     if (!projectId.value) {
-      const response = await api.post('/api/prof_project_management/add_project', payload, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      newProjectId = response.data.result.id_project;
-      if (form.value.groups.length > 0) {
-        for (const group of form.value.groups) {
-          const groupResponse = await api.post(
-            `/api/prof_project_management/add_group/${newProjectId}`,
-            { name: group.name },
-            { headers: { Authorization: `Bearer ${token}` } }
-          );
-          group.id_group = groupResponse.data.result.id_group;
-        }
-        localStorage.setItem(`groups_${newProjectId}`, JSON.stringify(form.value.groups));
-      }
-    } else {
-
-      await api.patch(`/api/prof_project_management/project/${projectId.value}`, payload, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      console.warn('Project update not supported by backend');
+      console.log('hello')
+      const { data } = await api.post(`/api/prof_project_management/add_project`, payload, { headers });
       
-      return;
+      const newProjectId = data.result.id_project;
+
+      // Ajout des groupes s'ils existent
+      // if (groups?.length) {
+      //   for (const group of groups) {
+      //     const res = await api.post(
+      //       `/api/prof_project_management/add_group/${newProjectId}`,
+      //       { name: group.name },
+      //       { headers }
+      //     );
+      //     group.id_group = res.data.result.id_group;
+      //   }
+      //   localStorage.setItem(`groups_${newProjectId}`, JSON.stringify(groups));
+      // }
+    } else {
+      await api.patch(`/api/prof_project_management/update_project/${projectId.value}`, payload, { headers });
     }
+
     router.push('/ProjectMang');
   } catch (error) {
-    console.error('Erreur lors de la création du projet :', error);
-    
+    console.error('Erreur lors de la soumission du formulaire :', error);
   }
 };
+
 
 const editGroup = (group, index) => {
   router.push({

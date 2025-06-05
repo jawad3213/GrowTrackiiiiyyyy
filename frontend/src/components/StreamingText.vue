@@ -6,7 +6,7 @@
 
 <script>
 import { onMounted, ref, watch, nextTick } from 'vue'
-import gsap from 'gsap'
+//import gsap from 'gsap'
 
 export default {
   props: {

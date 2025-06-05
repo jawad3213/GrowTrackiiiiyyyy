@@ -134,8 +134,8 @@ export default {
       team: [
         {
           name: 'Fairadi Ihssane',
-          position: 'Founder & CEO',
-          bio: 'Former co-founder of Opendoor. Early staff at Spotify and Clearbit.',
+          position: 'Project Manager',
+          bio: 'Passionate about project management and team collaboration.',
           image: 'jaouad',
           linkedin: 'https://linkedin.com/in/oliviarhye',
         },

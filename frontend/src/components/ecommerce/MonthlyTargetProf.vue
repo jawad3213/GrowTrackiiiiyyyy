@@ -12,7 +12,7 @@
 Percentage of evaluations already submitted by the professor            </p>
           </div>
           <div>
-            <DropdownMenu :menu-items="menuItems">
+             <DropdownMenu :menu-items="menuItems">
               <template #icon>
                 <svg
                   width="24"
@@ -29,13 +29,14 @@ Percentage of evaluations already submitted by the professor            </p>
                   />
                 </svg>
               </template>
-            </DropdownMenu>
+              </DropdownMenu>
+            
           </div>
         </div>
         <div class="relative max-h-[195px]">
           <div id="chartTwo" class="h-full">
             <div class="radial-bar-chart">
-              <VueApexCharts type="radialBar" height="330" :options="chartOptions" :series="series" />
+              <VueApexCharts type="radialBar" height="330" :options="chartOptions" :series="[total]" />
             </div>
           </div>
           
@@ -46,7 +47,7 @@ Percentage of evaluations already submitted by the professor            </p>
   <!-- Colonne 1 -->
   <div class="flex-1 px-6 py-5">
     <p class="text-gray-500 dark:text-gray-400 mb-1">Evaluation assigned</p>
-    <p class="text-xl font-bold text-gray-900 dark:text-white">300</p>
+    <p class="text-xl font-bold text-gray-900 dark:text-white">{{ assignedEval }}</p>
   </div>
 
   <!-- Trait vertical -->
@@ -55,7 +56,7 @@ Percentage of evaluations already submitted by the professor            </p>
   <!-- Colonne 2 -->
   <div class="flex-1 px-6 py-5">
     <p class="text-gray-500 dark:text-gray-400 mb-1">Evaluation Submitted</p>
-    <p class="text-xl font-bold text-gray-900 dark:text-white">200</p>
+    <p class="text-xl font-bold text-gray-900 dark:text-white">{{submittedEval}}</p>
   </div>
 </div>
 
@@ -64,22 +65,50 @@ Percentage of evaluations already submitted by the professor            </p>
   </template>
   
   <script setup lang="ts">
-  import { ref, computed } from 'vue'
-  import DropdownMenu from '@/components/common/DropdownMenu.vue'
-  const menuItems = [
-    { label: 'View More', onClick: () => console.log('View More clicked') },
-    { label: 'Delete', onClick: () => console.log('Delete clicked') },
-  ]
-  import VueApexCharts from 'vue3-apexcharts'
   
-  const props = defineProps({
-    value: {
-      type: Number,
-      default: 75.55,
-    },
-  })
-  
-  const series = computed(() => [props.value])  //responsible for showing 75.55%
+import VueApexCharts from 'vue3-apexcharts'
+import api from '@/services/api'
+import { ref, onMounted, computed } from 'vue'
+import { useAuthStore } from '@/stores/auth'
+
+const auth = useAuthStore()
+
+const assignedEval= ref(0)
+const submittedEval = ref(0)
+
+
+const menuItems = [
+  { label: 'Edit', action: () => {} },
+  { label: 'Delete', action: () => {} }
+]
+
+
+
+
+onMounted(async () => {
+  try {
+    // API 1 : Récupération evalua assigned
+    const currentRes = await api.get(`http://localhost:3000/prof/dashboard/students/${auth.ID}`)
+    assignedEval.value = currentRes.data.total
+    console.log(assignedEval.value)
+
+    // API 2 : Récupération evalu submmi
+    const diffRes = await api.get(`http://localhost:3000/prof/dashboard/evaluationprof/${auth.ID}`)
+    submittedEval.value = parseInt(diffRes.data.total["LES EVALUATIONS DE CE MOIS-CI"]);
+
+
+  } catch (error) {
+    console.error('Erreur lors des appels API :', error)
+  } 
+})
+
+
+
+const total = computed(() => {
+  if (assignedEval.value === 0) return 0
+  return (submittedEval.value / assignedEval.value) * 100
+})
+
   
   const chartOptions = {
     colors: ['#692CF3'],
@@ -128,11 +157,5 @@ Percentage of evaluations already submitted by the professor            </p>
   }
   </script>
   
-  <style scoped>
-  .radial-bar-chart {
-    width: 100%;
-    max-width: 330px;
-    margin: 0 auto;
-  }
-  </style>
+  
   

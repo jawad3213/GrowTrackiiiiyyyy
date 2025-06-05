@@ -212,6 +212,7 @@ const routes = [
         component : AddProfessorModal,
         path : "/AddProfessor",
     },
+    
     {
         name : "AddSkill",
         component : AddSkill,
