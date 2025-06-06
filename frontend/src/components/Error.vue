@@ -50,7 +50,16 @@ export default {
   name: "Unauthorized401",
 };
 </script>
+<script setup>
+import { useAuthStore } from '@/stores/auth';
+import router from '@/routers';
+const auth = useAuthStore()
+auth.checkAuth();
+if(!auth.errorMsg){
+  router.push('/login')
+}
 
+</script>
 <style>
 /* ==================================================
    1) Slide‐down fade for the card (same as before)

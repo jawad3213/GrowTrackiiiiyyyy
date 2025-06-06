@@ -30,7 +30,6 @@
                 <th class="text-left p-3">Professor Name</th>
                 <th class="text-left p-3">Module Name</th>
                 <th class="text-left p-3">Groupe Name</th>
-                <th class="text-left p-3">Deadline for presentation</th>
                 <th class="text-left p-3">Members</th>
             </tr>
           </thead>
@@ -51,10 +50,10 @@
               <td class="p-3">{{ project.moduleName }}</td>
 
               <td class="p-3">{{ project.groupName }}</td>
-              <td class="p-3">{{ project.deadline }}</td>
-               <td class="p-3 text-purple-600 hover:underline cursor-pointer" @click="viewMembers(project.id)">
+               <td class="p-3 text-purple-600 hover:underline cursor-pointer" @click="ViewMembers(project.id)">
                  →
               </td>
+              <viewMembers />
               
             </tr>
           </tbody>
@@ -75,18 +74,21 @@
   
   <script setup>
   import { ref, computed, onMounted } from 'vue'
-  import axios from 'axios'
   import { useRouter } from 'vue-router'
-import StudentLayout from '@/components/layout/StudentLayout.vue'
+  import StudentLayout from '@/components/layout/StudentLayout.vue'
+  import viewMembers from '../viewMembers.vue'
+  import api from '@/services/api'
+  import { useAuthStore } from '@/stores/auth'
   
+  const authStore = useAuthStore();
   const router = useRouter()
   const projects = ref([])
   const search = ref('')
-  
   const fetchProjects = async () => {
     try {
-      const res = await axios.get('http://localhost:3001/studProjects')
-      projects.value = res.data
+      const res = await api.get(`/student/projects/all_projects/${authStore.ID}`)
+      projects.value = res.data.data
+      console.log(res.data.data)
     } catch (err) {
       console.error('Erreur chargement des projets  :', err)
     }
@@ -100,7 +102,7 @@ import StudentLayout from '@/components/layout/StudentLayout.vue'
     )
   )
   
-  function viewMembers(id){
+  function ViewMembers(id){
         router.push(`/viewMembers?id=${id}`)
   }
   

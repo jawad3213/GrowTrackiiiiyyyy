@@ -123,9 +123,9 @@ onUnmounted(() => {
 
 const fetchNotifications = async () => {
   try {
-    const res = await axios.get('http://localhost:3001/profNotifications')
-    notifications.value = res.data
-  } catch (err) {
+    //const res = await axios.get('http://localhost:3001/profNotifications')
+    //notifications.value = res.data
+  } catch (err) { 
     console.error('Erreur lors du chargement des notifications :', err)
   }
 }

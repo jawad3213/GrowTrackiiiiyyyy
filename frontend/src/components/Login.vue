@@ -110,7 +110,7 @@ const handlelogin = async () => {
     if (!store.errorMsg) {
       switch (store.Role) {
       case 'admin': router.push('/dashboard'); break;
-      case 'student' : router.push('/dashStudent'); break;
+      case 'student' : router.push('/dashstud'); break;
       case 'supervisor': router.push('/dashSupervisor'); break;
       case 'Professor' : router.push('/DashboardProf'); break;
       default:
@@ -128,7 +128,7 @@ onMounted(() => {
   if (store.isAuthenticated){
     switch (store.Role) {
       case 'admin': router.push('/dashboard'); break;
-      case 'student' : router.push('/dashStudent'); break;
+      case 'student' : router.push('/dashstud'); break;
       case 'supervisor': router.push('/dashSupervisor'); break;
       case 'Professor' : router.push('/DashboardProf'); break;
       default:

@@ -64,7 +64,6 @@ async (req , res) =>{
 
 
 exports.RefreshToken = async (req, res) => {
-  console.log('01')
     const refresh_token = req.cookies.refresh_token || req.body.refresh_token;
     if (!refresh_token) {
       return res.status(401).json({ message: "No token refresh was found, Please login again!" });
@@ -75,6 +74,8 @@ exports.RefreshToken = async (req, res) => {
       const RememberMe = decoded.RememberMe;
       const useCookies = req.headers['use-cookies'] === 'true';
       const user = await authModel.GetUserById(decoded.id);
+      console.log(decoded.id)
+      console.log(user)
       if (!user) {
         return res.status(400).json({ message: "Please log in" });
       }
