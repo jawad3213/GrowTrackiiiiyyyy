@@ -6,6 +6,17 @@ const api = axios.create({
   withCredentials: true 
 })
 
+api.interceptors.request.use(config => {
+  const token = localStorage.getItem('access_token'); // Works for both cases
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+},
+  (error) => {
+    return Promise.reject(error);
+  })
+
 api.interceptors.response.use(
   (response) => {
     // If the response is OK (status 200), just return it
@@ -20,19 +31,25 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       console.log("Begin of interceptor")
       const errorCode = error.response.data?.errorCode;
-
+      const CookiesAccepted = localStorage.getItem("cookiesAccepted");
       // ⿢ Only refresh if the errorCode is TOKEN_EXPIRED
-      if (errorCode === 'TOKEN_EXPIRED' || errorCode === 'NO_TOKEN') {
+      if (errorCode === 'TOKEN_EXPIRED' || errorCode === 'NO_TOKEN' || errorCode === 'INVALID_TOKEN') {
         originalRequest._retry = true; // Mark that we are retrying
         try {
-          // ⿣ Call the /refresh endpoint to get new tokens
-          await api.post('/api/auth/refresh');
-          // the new token is stored and sent automatically in the cookies
-          // ⿤ Retry the original request automatically
+          const refresh_token = localStorage.getItem('refresh_token');
+          if (!refresh_token) throw new Error('No refresh token');
+          const data = await api.post('/api/auth/refresh', { 
+          refresh_token: refresh_token }, {headers : {
+                    'use-cookies': CookiesAccepted
+                }});
+          localStorage.setItem('access_token', data.data?.access_token);
+          originalRequest.headers.authorization = `Bearer ${data.data?.access_token}`;
           return api(originalRequest);
         } catch (refreshError) {
           // ⿥ If refresh also fails, force user to login
           auth.isAuthenticated = false;
+          localStorage.removeItem('access_token');
+          localStorage.removeItem('refresh_token');
           return Promise.reject(refreshError);
         }
       }

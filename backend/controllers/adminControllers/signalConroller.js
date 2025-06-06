@@ -59,23 +59,35 @@ exports.getTotalSignals = async (req, res) => {
 
   
   exports.getSignalById = async (req, res) => {
-      const { id_signal } = req.params;
-    
-      try {
-        const result = await signalModel.getSignalById(id_signal);
-    
-        return res.status(200).json({
-            message: "signals retrieved successfully by id.",
-            data: result,
-          });
-      
-        } catch (error) {
-          console.error("Error retrieving signal by id:", error);
-          return res.status(500).json({
-            message: "Internal server error. Please try again later.",
-          });
-        }
+  try {
+    const signalId = parseInt(req.params.id_signal, 10);
+    if (Number.isNaN(signalId) || signalId <= 0) {
+      return res.status(400).json({ success: false, message: "id_signal invalide." });
+    }
+
+    // <-- ICI : on récupère directement l'objet ou null
+    const signal = await signalModel.getSignalById(signalId);
+
+    if (!signal) {
+      return res.status(404).json({ success: false, message: "Signal introuvable." });
+    }
+
+    const data = {
+      ...signal,
+      reporter_profile_picture_url : generateImageUrl(signal.reporter_picture),
+      reported_profile_picture_url : generateImageUrl(signal.reported_picture),
     };
+
+    return res.status(200).json({
+      success: true,
+      message: "Signal récupéré avec succès.",
+      data,
+    });
+  } catch (err) {
+    console.error("Error retrieving signal by id:", err);
+    return res.status(500).json({ success: false, message: "Erreur interne." });
+  }
+};
 
 exports.sendSolution = async (req,res ) => {
     const {option_solution ,details, name_coach,start_date,date_done} =  req.body;

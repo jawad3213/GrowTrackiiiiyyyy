@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 17.4
--- Dumped by pg_dump version 17.3
+-- Dumped from database version 17.5
+-- Dumped by pg_dump version 17.5
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -578,11 +578,11 @@ ALTER TABLE ONLY public.team ALTER COLUMN id_team SET DEFAULT nextval('public.te
 --
 
 COPY public.admin (id_member, assigned_zone) FROM stdin;
-M001	info
 M006	\N
 ADM001	Informatique et Systèmes
 ADM002	Filières Ingénierie
 ADM003	Sciences et Technologies
+M001	info
 \.
 
 
@@ -616,6 +616,10 @@ td3	2023-09-01	AP1
 td4	2023-09-01	AP2
 td5	2023-09-01	AP2
 td6	2023-09-01	AP2
+hello1	2025-05-31	Hello
+b4	2025-05-31	Hello
+GINF4	2025-05-31	AP3
+GINF5	2025-05-31	AP3
 \.
 
 
@@ -629,6 +633,7 @@ COPY public.coach (id_member, field) FROM stdin;
 COA001	Développement personnel
 COA002	Leadership
 COA003	Communication
+b1ac018d-8590-47cd-9d32-f9d7251b191c	GINF1
 \.
 
 
@@ -639,27 +644,9 @@ COA003	Communication
 COPY public.evaluations (id_evaluation, note_skill, skill_name) FROM stdin;
 1	8.2	Communication
 1	7.9	Teamwork
-1	9.1	Problem-solving
-7	8.5	Communication
-7	9	Teamwork
-7	7.5	Problem-solving
-7	8.3	Time Management
-7	8.8	Critical Thinking
-7	9.2	Creativity
-9	4.33	Communication
-9	4.67	Teamwork
-9	3.67	Problem-solving
-9	4	Time Management
-9	4.67	Critical Thinking
-9	4.33	Creativity
-10	4.33	Communication
-10	4.67	Teamwork
-10	3.67	Problem-solving
-10	4	Time Management
-10	4.67	Critical Thinking
-10	4.33	Creativity
+1	9.1	Problem-Solving
 2	6.7	Communication
-2	8.3	Problem-solving
+2	8.3	Problem-Solving
 3	9	Critical Thinking
 3	7.5	Time Management
 4	8.9	Teamwork
@@ -668,14 +655,20 @@ COPY public.evaluations (id_evaluation, note_skill, skill_name) FROM stdin;
 5	7.2	Time Management
 6	9.1	Teamwork
 6	8	Time Management
+7	7.6	Critical Thinking
+7	7.4	Time Management
 8	9.5	Critical Thinking
-8	8.7	Problem-solving
+8	8.7	Problem-Solving
+9	7.9	Teamwork
+9	8.1	Communication
+10	9.6	Communication
+10	9.2	Critical Thinking
 11	6.4	Time Management
 11	7	Creativity
 12	7.8	Communication
 12	8.6	Critical Thinking
 13	9.3	Critical Thinking
-13	7.7	Problem-solving
+13	7.7	Problem-Solving
 14	8.8	Time Management
 14	9.1	Critical Thinking
 15	8	Teamwork
@@ -699,7 +692,25 @@ COPY public.evaluations (id_evaluation, note_skill, skill_name) FROM stdin;
 24	8.7	Time Management
 24	6.5	Communication
 25	9.2	Critical Thinking
-25	8.5	Problem-solving
+25	8.5	Problem-Solving
+26	8.3	Communication
+26	7.9	Teamwork
+26	9.1	Problem-Solving
+26	8.5	Time Management
+26	9	Critical Thinking
+26	8.7	Creativity
+27	7.8	Communication
+27	8.4	Teamwork
+27	8.9	Problem-Solving
+27	9.2	Time Management
+27	9.4	Critical Thinking
+27	9	Creativity
+28	9	Communication
+28	8.1	Teamwork
+28	7.5	Problem-Solving
+28	8	Time Management
+28	8.6	Critical Thinking
+28	8.3	Creativity
 \.
 
 
@@ -708,7 +719,6 @@ COPY public.evaluations (id_evaluation, note_skill, skill_name) FROM stdin;
 --
 
 COPY public.follow_up (id_coach, id_student, id_solution, message, start_date, date_done) FROM stdin;
-4cf96e59-1cca-46b1-8cff-2bfa379b1e95	da93bdeb-a589-4bd3-9138-a207f691c62b	2	I recommend scheduling a session with a licensed psychologist 	2025-05-01	2025-06-15
 COA001	STU001	1	Séances hebdomadaires de tutorat en programmation	2023-10-20	2023-12-20
 COA002	STU004	2	Ateliers de renforcement en mathématiques deux fois par semaine	2023-11-25	2024-01-25
 COA003	STU011	3	Séances de gestion du stress et techniques de relaxation	2023-12-10	\N
@@ -748,28 +758,22 @@ COPY public.member (id_member, cin, phone, password, role, full_name, email, pro
 M002	CIN002	0600000002	$2b$10$lXwUpW569qS9f4ICGYeTnOwR0k5mDC16gw3dz86tY9ot9I4FTloNO	admin	Soukaina Elouansaidi	elouansaidisoukaina@gmail.com	soukaina.jpg	Admin secondaire	2025-05-03 15:54:01.377623
 M003	\N	\N	pass	student	\N	email	\N	\N	2025-05-03 20:03:51.815812
 P004	AA123456	0600123456	$2b$10$lXwUpW569qS9f4ICGYeTnOwR0k5mDC16gw3dz86tY9ot9I4FTloNO	Professor	Youssef El Fassi	youssef.fassi@example.com	youssef.jpg	Étudiant en génie informatique	2025-05-03 23:02:42.749681
-S100	ST123456	0611122233	hashed_pwd123	student	Imane Benali	imane.benali@example.com	imane.jpg	Étudiante en 1ère année GI	2025-05-03 23:26:53.03388
-1e6edf29-9b83-4080-9963-31e50ddf46a8	c1245	\N	$2b$10$z3R5A1GlxbfWQURN0KVyeOpbhYdiZr/hCn93GDbC21MZ4l2iqpkhO	Professor	ghailani	ghailani@gmail.com	uploads\\1746403702580-R.png	nouveau	2025-05-05 00:13:36.967843
-da93bdeb-a589-4bd3-9138-a207f691c62b	CIN653	\N	$2b$10$vMk20kgZwo4VYWZsAmxXo.FtuUN/joMukeTbetOAsBlT18qIsp2MK	student	hamza 	hamza@gamil.com	uploads\\1746404178323-R.png	nouveau 	2025-05-05 00:21:32.703476
 4cf96e59-1cca-46b1-8cff-2bfa379b1e95	AB12456	\N	$2b$10$FJiwb6rA8GbqWoz24Iu./uFosB7FLhamWkOp3AQZrSX9tCajyEEd.	coach	Omar Benjelloun	omar.benjelloun@example.com	\N	Professeur expérimenté en développement web.	2025-05-05 10:28:29.096535
-M001	CIN001	0600000001	$2b$10$lXwUpW569qS9f4ICGYeTnOwR0k5mDC16gw3dz86tY9ot9I4FTloNO	admin	Nada	eloukili.nada@etu.uae.ac.ma	nada.jpg	Admin principale	2025-05-03 15:54:01.377623
-6deb0e9a-200d-423a-96c4-0649010e17d6	CIN6532	\N	$2b$10$rB/UF.DwOA4rhWjSgCcvN.zRkLmOEIdGBZcetEnTXioZbWf1qTXA6	student	ossama 	ossama@gamil.com	uploads\\1746704568528-R.png	nouveau 	2025-05-08 11:40:25.011294
 7ba19de9-a3b5-45fc-b64b-bdb68799088e	CIN6590	\N	$2b$10$saf/DuMGWEMgTc92K28ui.ER7RrnFmSyg6mqmv5S9CFC6j5yfy2Dm	student	khaled 	khaled@gamil.com	\N	nouveau 	2025-05-08 11:54:10.880063
-30782994-9936-4ff4-bae6-044a99c0058d	CIN659	\N	$2b$10$.YxBonLT1QlOkKTYEn2nmO2e6FN5QLXX2dmJ36UYX5bnlpORdS7sW	student	haitam 	haitam@gamil.com	uploads\\1746704982700-R.png	nouveau 	2025-05-08 11:55:00.397432
-824d9206-2f74-47ce-a6d5-769e663fb2a2	CI659	\N	$2b$10$56bnTUQbMAPCYERwCIi9.O50ybJ9WGDPDl9M4ZJQVhz67NldVxkA.	student	aya 	aya@gamil.com	uploads\\1746705030610-R.png	nouveau 	2025-05-08 11:55:47.96035
 M006	\N	\N	1234	admin	hamza	hamza1@gmail.com	\N	\N	2025-05-11 20:56:23.183266
 1187420c-f668-4056-bde5-c13d30c67162	Kfdf	\N	$2b$10$Zk5CCoSfnPezqYlmU4W0IO.IZ.qKMkxGCQQfk3L4VISpRk4D4KfHK	student	Salman	salman@gmail.com	\N	Hello everyone	2025-05-13 00:45:25.111824
 fb594a87-e90e-4240-b3f4-7e4489577c9f	test	\N	$2b$10$m7ElqSfJknQ4GZEyJ9j1reSyKH0q8E0zi.ZyFxTUPXAGIgalwdCzO	student	Salman	helloi@gmail.com	\N	fdafdaf	2025-05-13 00:48:21.839506
 5942bf3a-a344-4515-a6f0-54c04f0ce750	K87785544	\N	$2b$10$Q706NBFT9bD9/NZG4uOXX.fuEUddVv0LMrbNeVjc/vvNwpoEc3aJO	student	Salman	salmanhello@gmail.com	\N	Hello	2025-05-13 12:00:52.331791
 bbed467a-f2b0-45f8-9c5d-8b1f5f8f8fc0	K877421311	\N	$2b$10$21Bes/i/h6IQlpKZ5s8ExeDiwBAXldLRKI6dExNZu5EQWMK51l2NG	student	Salman	salmanhello2313@gmail.com	\N	Hello	2025-05-13 12:02:50.672687
-5d262ff5-a0a4-41b6-a1b9-4ad022474fc3	K746302984	\N	$2b$10$w4pZpeyK2HAlHlnmvG6pw.XviuQullwlHV.tvnkg7UpsvO9.EIuzC	student	Salman	SalmanHellofkjdk@gmail.com	\N	fda	2025-05-13 12:05:01.111777
 14e80305-c60c-42e7-ab1b-625c34599455	K74302	\N	$2b$10$ufj/t9tb/bojmQczAZUBUeJCUeJ3B7XUjXteKfNlK0qR2gj6BLPzq	coach	Helo	elo@gmailc.oj	\N	jfkldja;l	2025-05-13 18:01:32.48775
-c01e7026-20df-49b5-aa54-df62b1b0771f	AB4444444	\N	$2b$10$2PNjO9Bl.a8HiqUkIZKdNO2lbTcmSl92gt54tSeNeUpw/.YZCyz36	Supervisor	Ali Ben Salah	ali.salah@example.com	uploads\\1746441778868-R.png	Projet très important pour le département IT.	2025-05-05 10:48:13.761072
 ADM001	AB123456	0661234567	$2a$10$abcdefghijklmnopqrstuv	admin	Karim Bensouda	karim.bensouda@univ.ma	profile_karim.jpg	Administrateur principal - Responsable informatique	2023-01-15 09:00:00
 ADM002	CD789012	0662345678	$2a$10$bcdefghijklmnopqrstuvw	admin	Samira Alaoui	samira.alaoui@univ.ma	profile_samira.jpg	Administratrice des affaires académiques	2023-01-20 10:30:00
 ADM003	EF345678	0663456789	$2a$10$cdefghijklmnopqrstuvwx	admin	Younes Kabbaj	younes.kabbaj@univ.ma	profile_younes.jpg	Administrateur des filières scientifiques	2023-02-01 08:45:00
-PRF001	GH901234	0664567890	$2a$10$defghijklmnopqrstuvwxy	Professor	Dr. Hassan Benjelloun	hassan.benjelloun@univ.ma	profile_hassan.jpg	Professeur en Informatique - Spécialiste en IA	2023-01-05 11:15:00
 PRF002	IJ567890	0665678901	$2a$10$efghijklmnopqrstuvwxyz	Professor	Dr. Fatima Zahra Mernissi	fatima.mernissi@univ.ma	profile_fatima.jpg	Professeure en Sciences de Données	2023-01-08 13:20:00
+S100	ST123456	0611122233	hashed_pwd123	student	Imane Benali Updated	imane.benali@example.com	imane.jpg	Étudiante en 1ère année GI	2025-05-03 23:26:53.03388
+M001	CIN001	0600000001	$2b$10$lXwUpW569qS9f4ICGYeTnOwR0k5mDC16gw3dz86tY9ot9I4FTloNO	admin	Nadad	eloukili.nada@etu.uae.ac.ma	nada.jpg	Admin principale	2025-05-03 15:54:01.377623
+da93bdeb-a589-4bd3-9138-a207f691c62b	CIN125433	\N	$2b$10$vMk20kgZwo4VYWZsAmxXo.FtuUN/joMukeTbetOAsBlT18qIsp2MK	student	hamza 	hamza@gamil.co	uploads\\1746404178323-R.png	nouveau 	2025-05-05 00:21:32.703476
+PRF001	GH901234	0664567890	$2b$10$lXwUpW569qS9f4ICGYeTnOwR0k5mDC16gw3dz86tY9ot9I4FTloNO	Professor	Dr. Hassan Benjelloun	hassan.benjelloun@univ.ma	profile_hassan.jpg	Professeur en Informatique - Spécialiste en IA	2023-01-05 11:15:00
 PRF003	KL123456	0666789012	$2a$10$fghijklmnopqrstuvwxyza	Professor	Dr. Mohammed Chaoui	mohammed.chaoui@univ.ma	profile_mohammed.jpg	Professeur en Réseaux et Sécurité	2023-01-12 14:30:00
 PRF004	MN789012	0667890123	$2a$10$ghijklmnopqrstuvwxyzab	Professor	Dr. Laila Bennani	laila.bennani@univ.ma	profile_laila.jpg	Professeure en Génie Logiciel	2023-01-18 09:45:00
 PRF005	OP345678	0668901234	$2a$10$hijklmnopqrstuvwxyzabc	Professor	Dr. Nabil El Fasi	nabil.elfasi@univ.ma	profile_nabil.jpg	Professeur en Mathématiques Appliquées	2023-02-05 10:15:00
@@ -777,7 +781,6 @@ SUP001	QR901234	0669012345	$2a$10$ijklmnopqrstuvwxyzabcd	Supervisor	Rachid Tazi	
 SUP002	ST567890	0670123456	$2a$10$jklmnopqrstuvwxyzabcde	Supervisor	Nadia Cherkaoui	nadia.cherkaoui@attijariwafa.ma	profile_nadia.jpg	Directrice IT chez Attijariwafa Bank	2023-02-15 13:45:00
 SUP003	UV123456	0671234567	$2a$10$klmnopqrstuvwxyzabcdef	Supervisor	Omar Benali	omar.benali@ocp.ma	profile_omar.jpg	Ingénieur Systèmes chez OCP Group	2023-02-20 14:15:00
 SUP004	WX789012	0672345678	$2a$10$lmnopqrstuvwxyzabcdefg	Supervisor	Salma Bouazizi	salma.bouazizi@cih.ma	profile_salma.jpg	Responsable Cybersécurité chez CIH Bank	2023-03-01 09:30:00
-SUP005	YZ345678	0673456789	$2a$10$mnopqrstuvwxyzabcdefgh	Supervisor	Hamza El Alami	hamza.elalami@inwi.ma	profile_hamza.jpg	Architecte Solutions chez Inwi	2023-03-05 10:45:00
 COA001	AB876543	0674567890	$2a$10$nopqrstuvwxyzabcdefghi	coach	Amal Fassi	amal.fassi@univ.ma	profile_amal.jpg	Coach en développement personnel et professionnel	2023-03-10 11:15:00
 COA002	CD654321	0675678901	$2a$10$opqrstuvwxyzabcdefghij	coach	Tariq Benjelloun	tariq.benjelloun@univ.ma	profile_tariq.jpg	Coach en leadership et travail d 'équipe	2023-03-15 13:30:00
 COA003	EF432109	0676789012	$2a$10$pqrstuvwxyzabcdefghijk	coach	Houda Bekkali	houda.bekkali@univ.ma	profile_houda.jpg	Coach en communication et gestion du stress	2023-03-20 14:45:00
@@ -801,6 +804,19 @@ STU017	MN765432	0693456789	$2a$10$ghijklmnopqrstuvwxyzab	student	Hamid Touati	ha
 STU018	OP543210	0694567890	$2a$10$hijklmnopqrstuvwxyzabc	student	Salma Berrada	salma.berrada@student.univ.ma	profile_salmab.jpg	Étudiante en Business Intelligence	2023-09-01 12:15:00
 STU019	QR321098	0695678901	$2a$10$ijklmnopqrstuvwxyzabcd	student	Yassine Bennis	yassine.bennis@student.univ.ma	profile_yassine.jpg	Étudiant en Systèmes Embarqués	2023-09-01 12:30:00
 STU020	ST109876	0696789012	$2a$10$jklmnopqrstuvwxyzabcde	student	Amal Tahiri	amal.tahiri@student.univ.ma	profile_amalt.jpg	Étudiante en Cloud Computing	2023-09-01 12:45:00
+6307d7ff-a584-4046-a841-246b375484a0	K6064211	\N	$2b$10$9QNZ0NKpQ67Tu26aXqP7PeNhJPMECR.e7ugqB7dfQ3p5p1hynB8oS	student	Salman Test	testtest@gmaill.com	\N	fff	2025-05-18 14:16:09.416257
+b1ac018d-8590-47cd-9d32-f9d7251b191c	K7879437894	\N	$2b$10$UKwCKL3pHsDVKuXIHDjGbeO6LemerV7EduL5iQCacv3.g4KBG0cwG	coach	Salman	Helofd@gmai.cff	\N	HELLO TEST	2025-05-31 15:13:52.456022
+c8a7c097-3d09-4638-aacd-3b346a291186	AB123456fffffda44	\N	$2b$10$SxsDQZIjDKP7Xl6kIqlzou1ekZQOssw7PXyWw7UGFiT1qjNV2FhDG	Supervisor	Salman	alfdfadfdfd@example.com	\N	\N	2025-06-02 20:12:55.928574
+729a7732-c68d-467e-87ad-1981b5980196	12345	\N	$2b$10$u3J0kQbCH1lNJxmgD5NXVeo2msyhF.W5dWekOCdNrwwFp.iiWLSi.	student	yyyyyyyyy	hamzsssa@gamil.com	\N	jlkdsjcklasjlkjlkv'dk	2025-06-03 18:16:34.616996
+2c0d4e63-00b4-46ed-851f-3ef59aac19bf	CN12354	\N	$2b$10$b0ntP0atDCDQAav.bbUBgOGMmKGRd80UbELTWF88NZZBTq9dheXI2	student	jijijijiijuij	eloukili.nadaQQQ@etu.uae.ac.ma	\N	SJLDSJLKNVKJNJN ZJX,CNKCN/	2025-06-03 18:23:47.967975
+28efff6b-fa78-42b5-89ed-911590b33e31	12112212121	\N	$2b$10$0a9uAB8MxwEOE5Rm9NQZ8Oh1ucxLjJitH.69UHxacPE6H6XteZULG	student	QQQQ	eloukili.nadsssa@etu.uae.ac.ma	\N	DDCSDADavffdsaczs	2025-06-03 18:24:38.664833
+d26151a7-5ac8-41cd-8460-c4abf4fc67cf	qqwqew	\N	$2b$10$ZkwjPzN/McDCL4I9yTuCy.GE416gTT1hhD8UNryZMUUetK/f17NMi	student	jaousde	eloukili.nadsssxdsca@etu.uae.ac.ma	\N	sdvcdcascsa	2025-06-03 18:48:57.559193
+0dfeeb2d-11b4-4a10-9a12-3dfbf102e447	qqwqeww	\N	$2b$10$Mg1Xcot/Sv1y9OvJyMZXLeG9nFWErfnitIKxy38zfYioyLAZmLMKO	student	jaousde	eloukili.nadsssswwxdscaxx@etu.uae.ac.ma	\N	sdvcdcascsa	2025-06-03 18:49:23.850784
+941181b7-e1f8-435e-8cf6-4f6f551208de	C232343	\N	$2b$10$meaDhRqrRestznIj..5JPurltH4nsTfugI5YDCszu/lu0Wnt.Ifdy	student	jskljdklaj	hamzadedasd@gamil.com	\N	ejekljkhjaksjdiljàljlk	2025-06-03 18:54:34.865484
+7617a2ab-6241-4e4f-8cb0-27536f5e4796	ELJLSFV	\N	$2b$10$U2FQ0QXHLitS62W5WCjfLu8XOh2tsMSk/xfANsuWWP0N846v3E3Xm	Professor	JAOUAD	eloukili.nada@etu.uae.ac.SDSma	\N	MCSD.KVNXFZ,V	2025-06-03 19:23:59.595635
+SUP005	YZ345678	0673456789	$2a$10$mnopqrstuvwxyzabcdefgh	Supervisor	Hamza El Alami	hamza.elalami@inwi.ma	profile_hamza.jpg	Architecte Solutions chez Inwi	2023-03-05 10:45:00
+15128dd0-f5c6-43ad-ad49-ada45edb9a4d	K794789	\N	$2b$10$QXxXI2j8s/AT65Pkko.z2uJE0jjSlWnnoIXdqxg1YsldnRWKhG2eW	Professor	Salman	elghrich.sky@gmail.com	\N	Very good teacher	2025-06-04 19:32:30.398483
+4372c117-fa1d-4eff-9062-0b94f94e2659	22122	\N	$2b$10$7Qh78Bx4yizKLi.BnZB0gOYEEHsiH4yXwbgoEn1IPBuoeGMyV5Qey	student	SNMNM	NZAJON2J@JNXL	\N	holla	2025-06-04 23:53:07.700976
 \.
 
 
@@ -862,12 +878,13 @@ COPY public.notifications (id_notification, content_notification, date_notificat
 --
 
 COPY public.professor (id_member, department, code) FROM stdin;
-1e6edf29-9b83-4080-9963-31e50ddf46a8	\N	100
 PRF001	Informatique	PROF-INF-001
 PRF002	Data Science	PROF-DS-001
 PRF003	Réseaux	PROF-RES-001
 PRF004	Génie Logiciel	PROF-GL-001
+7617a2ab-6241-4e4f-8cb0-27536f5e4796	\N	DDFASDFV
 PRF005	Mathématiques	PROF-MAT-001
+15128dd0-f5c6-43ad-ad49-ada45edb9a4d	\N	K747897
 \.
 
 
@@ -876,11 +893,11 @@ PRF005	Mathématiques	PROF-MAT-001
 --
 
 COPY public.project (id_project, description_project, date_project, subject_project, id_prof, end_date, id_class, name_project, id_sector, group_number) FROM stdin;
-1	Développement d'une plateforme de gestion intelligente pour les villes marocaines	2023-10-15	Application IoT pour la gestion urbaine intelligente	PRF001	2024-01-15	ginf1	Smart City Maroc	CI1	4
-2	Création d'une solution de paiement mobile adaptée au marché marocain	2023-11-01	Application mobile de paiement avec authentification biométrique	PRF004	2024-02-01	gind2	FinTech Marocaine	CI2	3
 3	Système d'analyse de données pour l'agriculture marocaine	2024-02-10	Plateforme Big Data pour optimiser les rendements agricoles	PRF002	2024-05-10	ginf3	Analyse Agricole	CI3	4
 4	Solution de cybersécurité pour le secteur bancaire marocain	2024-03-01	Système de détection d'intrusion basé sur l'IA	PRF003	2024-06-01	gsr2	Sécurité Bancaire	AP2	2
 5	Plateforme numérique pour l'administration publique	2024-03-15	Portail citoyen avec authentification sécurisée	PRF004	2024-06-15	td3	E-Administration	AP1	3
+2	Création d'une solution de paiement mobile adaptée au marché marocain	2025-04-01	Application mobile de paiement avec authentification biométrique	PRF004	2025-06-01	gind2	FinTech Marocaine	CI2	3
+1	Développement d'une plateforme de gestion intelligente pour les villes marocaines	2025-01-01	Application IoT pour la gestion urbaine intelligente	PRF001	2025-02-01	ginf1	Smart City Maroc	CI1	4
 \.
 
 
@@ -912,8 +929,6 @@ COPY public.rate (id_rate, id_member) FROM stdin;
 --
 
 COPY public.report (id_reporter, id_reported, id_signal) FROM stdin;
-da93bdeb-a589-4bd3-9138-a207f691c62b	da93bdeb-a589-4bd3-9138-a207f691c62b	1
-da93bdeb-a589-4bd3-9138-a207f691c62b	da93bdeb-a589-4bd3-9138-a207f691c62b	2
 PRF001	STU001	1
 PRF005	STU004	2
 COA001	STU011	3
@@ -936,6 +951,8 @@ CI2	Cycle d Ingénieur 2ème année - Tronc commun	ADM001
 CI3	Cycle d Ingénieur 3ème année - Tronc commun	ADM002
 AP1	Année préparatoire 1ère année	ADM003
 AP2	Année préparatoire 2ème année	ADM003
+Hello	Just testing 	\N
+AP3	hello fdljfaduflku	M001
 \.
 
 
@@ -951,7 +968,6 @@ COPY public.signal (id_signal, approved, message, anony, option_signal, id_solut
 5	t	Difficultés avec les algorithmes complexes pour plusieurs étudiants	f	Académique	5	PRF004	2023-10-25	Approved
 6	f	Proposition d'un groupe d'étude pour réviser les examens	f	Académique	6	STU003	2024-01-05	Rejected
 7	t	Plusieurs étudiants ont des difficultés avec la documentation technique en anglais	f	Académique	7	PRF002	2024-03-12	New
-8	t	Besoin d'assistance pour la gestion de projet complexe	f	Académique	8	SUP001	2024-02-28	Approved
 9	t	Signalement d'un conflit entre membres d'une équipe projet	t	Social	9	COA002	2024-01-15	Approved
 10	f	Besoin de formation complémentaire en techniques de cybersécurité avancées	f	Académique	10	STU016	2024-03-05	New
 11	t	Étudiant ayant des difficultés d'intégration dans la classe	t	Social	3	COA003	2023-11-10	Approved
@@ -959,6 +975,8 @@ COPY public.signal (id_signal, approved, message, anony, option_signal, id_solut
 13	f	Difficultés avec les concepts avancés de data mining	f	Académique	5	STU008	2023-11-15	Approved
 14	t	Besoin d'aide pour améliorer les compétences en présentation orale	f	Académique	3	PRF002	2023-12-12	Approved
 15	t	Signalement de difficultés financières affectant les études	t	Financier	\N	ADM002	2024-02-15	\N
+89	\N	signal 	t	Académique	\N	STU001	2025-06-03	\N
+8	t	Besoin d'assistance pour la gestion de projet complexe	f	Académique	8	SUP001	2024-02-28	Approved
 \.
 
 
@@ -967,12 +985,12 @@ COPY public.signal (id_signal, approved, message, anony, option_signal, id_solut
 --
 
 COPY public.skill (skill_name, description_skill, question1, question2, question3, id_admin) FROM stdin;
-Communication	Ability to convey ideas clearly and understandably.	Does this person express their ideas clearly and understandably?	Do they listen actively and let others finish speaking?	Do they adapt their communication style depending on the audience?	M001
-Teamwork	Ability to collaborate and contribute effectively in group settings.	Does this person collaborate effectively with teammates?	Are they open to others’ ideas and feedback?	Do they support the team in achieving common goals?	M001
-Problem-solving	Ability to address challenges analytically and effectively.	Does this person approach problems calmly and analytically?	Do they contribute useful solutions when challenges arise?	Are they willing to seek help or input when needed?	M001
-Time Management	Skill in prioritizing and managing tasks efficiently.	Does this person prioritize tasks effectively to meet deadlines?	Does this person allocate time appropriately across multiple responsibilities?	Does this person avoid unnecessary delays or procrastination?	M001
-Critical Thinking	Capacity to analyze and evaluate information constructively.	Does this person analyze information carefully before forming conclusions?	Does this person question assumptions or challenge ideas constructively?	Does this person evaluate the strengths and weaknesses of arguments or solutions?	M001
-Creativity	Ability to generate and explore innovative ideas and solutions.	Does this person generate original or innovative ideas?	Does this person approach tasks with imagination or out-of-the-box thinking?	Does this person explore multiple possibilities before settling on a solution?	M001
+Communication	Ability to express ideas clearly and adapt communication to different audiences	Does this person express their ideas clearly and understandably?	Do they listen actively and let others finish speaking?	Do they adapt their communication style depending on the audience?	ADM001
+Teamwork	Ability to collaborate and support group efforts effectively	Does this person collaborate effectively with teammates?	Are they open to others’ ideas and feedback?	Do they support the team in achieving common goals?	ADM001
+Problem-Solving	Ability to approach and resolve challenges with logical and creative thinking	Does this person approach problems calmly and analytically?	Do they contribute useful solutions when challenges arise?	Are they willing to seek help or input when needed?	ADM001
+Time Management	Ability to manage time and prioritize tasks efficiently	Does this person prioritize tasks effectively to meet deadlines?	Does this person allocate time appropriately across multiple responsibilities?	Does this person avoid unnecessary delays or procrastination?	ADM001
+Critical Thinking	Ability to assess situations logically and question assumptions constructively	Does this person analyze information carefully before forming conclusions?	Does this person question assumptions or challenge ideas constructively?	Does this person evaluate the strengths and weaknesses of arguments or solutions?	ADM001
+Creativity	Ability to generate innovative ideas and explore alternative approaches	Does this person generate original or innovative ideas?	Does this person approach tasks with imagination or out-of-the-box thinking?	Does this person explore multiple possibilities before settling on a solution?	ADM001
 \.
 
 
@@ -981,31 +999,34 @@ Creativity	Ability to generate and explore innovative ideas and solutions.	Does 
 --
 
 COPY public.skill_evaluation (id_evaluation, note_evaluation, type_evaluation, comment_evaluation, id_internship, id_class, id_team, id_student, id_evaluator, date_add, evaluation_context) FROM stdin;
-7	4.7	Professor	Bonne participation en classe	\N	CLS001	\N	S100	P004	2025-05-03	class
-8	4.7	Professor	Bonne participation en classe	\N	CLS001	\N	S100	P004	2025-05-03	class
-4	17.2	Professor	Très bon travail.	\N	GINF1	\N	M001	M002	2025-05-03	\N
-3	17.2	Professor	Très bon travail.	\N	GINF1	\N	da93bdeb-a589-4bd3-9138-a207f691c62b	M001	2025-05-03	\N
-9	4.28	Professor	Great overall performance, with strong communication and creativity.	\N	\N	\N	S100	P004	2025-05-07	class
-10	4.28	Professor	Great overall performance, with strong communication and creativity.	\N	\N	\N	S100	P004	2025-05-07	class
-12	6	Self	\N	\N	GINF1	\N	da93bdeb-a589-4bd3-9138-a207f691c62b	da93bdeb-a589-4bd3-9138-a207f691c62b	2025-05-08	\N
-13	8	Self	\N	\N	GINF1	\N	da93bdeb-a589-4bd3-9138-a207f691c62b	da93bdeb-a589-4bd3-9138-a207f691c62b	2025-05-08	\N
-14	10	Self	\N	\N	GINF1	\N	7ba19de9-a3b5-45fc-b64b-bdb68799088e	7ba19de9-a3b5-45fc-b64b-bdb68799088e	2025-05-08	\N
-16	90	Self	\N	\N	GINF1	\N	7ba19de9-a3b5-45fc-b64b-bdb68799088e	7ba19de9-a3b5-45fc-b64b-bdb68799088e	2025-05-08	\N
-1	16.5	Professor	Excellent travail d'équipe et bonnes compétences techniques	\N	\N	1	STU001	PRF001	2023-12-15	project
-2	15	Supervisor	Communication claire, mais pourrait améliorer la résolution de problèmes	1	\N	\N	STU001	SUP001	2023-09-05	internship
-5	14.5	Self	Je dois améliorer mes compétences en communication technique	\N	ginf1	\N	STU004	STU004	2023-12-10	class
-6	16	Pair	Bon esprit d'équipe et aide volontiers les autres	\N	\N	5	STU002	STU008	2024-04-30	project
-11	14	Self	Je dois améliorer ma gestion du temps et mon organisation	\N	ginf2	\N	STU007	STU007	2023-12-20	class
-15	15.5	Professor	Bon travail d'équipe mais peut améliorer ses compétences techniques	\N	\N	2	STU015	PRF001	2023-12-18	project
-17	16	Professor	Bonne compréhension des concepts mais doit travailler sa communication	\N	ginf3	\N	STU015	PRF002	2024-03-15	class
-18	17.5	Pair	Excellent leadership et capacité à motiver l'équipe	\N	\N	7	STU010	STU016	2024-05-15	project
-19	15	Self	Je dois améliorer mes compétences en analyse de données	\N	ginf3	\N	STU012	STU012	2024-03-20	class
-20	16.5	Professor	Très bonne présentation et maîtrise du sujet	\N	\N	3	STU019	PRF004	2024-01-25	project
-21	18	Supervisor	Compétences techniques excellentes et bonne intégration en entreprise	8	\N	\N	STU013	SUP003	2024-08-15	internship
+1	16.5	Professor	Excellent travail d'équipe et bonnes compétences techniques	\N	\N	1	STU001	PRF001	2023-07-15	project
+2	15	Supervisor	Communication claire, mais pourrait améliorer la résolution de problèmes	1	\N	\N	STU001	SUP001	2023-08-05	internship
+5	14.5	Self	Je dois améliorer mes compétences en communication technique	\N	ginf1	\N	STU004	STU004	2023-09-10	class
+6	16	Pair	Bon esprit d'équipe et aide volontiers les autres	\N	\N	5	STU002	STU008	2024-07-05	project
+11	14	Self	Je dois améliorer ma gestion du temps et mon organisation	\N	ginf2	\N	STU007	STU007	2023-06-20	class
+15	15.5	Professor	Bon travail d'équipe mais peut améliorer ses compétences techniques	\N	\N	2	STU015	PRF001	2023-06-18	project
+17	16	Professor	Bonne compréhension des concepts mais doit travailler sa communication	\N	ginf3	\N	STU015	PRF002	2024-08-12	class
+18	17.5	Pair	Excellent leadership et capacité à motiver l'équipe	\N	\N	7	STU010	STU016	2024-08-15	project
+19	15	Self	Je dois améliorer mes compétences en analyse de données	\N	ginf3	\N	STU012	STU012	2024-09-01	class
+20	16.5	Professor	Très bonne présentation et maîtrise du sujet	\N	\N	3	STU019	PRF004	2024-09-05	project
+21	18	Supervisor	Compétences techniques excellentes et bonne intégration en entreprise	8	\N	\N	STU013	SUP003	2024-07-20	internship
 22	17	Professor	Très bon travail d'équipe et excellente communication	\N	\N	8	STU017	PRF004	2024-06-10	project
-23	15.5	Pair	Bonnes compétences en programmation, peut améliorer l'esprit d'équipe	\N	\N	6	STU005	STU015	2024-04-30	project
-24	16	Supervisor	Bonne autonomie mais peut améliorer sa communication avec l'équipe	9	\N	\N	STU016	SUP004	2024-08-20	internship
-25	17.5	Professor	Excellente maîtrise des concepts de machine learning	\N	ginf3	\N	STU008	PRF001	2024-04-15	class
+23	15.5	Pair	Bonnes compétences en programmation, peut améliorer l'esprit d'équipe	\N	\N	6	STU005	STU015	2024-08-28	project
+24	16	Supervisor	Bonne autonomie mais peut améliorer sa communication avec l'équipe	9	\N	\N	STU016	SUP004	2024-07-30	internship
+25	17.5	Professor	Excellente maîtrise des concepts de machine learning	\N	ginf3	\N	STU008	PRF001	2024-06-15	class
+3	8.2	Professor	Bonne implication dans le projet et respect des délais	\N	\N	\N	STU003	PRF001	2023-06-20	project
+4	9.1	Professor	Participation active en réunion, peut approfondir l'aspect technique	\N	\N	\N	STU004	PRF001	2023-06-25	project
+7	7.5	Professor	Doit améliorer la régularité du travail et la communication	\N	\N	\N	STU007	PRF001	2023-07-02	project
+8	9.1	Professor	Très bon niveau technique et esprit collaboratif	\N	\N	\N	STU008	PRF001	2023-07-05	project
+9	8	Professor	Bonne compréhension du sujet mais manque d’initiative	\N	\N	\N	STU009	PRF001	2023-07-10	project
+10	9.4	Professor	Travail rigoureux, mais peut mieux gérer le temps imparti	\N	\N	\N	STU010	PRF001	2023-07-15	project
+12	8.2	Professor	Bonne autonomie, mais documentation insuffisante	\N	\N	\N	STU012	PRF001	2024-06-12	project
+13	8.5	Professor	Très bonne capacité à résoudre les problèmes techniques	\N	\N	\N	STU013	PRF001	2024-06-17	project
+14	8.9	Professor	Bonne présentation finale, peut approfondir certains points	\N	\N	\N	STU014	PRF001	2024-06-22	project
+16	9.1	Professor	Collaboration efficace avec les membres de l'équipe	\N	\N	\N	STU002	PRF001	2024-08-10	project
+26	8.6	Professor	Travail bien structuré et bonne compréhension du sujet	\N	\N	\N	STU010	PRF001	2025-06-26	project
+27	8.8	Professor	Capacité à s'adapter rapidement et à gérer les imprévus	\N	\N	\N	STU001	PRF001	2025-07-02	project
+28	8.2	Professor	Bonne maîtrise des outils utilisés durant le projet	\N	\N	\N	STU002	PRF001	2025-09-03	project
 \.
 
 
@@ -1034,13 +1055,7 @@ COPY public.solution (id_solution, option_solution, subject_solution, periode, s
 COPY public.student (id_member, cne, id_class) FROM stdin;
 M001	\N	\N
 M002	\N	\N
-S100	CNE789456	CLS001
-da93bdeb-a589-4bd3-9138-a207f691c62b	p1373	GINF1
-6deb0e9a-200d-423a-96c4-0649010e17d6	p13733	GINF1
 7ba19de9-a3b5-45fc-b64b-bdb68799088e	p13790	GINF1
-30782994-9936-4ff4-bae6-044a99c0058d	p1390	GINF1
-824d9206-2f74-47ce-a6d5-769e663fb2a2	p13290	GINF1
-5d262ff5-a0a4-41b6-a1b9-4ad022474fc3	\N	GINF1
 STU001	D13456789	ginf1
 STU002	G98765432	ginf2
 STU003	R14785236	ginf3
@@ -1061,6 +1076,7 @@ STU017	X78945613	td2
 STU018	P12397845	td3
 STU019	O89456123	td4
 STU020	N56123789	td5
+S100	CNE789456	GINF1
 \.
 
 
@@ -1069,7 +1085,6 @@ STU020	N56123789	td5
 --
 
 COPY public.supervise (id_supervisor, id_student, id_internship) FROM stdin;
-c01e7026-20df-49b5-aa54-df62b1b0771f	da93bdeb-a589-4bd3-9138-a207f691c62b	1
 SUP001	STU001	1
 SUP002	STU002	2
 SUP003	STU003	3
@@ -1088,7 +1103,6 @@ SUP005	STU017	10
 --
 
 COPY public.supervisor (id_member, registration_number, company, "position") FROM stdin;
-c01e7026-20df-49b5-aa54-df62b1b0771f	0600123456	Tech Solutions	Senior Engineer
 SUP001	SUP-MT-001	Maroc Telecom	Chef de Projet
 SUP002	SUP-AWB-001	Attijariwafa Bank	Directrice IT
 SUP003	SUP-OCP-001	OCP Group	Ingénieur Systèmes
@@ -1102,8 +1116,7 @@ SUP005	SUP-INWI-001	Inwi	Architecte Solutions
 --
 
 COPY public.teach (id_member, id_class, course) FROM stdin;
-1e6edf29-9b83-4080-9963-31e50ddf46a8	GINF1	Mathématiques
-1e6edf29-9b83-4080-9963-31e50ddf46a8	GIND1	Programmation
+7617a2ab-6241-4e4f-8cb0-27536f5e4796	GINF1	JAOUD
 PRF001	ginf1	Intelligence Artificielle
 PRF001	ginf2	Machine Learning
 PRF002	ginf3	Data Mining
@@ -1114,6 +1127,7 @@ PRF004	gind1	Génie Logiciel
 PRF004	gsea2	Méthodes Agiles
 PRF005	ginf1	Analyse Numérique
 PRF005	gsr1	Statistiques pour Data Science
+15128dd0-f5c6-43ad-ad49-ada45edb9a4d	GINF1	Maths
 \.
 
 
@@ -1138,12 +1152,6 @@ COPY public.team (id_team, note, id_prof, id_project, team_name) FROM stdin;
 --
 
 COPY public.team_student (id_team, student_id) FROM stdin;
-1	STU001
-1	STU004
-1	STU011
-1	STU014
-2	STU005
-2	STU015
 3	STU003
 3	STU009
 3	STU013
@@ -1169,7 +1177,7 @@ COPY public.team_student (id_team, student_id) FROM stdin;
 -- Name: internship_id_internship_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.internship_id_internship_seq', 1, true);
+SELECT pg_catalog.setval('public.internship_id_internship_seq', 4, true);
 
 
 --
@@ -1190,7 +1198,7 @@ SELECT pg_catalog.setval('public.notifications_id_notification_seq', 4, true);
 -- Name: project_id_project_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.project_id_project_seq', 1, false);
+SELECT pg_catalog.setval('public.project_id_project_seq', 31, true);
 
 
 --
@@ -1204,14 +1212,14 @@ SELECT pg_catalog.setval('public.rate_id_rate_seq', 1, false);
 -- Name: signal_id_signal_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.signal_id_signal_seq', 2, true);
+SELECT pg_catalog.setval('public.signal_id_signal_seq', 6, true);
 
 
 --
 -- Name: skill_evaluation_id_evaluation_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.skill_evaluation_id_evaluation_seq', 16, true);
+SELECT pg_catalog.setval('public.skill_evaluation_id_evaluation_seq', 24, true);
 
 
 --
@@ -1225,7 +1233,7 @@ SELECT pg_catalog.setval('public.solution_id_solution_seq', 2, true);
 -- Name: team_id_team_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.team_id_team_seq', 1, false);
+SELECT pg_catalog.setval('public.team_id_team_seq', 1, true);
 
 
 --

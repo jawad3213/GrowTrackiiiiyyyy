@@ -201,6 +201,7 @@ const routes = [
         path : "/GlobalOverview",
         meta :{role: 'admin'}
     },
+    
     {
         name : "Signals",
         component : Signals,
@@ -284,9 +285,10 @@ const routes = [
         meta :{role: 'admin'}
     },
     {
-        name : "SignalModal",
+        name : "SignalModal/:id",
         component : SignalEvaluationModal,
         path : "/SignalModal",
+        props: true,
         meta :{role: 'admin'}
     },
     {

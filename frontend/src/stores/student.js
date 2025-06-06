@@ -23,6 +23,7 @@ export const useStudentStore = defineStore('student', ()=>{
       }
       catch (err) {
         console.log(err)
+        success.value = false; // Fix: Set success to false on error
         error.value = err.response?.data?.message || err.response?.data?.error || "Couldn't fetch the students. Please retry again later"
       }
       finally {
@@ -31,6 +32,7 @@ export const useStudentStore = defineStore('student', ()=>{
   }
 
     async function updateStudent(id, updatedfeilds) {
+      loading.value = true // Fix: Set loading to true at start
       try {
         await api.patch(`/admin/students/update/${id}`, updatedfeilds)
         success.value = true;
@@ -72,7 +74,8 @@ export const useStudentStore = defineStore('student', ()=>{
         error.value =null;
       }
       catch (err) {
-        error.value = err.response?.data?.message || err.response?.data?.error || "Couldn't delete the student. Please retry again later"
+        // Fix: Correct error message for professor deletion
+        error.value = err.response?.data?.message || err.response?.data?.error || "Couldn't delete the professor. Please retry again later"
         success.value = false;
         console.log(err)
       }
@@ -90,7 +93,8 @@ export const useStudentStore = defineStore('student', ()=>{
         error.value =null;
       }
       catch (err) {
-        error.value = err.response?.data?.message || err.response?.data?.error || "Couldn't delete the student. Please retry again later"
+        // Fix: Correct error message for supervisor deletion
+        error.value = err.response?.data?.message || err.response?.data?.error || "Couldn't delete the supervisor. Please retry again later"
         success.value = false;
         console.log(err)
       }
@@ -100,20 +104,29 @@ export const useStudentStore = defineStore('student', ()=>{
       }
 
     async function NumberOfStudents() {
+      loading.value = true // Fix: Set loading to true at start
       try {
-        await api.get(`/admin/students/total`)
+        const response = await api.get(`/admin/students/total`) // Fix: Store response
+        success.value = true; // Fix: Set success to true
+        errors.value = null;
+        error.value = null;
+        return response.data // Fix: Return the data
       }
       catch (err) {
         error.value = err.response?.data?.message || err.response?.data?.error || "Something went wrong. Please retry again later"
         success.value = false;
         console.log(err)
       }
-
+      finally {
+        loading.value = false // Fix: Set loading to false in finally
       }
-      async function GetStudentsByClass(classe) {
+    }
+
+    async function GetStudentsByClass(classe) {
       loading.value = true
       try {
-        const response = await api.get(`/admin/students/class`, classe)
+        // Fix: Use proper params format
+        const response = await api.get(`/admin/students/class`, { params: { class: classe } })
         success.value = true;
         errors.value=null;
         error.value =null;
@@ -121,6 +134,7 @@ export const useStudentStore = defineStore('student', ()=>{
       }
       catch (err) {
         console.log(err)
+        success.value = false; // Fix: Set success to false on error
         error.value = err.response?.data?.message || err.response?.data?.error || "Couldn't fetch the students. Please retry again later"
       }
       finally {
@@ -131,7 +145,8 @@ export const useStudentStore = defineStore('student', ()=>{
   async function GetStudentsBySector(sector) {
       loading.value = true
       try {
-        const response = await api.get(`/admin/students/sector`, sector)
+        // Fix: Use proper params format
+        const response = await api.get(`/admin/students/sector`, { params: { sector: sector } })
         success.value = true;
         errors.value=null;
         error.value =null;
@@ -139,14 +154,13 @@ export const useStudentStore = defineStore('student', ()=>{
       }
       catch (err) {
         console.log(err)
+        success.value = false; // Fix: Set success to false on error
         error.value = err.response?.data?.message || err.response?.data?.error || "Couldn't fetch the students. Please retry again later"
       }
       finally {
           loading.value = false
       }
   }
-
-
 
     function clearStatus() {
         loading.value = false

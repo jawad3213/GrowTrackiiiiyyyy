@@ -3,8 +3,6 @@ const bcrypt = require('bcrypt');
 
 
 exports.LoginModel = async (email, password) => { 
-    console.log(email)
-    console.log(password)
     const result = await pool.query(
         "SELECT * FROM public.member WHERE email=$1",
         [email]

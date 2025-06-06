@@ -100,6 +100,7 @@ const showPassword = ref(false);
 const isSubmitting = ref(false);
 const RememberMe = ref(false);
 
+
 const togglePassword = () => (showPassword.value = !showPassword.value);
 
 const handlelogin = async () => {
@@ -113,7 +114,7 @@ const handlelogin = async () => {
       case 'supervisor': router.push('/dashSupervisor'); break;
       case 'Professor' : router.push('/DashboardProf'); break;
       default:
-        
+        router.push('/login')
     }
     }
   } catch (err) {
@@ -133,6 +134,8 @@ onMounted(() => {
       default:
         router.push('/Login')
     }
+}else{
+  store.checkAuth();
 }
   store.Clearstatus();
 });

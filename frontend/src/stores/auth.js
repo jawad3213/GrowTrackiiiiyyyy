@@ -13,6 +13,7 @@ export const useAuthStore = defineStore('auth',() =>
         const role = ref(null);
         const id = ref(null)
         const valide = ref(false);
+        const CookiesAccepted = localStorage.getItem("cookiesAccepted") || document.cookie.includes('cookiesAccepted') || '';
 
         //pas de email pasword car sont de données temp on aurait pas besoin dans d'autres composants
         /*
@@ -21,9 +22,16 @@ export const useAuthStore = defineStore('auth',() =>
         async function Login(email , password, RememberMe){
             loading.value = true
             try {
-                const response = await api.post('/api/auth/login', {email , password, RememberMe}); //api url !! //envoi de l'objet 
+                const response = await api.post('/api/auth/login', {email , password, RememberMe},
+                    {headers : {
+                    'use-cookies': CookiesAccepted
+                }}); //api url !! //envoi de l'objet 
                 user.value = response.data?.user;
+                role.value = response.data?.role;
                 localStorage.setItem('username', response.data?.fullname);
+                // Set token in localStorage even if the cookies are enabled
+                localStorage.setItem('access_token', response.data?.access_token);
+                localStorage.setItem('refresh_token', response.data?.refresh_token)
                 error.value = null;
             } catch (err) {
                 error.value = err.response?.data?.message || 'Email or password incorrect'; // vérifier que l'api envoie un message
@@ -104,7 +112,10 @@ export const useAuthStore = defineStore('auth',() =>
         async function logout() {
             loading.value = true
             try {
-                 await api.post('/api/auth/logout') //url backend
+                await api.post('/api/auth/logout')
+                localStorage.removeItem('access_token');
+                localStorage.removeItem('refresh_token');
+                //url backend
                  user.value = null
                  error.value = null;
             } catch (err) {

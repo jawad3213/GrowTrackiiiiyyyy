@@ -13,4 +13,4 @@ router.get('/picture',AdminProfile.picture_controller);
 
 router.get('/personnal_information',AdminProfile.personnal_information_controller);
 
-module.exports = router;
+// module.exports = router;

@@ -4,29 +4,34 @@ require('dotenv').config();
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const {Authlimiter} = require('../middlewares/Limiter')
+const cookieOptions = {
+    httpOnly: true,
+    secure: false, // Change to true when HTTPS is ready 
+    sameSite: 'Strict',
+  };
 
 exports.Login =
 async (req , res) =>{
   const {password, email, RememberMe} = req.body;
-  const cookieOptions = {
-  httpOnly: true,
-  secure: false, // Change to true when HTTPS is ready 
-  sameSite: 'Strict',
-};
+  const useCookies = req.headers['use-cookies'] === 'true' ;
+  
   try {
       const user = await authModel.LoginModel(email, password);
       if(user){
           Authlimiter.resetKey(req.ip);
-          const Access_Token = JWT.sign(
-            { id: user.id_member, role: user.role, fullname: user.full_name },
+
+          const access_token = JWT.sign(
+            { id: user.id_member, role: user.role, fullname: user.full_name},
             process.env.ACCESS_SECRET,
             { expiresIn: '15m'})
-        const refresh_token = JWT.sign(
-            {id: user.id_member, type:"refresh"}
+
+          const refresh_token = JWT.sign(
+            {id: user.id_member, type:"refresh", RememberMe:RememberMe}
             ,process.env.REFRESH_SECRET,
             { expiresIn: '7d'})
+          if(useCookies){
             if(RememberMe){ // Normal Cookies with expiration
-                res.cookie("access_token", Access_Token,{
+                res.cookie("access_token", access_token,{
                     ...cookieOptions,
                     maxAge:  15 * 60 * 1000,
                 });
@@ -35,16 +40,20 @@ async (req , res) =>{
                     maxAge: 7 * 24 * 60 * 60 * 1000,
                 });
             }else { // Session Cookies, cleared when the session is closed 
-              res.cookie("access_token", Access_Token,{
+                res.cookie("access_token", access_token,{
                     ...cookieOptions
                 });
+
                 res.cookie("refresh_token", refresh_token,{
                     ...cookieOptions
                 });
             }
   
-          return res.status(200).json({message: "Connected Successfully !" ,Access_Token, refresh_token, email: user.email, fullname: user.full_name});
-      }else{
+          return res.status(200).json({message: "Connected Successfully Avec Cookies!" ,role: user.role, access_token, refresh_token, email: user.email, fullname: user.full_name});
+        }else{ // else dyal if cookies
+          return res.status(200).json({message: "Connected Successfully Sans Cookies !" , role: user.role, access_token, refresh_token, email: user.email, fullname: user.full_name});
+        }
+    }else{ //else dyal if user
           return res.status(401).json({message: "Email or Password is incorrect"})
       }
 
@@ -55,33 +64,41 @@ async (req , res) =>{
 
 
 exports.RefreshToken = async (req, res) => {
-    const refresh_token = req.cookies.refresh_token || req.headers.authorization?.split(" ")[1];
+  console.log('01')
+    const refresh_token = req.cookies.refresh_token || req.body.refresh_token;
     if (!refresh_token) {
       return res.status(401).json({ message: "No token refresh was found, Please login again!" });
     }
 
     try {
       const decoded = JWT.verify(refresh_token, process.env.REFRESH_SECRET);
-      
+      const RememberMe = decoded.RememberMe;
+      const useCookies = req.headers['use-cookies'] === 'true';
       const user = await authModel.GetUserById(decoded.id);
       if (!user) {
         return res.status(400).json({ message: "Please log in" });
       }
-  
+      
       const new_access_token = JWT.sign(
         { id: user.id_member, role: user.role, fullname: user.fullname},
         process.env.ACCESS_SECRET,
         { expiresIn: '15m' }
       );
+      if(useCookies){
       res.cookie("access_token", new_access_token, {
         httpOnly: true,
         secure: true,
         sameSite: "Strict",
+        maxAge: RememberMe ? 15 * 60 * 1000 : undefined 
       });
-  
       return res.status(201).json({
-        message: "The new access token is set!",
+        message: "The new access token is set!",})
+      }
+      else{
+        return res.status(201).json({
+        message: "The new access token is set!", access_token: new_access_token
       });
+    }
   
     } catch (error) {
       res.clearCookie("refresh_token");
