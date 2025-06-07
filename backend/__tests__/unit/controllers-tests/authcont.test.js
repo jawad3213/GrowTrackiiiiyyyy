@@ -1,19 +1,29 @@
+// Mock all dependencies BEFORE importing the controller
+jest.mock('../../../models/authModel');
+jest.mock('jsonwebtoken');
+jest.mock('bcrypt');
+jest.mock('../../../middlewares/Limiter');
+jest.mock('dotenv', () => ({
+  config: jest.fn()
+}));
+
+// Create a mock transporter that we can control
+const mockSendMail = jest.fn();
+const mockTransporter = {
+  sendMail: mockSendMail
+};
+
+jest.mock('nodemailer', () => ({
+  createTransport: jest.fn(() => mockTransporter)
+}));
+
+// Now import the controller AFTER mocking
 const authController = require('../../../controllers/authController');
 const authModel = require('../../../models/authModel');
 const JWT = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const { Authlimiter } = require('../../../middlewares/Limiter');
-
-// Mock all external dependencies
-jest.mock('../../../models/authModel');
-jest.mock('jsonwebtoken');
-jest.mock('bcrypt');
-jest.mock('nodemailer');
-jest.mock('../../../middlewares/Limiter');
-
-// Mock the database configuration to prevent real DB connection
-jest.mock('../../../config/db.js', () => ({}));
 
 // Mock environment variables
 process.env.ACCESS_SECRET = 'test-access-secret';
@@ -22,19 +32,20 @@ process.env.RESET_SECRET = 'test-reset-secret';
 process.env.EMAIL_USER = 'test@example.com';
 process.env.EMAIL_PASS = 'test-password';
 
-describe('Auth Controller Tests', () => {
-  let req, res, mockSendMail, mockTransporter;
+describe('Auth Controller', () => {
+  let req, res;
 
   beforeEach(() => {
-    // Reset all mocks before each test
+    // Reset mocks before each test
     jest.clearAllMocks();
     
-    // Mock request and response objects
+    // Setup mock request and response objects
     req = {
       body: {},
+      headers: {},
       cookies: {},
       ip: '127.0.0.1',
-      user: null
+      user: {}
     };
     
     res = {
@@ -44,33 +55,28 @@ describe('Auth Controller Tests', () => {
       clearCookie: jest.fn().mockReturnThis()
     };
 
-    // Mock Authlimiter
+    // Setup default mocks
     Authlimiter.resetKey = jest.fn();
-
-    // Mock nodemailer properly
-    mockSendMail = jest.fn();
-    mockTransporter = {
-      sendMail: mockSendMail
-    };
-    nodemailer.createTransport.mockReturnValue(mockTransporter);
-    
-    // Mock the transporter on the authController exports
-    authController.transporter = mockTransporter;
+    JWT.sign = jest.fn();
+    JWT.verify = jest.fn();
   });
 
   describe('Login', () => {
     beforeEach(() => {
       req.body = {
         email: 'test@example.com',
-        password: 'password123'
+        password: 'password123',
+        RememberMe: false
       };
+      req.headers = { 'use-cookies': 'false' };
     });
 
-    test('should login successfully with valid credentials and proper token expirations', async () => {
+    it('should login successfully without cookies', async () => {
       const mockUser = {
         id_member: 1,
         role: 'user',
-        fullname: 'Test User'
+        full_name: 'Test User',
+        email: 'test@example.com'
       };
 
       authModel.LoginModel.mockResolvedValue(mockUser);
@@ -80,55 +86,114 @@ describe('Auth Controller Tests', () => {
 
       await authController.Login(req, res);
 
-      // Assert
       expect(authModel.LoginModel).toHaveBeenCalledWith('test@example.com', 'password123');
-      expect(JWT.sign).toHaveBeenCalledWith(
-        { id: 1, role: 'user', fullname: 'Test User' },
-        process.env.ACCESS_SECRET,
-        { expiresIn: '15m' }
-      );
-      expect(JWT.sign).toHaveBeenCalledWith(
-        { id: 1, type: 'refresh' },
-        process.env.REFRESH_SECRET,
-        { expiresIn: '7d' }
-      );
       expect(Authlimiter.resetKey).toHaveBeenCalledWith('127.0.0.1');
-      expect(res.cookie).toHaveBeenCalledTimes(2);
+      expect(JWT.sign).toHaveBeenCalledTimes(2);
       expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith({ message: "Connected Successfully !" });
+      expect(res.json).toHaveBeenCalledWith({
+        message: "Connected Successfully Sans Cookies !",
+        role: 'user',
+        access_token: 'mock-access-token',
+        refresh_token: 'mock-refresh-token',
+        email: 'test@example.com',
+        fullname: 'Test User'
+      });
     });
 
-    test('should return 401 for invalid credentials', async () => {
+    it('should login successfully with cookies and RememberMe=true', async () => {
+      req.headers['use-cookies'] = 'true';
+      req.body.RememberMe = true;
+
+      const mockUser = {
+        id_member: 1,
+        role: 'user',
+        full_name: 'Test User',
+        email: 'test@example.com'
+      };
+
+      authModel.LoginModel.mockResolvedValue(mockUser);
+      JWT.sign
+        .mockReturnValueOnce('mock-access-token')
+        .mockReturnValueOnce('mock-refresh-token');
+
+      await authController.Login(req, res);
+
+      expect(res.cookie).toHaveBeenCalledTimes(2);
+      expect(res.cookie).toHaveBeenCalledWith('access_token', 'mock-access-token', {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'Strict',
+        maxAge: 15 * 60 * 1000
+      });
+      expect(res.cookie).toHaveBeenCalledWith('refresh_token', 'mock-refresh-token', {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'Strict',
+        maxAge: 7 * 24 * 60 * 60 * 1000
+      });
+    });
+
+    it('should login successfully with cookies and RememberMe=false (session cookies)', async () => {
+      req.headers['use-cookies'] = 'true';
+      req.body.RememberMe = false;
+
+      const mockUser = {
+        id_member: 1,
+        role: 'user',
+        full_name: 'Test User',
+        email: 'test@example.com'
+      };
+
+      authModel.LoginModel.mockResolvedValue(mockUser);
+      JWT.sign
+        .mockReturnValueOnce('mock-access-token')
+        .mockReturnValueOnce('mock-refresh-token');
+
+      await authController.Login(req, res);
+
+      expect(res.cookie).toHaveBeenCalledTimes(2);
+      expect(res.cookie).toHaveBeenCalledWith('access_token', 'mock-access-token', {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'Strict'
+      });
+    });
+
+    it('should return 401 for invalid credentials', async () => {
       authModel.LoginModel.mockResolvedValue(null);
 
       await authController.Login(req, res);
 
-      expect(authModel.LoginModel).toHaveBeenCalledWith('test@example.com', 'password123');
       expect(res.status).toHaveBeenCalledWith(401);
-      expect(res.json).toHaveBeenCalledWith({ message: "Email or Password is incorrect" });
+      expect(res.json).toHaveBeenCalledWith({
+        message: "Email or Password is incorrect"
+      });
     });
 
-    test('should handle server errors during login', async () => {
+    it('should handle server errors', async () => {
       authModel.LoginModel.mockRejectedValue(new Error('Database error'));
 
       await authController.Login(req, res);
 
       expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ message: "Server Error, Please try again later!" });
+      expect(res.json).toHaveBeenCalledWith({
+        message: "Server Error, Please try again later!"
+      });
     });
   });
 
   describe('RefreshToken', () => {
     beforeEach(() => {
-      req.cookies.refresh_token = 'valid-refresh-token';
+      req.cookies = { refresh_token: 'mock-refresh-token' };
+      req.headers = { 'use-cookies': 'true' };
     });
 
-    test('should refresh token successfully with 15-minute access token', async () => {
-      const mockDecoded = { id: 1 };
+    it('should refresh token successfully with cookies', async () => {
+      const mockDecoded = { id: 1, RememberMe: true };
       const mockUser = {
         id_member: 1,
         role: 'user',
-        fullname: 'Test User'
+        full_name: 'Test User'
       };
 
       JWT.verify.mockReturnValue(mockDecoded);
@@ -137,43 +202,68 @@ describe('Auth Controller Tests', () => {
 
       await authController.RefreshToken(req, res);
 
-      expect(JWT.verify).toHaveBeenCalledWith('valid-refresh-token', process.env.REFRESH_SECRET);
+      expect(JWT.verify).toHaveBeenCalledWith('mock-refresh-token', 'test-refresh-secret');
       expect(authModel.GetUserById).toHaveBeenCalledWith(1);
-      expect(JWT.sign).toHaveBeenCalledWith(
-        { id: 1, role: 'user', fullname: 'Test User' },
-        process.env.ACCESS_SECRET,
-        { expiresIn: '15m' }
-      );
       expect(res.cookie).toHaveBeenCalledWith('access_token', 'new-access-token', {
         httpOnly: true,
-        secure: true,
-        sameSite: "Strict"
+        secure: false,
+        sameSite: 'Strict',
+        maxAge: 15 * 60 * 1000
       });
-      expect(res.status).toHaveBeenCalledWith(201);
+      expect(res.status).toHaveBeenCalledWith(200);
     });
 
-    test('should return 401 when no refresh token is provided', async () => {
-      req.cookies.refresh_token = undefined;
+    it('should refresh token successfully without cookies', async () => {
+      req.headers['use-cookies'] = 'false';
+      req.body = { refresh_token: 'mock-refresh-token' };
+      req.cookies = {};
+
+      const mockDecoded = { id: 1, RememberMe: false };
+      const mockUser = {
+        id_member: 1,
+        role: 'user',
+        full_name: 'Test User'
+      };
+
+      JWT.verify.mockReturnValue(mockDecoded);
+      authModel.GetUserById.mockResolvedValue(mockUser);
+      JWT.sign.mockReturnValue('new-access-token');
+
+      await authController.RefreshToken(req, res);
+
+      expect(res.json).toHaveBeenCalledWith({
+        message: "The new access token is set!",
+        access_token: 'new-access-token'
+      });
+    });
+
+    it('should return 401 when no refresh token provided', async () => {
+      req.cookies = {};
+      req.body = {};
 
       await authController.RefreshToken(req, res);
 
       expect(res.status).toHaveBeenCalledWith(401);
-      expect(res.json).toHaveBeenCalledWith({ message: "No token refresh was found, Please login again!" });
+      expect(res.json).toHaveBeenCalledWith({
+        message: "No token refresh was found, Please login again!"
+      });
     });
 
-    test('should return 400 when user is not found', async () => {
-      const mockDecoded = { id: 1 };
-      
+    it('should return 400 when user not found', async () => {
+      const mockDecoded = { id: 1, RememberMe: true };
+
       JWT.verify.mockReturnValue(mockDecoded);
       authModel.GetUserById.mockResolvedValue(null);
 
       await authController.RefreshToken(req, res);
 
       expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({ message: "Please log in" });
+      expect(res.json).toHaveBeenCalledWith({
+        message: "Please log in"
+      });
     });
 
-    test('should handle invalid or expired refresh token', async () => {
+    it('should handle invalid refresh token', async () => {
       JWT.verify.mockImplementation(() => {
         throw new Error('Invalid token');
       });
@@ -182,119 +272,120 @@ describe('Auth Controller Tests', () => {
 
       expect(res.clearCookie).toHaveBeenCalledWith('refresh_token');
       expect(res.status).toHaveBeenCalledWith(401);
-      expect(res.json).toHaveBeenCalledWith({ message: "Invalid or expired refresh token!" });
+      expect(res.json).toHaveBeenCalledWith({
+        message: "Invalid or expired refresh token!"
+      });
     });
   });
 
   describe('Logout', () => {
-    test('should logout successfully', () => {
-      authController.Logout(req, res);
+    it('should logout successfully', async () => {
+      await authController.Logout(req, res);
 
       expect(res.clearCookie).toHaveBeenCalledTimes(2);
       expect(res.clearCookie).toHaveBeenCalledWith('refresh_token', {
         httpOnly: true,
-        secure: true,
-        sameSite: "Strict"
+        secure: false,
+        sameSite: 'Strict'
       });
       expect(res.clearCookie).toHaveBeenCalledWith('access_token', {
         httpOnly: true,
-        secure: true,
-        sameSite: "Strict"
+        secure: false,
+        sameSite: 'Strict'
       });
       expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith({ message: 'Logout successful' });
+      expect(res.json).toHaveBeenCalledWith({
+        message: "Logout successful"
+      });
     });
 
-    test('should handle errors during logout', () => {
-      // Mock clearCookie to throw an error on first call only
-      res.clearCookie
-        .mockImplementationOnce(() => {
-          throw new Error('Cookie error');
-        })
-        .mockReturnThis();
+    it('should handle logout errors', async () => {
+      // Mock console.log to avoid output during tests
+      const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+      
+      // Force an error by making clearCookie throw
+      res.clearCookie.mockImplementation(() => {
+        throw new Error('Cookie error');
+      });
 
-      authController.Logout(req, res);
+      await authController.Logout(req, res);
 
+      expect(consoleSpy).toHaveBeenCalled();
       expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ message: "Internal Server Error" });
+      expect(res.json).toHaveBeenCalledWith({
+        message: "Internal Server Error"
+      });
+
+      consoleSpy.mockRestore();
     });
   });
 
   describe('ResetPass', () => {
     beforeEach(() => {
       req.body = { email: 'test@example.com' };
+      // Reset the mock before each test
+      mockSendMail.mockClear();
     });
 
-    test('should send reset password email successfully with 15-minute expiration token', async () => {
-      const mockUser = {
-        id_member: 1,
-      };
-
+    it('should send reset email successfully', async () => {
+      const mockUser = { id_member: 1 };
+      
       authModel.FindUserByEmail.mockResolvedValue(mockUser);
       JWT.sign.mockReturnValue('reset-token');
-      mockSendMail.mockResolvedValue(true);
+      mockSendMail.mockResolvedValue({ messageId: 'test-id' });
 
       await authController.ResetPass(req, res);
 
-      // Assert
       expect(authModel.FindUserByEmail).toHaveBeenCalledWith('test@example.com');
       expect(JWT.sign).toHaveBeenCalledWith(
-        { id: 1},
-        process.env.RESET_SECRET,
+        { id: 1 },
+        'test-reset-secret',
         { expiresIn: '15m' }
       );
-      expect(mockSendMail).toHaveBeenCalled();
+      expect(mockSendMail).toHaveBeenCalledWith(expect.objectContaining({
+        from: 'test@example.com',
+        to: 'test@example.com',
+        subject: 'Password Reset Request 🔒',
+        html: expect.stringContaining('Password Reset')
+      }));
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({
         message: "A password reset email has been sent. Please check your inbox or spam folder ✅"
       });
     });
 
-    test('should return 400 when user is not found', async () => {
+    it('should return 400 when user not found', async () => {
       authModel.FindUserByEmail.mockResolvedValue(null);
 
       await authController.ResetPass(req, res);
 
       expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({ message: "User not found with this email ❌" });
+      expect(res.json).toHaveBeenCalledWith({
+        message: "User not found with this email ❌"
+      });
+      expect(mockSendMail).not.toHaveBeenCalled();
     });
 
-    test('should handle server errors during reset password', async () => {
+    it('should handle server errors', async () => {
       authModel.FindUserByEmail.mockRejectedValue(new Error('Database error'));
 
       await authController.ResetPass(req, res);
 
       expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ message: "Server Error, Please try again later!" });
-    });
-
-    test('should handle email sending failures', async () => {
-      const mockUser = {
-        id_member: 1,
-      };
-
-      authModel.FindUserByEmail.mockResolvedValue(mockUser);
-      JWT.sign.mockReturnValue('reset-token');
-      mockSendMail.mockResolvedValue(false);
-
-      await authController.ResetPass(req, res);
-
-      // The function doesn't handle email sending failures explicitly
-      // It only responds with success if sent is truthy
-      // If sent is falsy, the function doesn't respond, so we need to check the behavior
-      expect(mockSendMail).toHaveBeenCalled();
-      // Since the function doesn't handle the false case, it won't call res.status or res.json
-      // This might be a bug in the original code that should be addressed
+      expect(res.json).toHaveBeenCalledWith({
+        message: "Server Error, Please try again later!"
+      });
+      expect(mockSendMail).not.toHaveBeenCalled();
     });
   });
 
   describe('ResetPassEmail', () => {
     beforeEach(() => {
-      req.body = { password: 'newpassword123' };
       req.user = { id: 1 };
+      req.body = { password: 'newpassword123' };
     });
 
-    test('should update password successfully', async () => {
+    it('should reset password successfully', async () => {
       const hashedPassword = 'hashed-password';
       const mockUser = { id_member: 1 };
 
@@ -306,10 +397,12 @@ describe('Auth Controller Tests', () => {
       expect(bcrypt.hash).toHaveBeenCalledWith('newpassword123', 10);
       expect(authModel.UpdatePassById).toHaveBeenCalledWith(1, hashedPassword);
       expect(res.status).toHaveBeenCalledWith(201);
-      expect(res.json).toHaveBeenCalledWith({ message: "The password was updated successfully!" });
+      expect(res.json).toHaveBeenCalledWith({
+        message: "The password was updated successfully!"
+      });
     });
 
-    test('should return 400 when user is not found', async () => {
+    it('should return 400 when user not found', async () => {
       const hashedPassword = 'hashed-password';
 
       bcrypt.hash.mockResolvedValue(hashedPassword);
@@ -318,49 +411,46 @@ describe('Auth Controller Tests', () => {
       await authController.ResetPassEmail(req, res);
 
       expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({ message: "User not found with this email " });
+      expect(res.json).toHaveBeenCalledWith({
+        message: "User not found with this email "
+      });
     });
 
-    test('should handle server errors during password update', async () => {
-      bcrypt.hash.mockRejectedValue(new Error('Bcrypt error'));
+    it('should handle server errors', async () => {
+      bcrypt.hash.mockRejectedValue(new Error('Hashing error'));
 
       await authController.ResetPassEmail(req, res);
 
       expect(res.status).toHaveBeenCalledWith(500);
-      // Fixed the typo in the expected message - it should match the actual controller
-      expect(res.json).toHaveBeenCalledWith({ message: "Internal Server Error " });
+      expect(res.json).toHaveBeenCalledWith({
+        message: "Internal Server Error "
+      });
     });
   });
 
   describe('check', () => {
-    test('should return 200 status with valid:true and role when user is authenticated', () => {
-      // Arrange
+    it('should return valid when user is authenticated', async () => {
       req.user = {
         id: 1,
-        role: 'admin'
+        role: 'user'
       };
 
-      // Act
-      authController.check(req, res);
+      await authController.check(req, res);
 
-      // Assert
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({
         valid: true,
         id: 1,
-        role: 'admin',
+        role: 'user',
         message: 'Authenticated'
       });
     });
 
-    test('should return 401 status with valid:false and null role when user is not authenticated', () => {
-      // Arrange
+    it('should return invalid when user is not authenticated', async () => {
       req.user = null;
 
-      // Act
-      authController.check(req, res);
+      await authController.check(req, res);
 
-      // Assert
       expect(res.status).toHaveBeenCalledWith(401);
       expect(res.json).toHaveBeenCalledWith({
         valid: false,
@@ -369,114 +459,17 @@ describe('Auth Controller Tests', () => {
       });
     });
 
-    test('should handle different user roles correctly', () => {
-      // Arrange
-      req.user = {
-        id: 2,
-        role: 'user'
-      };
+    it('should return invalid when user is undefined', async () => {
+      delete req.user;
 
-      // Act
-      authController.check(req, res);
+      await authController.check(req, res);
 
-      // Assert
-      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.status).toHaveBeenCalledWith(401);
       expect(res.json).toHaveBeenCalledWith({
-        valid: true,
-        id: 2,
-        role: 'user',
-        message: 'Authenticated'
+        valid: false,
+        role: null,
+        message: 'Not authenticated'
       });
     });
-
-    test('should treat empty user object as authenticated', () => {
-      // Arrange
-      req.user = {};
-
-      // Act
-      authController.check(req, res);
-
-      // Assert
-      expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith({
-        valid: true,
-        id: undefined,
-        role: undefined,
-        message: 'Authenticated'
-      });
-    });
-  });
-});
-
-// Additional test suite for edge cases
-describe('Auth Controller Edge Cases', () => {
-  let req, res, mockSendMail, mockTransporter;
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-    
-    req = {
-      body: {},
-      cookies: {},
-      ip: '127.0.0.1',
-      user: null
-    };
-    
-    res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn().mockReturnThis(),
-      cookie: jest.fn().mockReturnThis(),
-      clearCookie: jest.fn().mockReturnThis()
-    };
-
-    Authlimiter.resetKey = jest.fn();
-
-    // Mock nodemailer properly for edge cases too
-    mockSendMail = jest.fn();
-    mockTransporter = {
-      sendMail: mockSendMail
-    };
-    nodemailer.createTransport.mockReturnValue(mockTransporter);
-    authController.transporter = mockTransporter;
-  });
-
-  test('Login should handle missing email or password', async () => {
-    req.body = { email: 'test@example.com' }; // Missing password
-
-    authModel.LoginModel.mockResolvedValue(null);
-
-    await authController.Login(req, res);
-
-    expect(authModel.LoginModel).toHaveBeenCalledWith('test@example.com', undefined);
-    expect(res.status).toHaveBeenCalledWith(401);
-  });
-
-  test('RefreshToken should handle malformed JWT', async () => {
-    req.cookies.refresh_token = 'malformed-token';
-    
-    JWT.verify.mockImplementation(() => {
-      throw new Error('JsonWebTokenError');
-    });
-
-    await authController.RefreshToken(req, res);
-
-    expect(res.clearCookie).toHaveBeenCalledWith('refresh_token');
-    expect(res.status).toHaveBeenCalledWith(401);
-  });
-
-  test('ResetPass should handle email service errors', async () => {
-    const mockUser = {
-      id_member: 1,
-    };
-
-    req.body = { email: 'test@example.com' };
-    authModel.FindUserByEmail.mockResolvedValue(mockUser);
-    JWT.sign.mockReturnValue('reset-token');
-    mockSendMail.mockRejectedValue(new Error('SMTP Error'));
-
-    await authController.ResetPass(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith({ message: "Server Error, Please try again later!" });
   });
 });

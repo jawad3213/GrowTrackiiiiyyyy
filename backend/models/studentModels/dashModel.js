@@ -159,17 +159,23 @@ exports.getProjects = async (id_student) => {
         throw error;
     }
 }
-
+//modified by rim, bach matfailich fonction in case project is undefined (--> team undefined)
 exports.getRadarByProject = async (id_student, project) => {
     try {
         const projects = await pool.query(
             `SELECT id_project FROM public.project WHERE name_project = $1`,
-            [project])
+            [project]
+        );
+        
+        // Check if project exists
+        const id_project = projects.rows[0]?.id_project;
+        if (!id_project) return [];
+        
         const team = await pool.query(
             `SELECT t.id_team FROM public.team_student ts 
             JOIN public.team t ON ts.id_team = t.id_team
             WHERE ts.student_id = $1 AND t.id_project = $2`,
-            [id_student, projects.rows[0]?.id_project]
+            [id_student, id_project]
         );
 
         const id_team = team.rows[0]?.id_team;
@@ -197,7 +203,6 @@ exports.getRadarByProject = async (id_student, project) => {
         throw error;
     }
 }
-
 exports.getEvaluationCountByRoleAndMonth = async (id_student) => {
     try {
         const result = await pool.query(`

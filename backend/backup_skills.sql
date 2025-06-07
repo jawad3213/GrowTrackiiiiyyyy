@@ -620,6 +620,7 @@ hello1	2025-05-31	Hello
 b4	2025-05-31	Hello
 GINF4	2025-05-31	AP3
 GINF5	2025-05-31	AP3
+GI2	2025-06-06	JAOUAD
 \.
 
 
@@ -628,12 +629,12 @@ GINF5	2025-05-31	AP3
 --
 
 COPY public.coach (id_member, field) FROM stdin;
-4cf96e59-1cca-46b1-8cff-2bfa379b1e95	Informatique
-14e80305-c60c-42e7-ab1b-625c34599455	Informatique
 COA001	Développement personnel
 COA002	Leadership
 COA003	Communication
 b1ac018d-8590-47cd-9d32-f9d7251b191c	GINF1
+3de7f5b0-cb85-44a5-89a8-f11c1e561abc	YASSINE EL HAIL 
+8ecc0871-62dc-4f14-b41f-ad17c0d12490	YASSINE EL HAIL 
 \.
 
 
@@ -655,16 +656,12 @@ COPY public.evaluations (id_evaluation, note_skill, skill_name) FROM stdin;
 5	7.2	Time Management
 6	9.1	Teamwork
 6	8	Time Management
-7	7.6	Critical Thinking
-7	7.4	Time Management
 8	9.5	Critical Thinking
 8	8.7	Problem-Solving
 9	7.9	Teamwork
 9	8.1	Communication
 10	9.6	Communication
 10	9.2	Critical Thinking
-11	6.4	Time Management
-11	7	Creativity
 12	7.8	Communication
 12	8.6	Critical Thinking
 13	9.3	Critical Thinking
@@ -720,12 +717,9 @@ COPY public.evaluations (id_evaluation, note_skill, skill_name) FROM stdin;
 
 COPY public.follow_up (id_coach, id_student, id_solution, message, start_date, date_done) FROM stdin;
 COA001	STU001	1	Séances hebdomadaires de tutorat en programmation	2023-10-20	2023-12-20
-COA002	STU004	2	Ateliers de renforcement en mathématiques deux fois par semaine	2023-11-25	2024-01-25
 COA003	STU011	3	Séances de gestion du stress et techniques de relaxation	2023-12-10	\N
-COA001	STU003	5	Sessions personnalisées sur les algorithmes complexes	2023-11-05	2024-01-10
 COA002	STU009	9	Médiation et résolution de conflits au sein de l'équipe	2024-01-25	2024-02-15
 COA003	STU020	3	Programme d'intégration et activités de groupe	2023-11-15	2023-12-30
-COA001	STU013	9	Ateliers de communication et travail d'équipe	2024-01-30	\N
 COA002	STU015	3	Formation en techniques de présentation et prise de parole	2023-12-15	2024-02-15
 COA003	STU008	5	Tutorat en data mining et analyse de données	2023-11-20	2024-01-20
 COA001	STU016	8	Accompagnement dans la gestion du projet de sécurité	2024-03-05	\N
@@ -758,19 +752,15 @@ COPY public.member (id_member, cin, phone, password, role, full_name, email, pro
 M002	CIN002	0600000002	$2b$10$lXwUpW569qS9f4ICGYeTnOwR0k5mDC16gw3dz86tY9ot9I4FTloNO	admin	Soukaina Elouansaidi	elouansaidisoukaina@gmail.com	soukaina.jpg	Admin secondaire	2025-05-03 15:54:01.377623
 M003	\N	\N	pass	student	\N	email	\N	\N	2025-05-03 20:03:51.815812
 P004	AA123456	0600123456	$2b$10$lXwUpW569qS9f4ICGYeTnOwR0k5mDC16gw3dz86tY9ot9I4FTloNO	Professor	Youssef El Fassi	youssef.fassi@example.com	youssef.jpg	Étudiant en génie informatique	2025-05-03 23:02:42.749681
-4cf96e59-1cca-46b1-8cff-2bfa379b1e95	AB12456	\N	$2b$10$FJiwb6rA8GbqWoz24Iu./uFosB7FLhamWkOp3AQZrSX9tCajyEEd.	coach	Omar Benjelloun	omar.benjelloun@example.com	\N	Professeur expérimenté en développement web.	2025-05-05 10:28:29.096535
-7ba19de9-a3b5-45fc-b64b-bdb68799088e	CIN6590	\N	$2b$10$saf/DuMGWEMgTc92K28ui.ER7RrnFmSyg6mqmv5S9CFC6j5yfy2Dm	student	khaled 	khaled@gamil.com	\N	nouveau 	2025-05-08 11:54:10.880063
 M006	\N	\N	1234	admin	hamza	hamza1@gmail.com	\N	\N	2025-05-11 20:56:23.183266
 1187420c-f668-4056-bde5-c13d30c67162	Kfdf	\N	$2b$10$Zk5CCoSfnPezqYlmU4W0IO.IZ.qKMkxGCQQfk3L4VISpRk4D4KfHK	student	Salman	salman@gmail.com	\N	Hello everyone	2025-05-13 00:45:25.111824
 fb594a87-e90e-4240-b3f4-7e4489577c9f	test	\N	$2b$10$m7ElqSfJknQ4GZEyJ9j1reSyKH0q8E0zi.ZyFxTUPXAGIgalwdCzO	student	Salman	helloi@gmail.com	\N	fdafdaf	2025-05-13 00:48:21.839506
 5942bf3a-a344-4515-a6f0-54c04f0ce750	K87785544	\N	$2b$10$Q706NBFT9bD9/NZG4uOXX.fuEUddVv0LMrbNeVjc/vvNwpoEc3aJO	student	Salman	salmanhello@gmail.com	\N	Hello	2025-05-13 12:00:52.331791
 bbed467a-f2b0-45f8-9c5d-8b1f5f8f8fc0	K877421311	\N	$2b$10$21Bes/i/h6IQlpKZ5s8ExeDiwBAXldLRKI6dExNZu5EQWMK51l2NG	student	Salman	salmanhello2313@gmail.com	\N	Hello	2025-05-13 12:02:50.672687
-14e80305-c60c-42e7-ab1b-625c34599455	K74302	\N	$2b$10$ufj/t9tb/bojmQczAZUBUeJCUeJ3B7XUjXteKfNlK0qR2gj6BLPzq	coach	Helo	elo@gmailc.oj	\N	jfkldja;l	2025-05-13 18:01:32.48775
 ADM001	AB123456	0661234567	$2a$10$abcdefghijklmnopqrstuv	admin	Karim Bensouda	karim.bensouda@univ.ma	profile_karim.jpg	Administrateur principal - Responsable informatique	2023-01-15 09:00:00
 ADM002	CD789012	0662345678	$2a$10$bcdefghijklmnopqrstuvw	admin	Samira Alaoui	samira.alaoui@univ.ma	profile_samira.jpg	Administratrice des affaires académiques	2023-01-20 10:30:00
 ADM003	EF345678	0663456789	$2a$10$cdefghijklmnopqrstuvwx	admin	Younes Kabbaj	younes.kabbaj@univ.ma	profile_younes.jpg	Administrateur des filières scientifiques	2023-02-01 08:45:00
 PRF002	IJ567890	0665678901	$2a$10$efghijklmnopqrstuvwxyz	Professor	Dr. Fatima Zahra Mernissi	fatima.mernissi@univ.ma	profile_fatima.jpg	Professeure en Sciences de Données	2023-01-08 13:20:00
-S100	ST123456	0611122233	hashed_pwd123	student	Imane Benali Updated	imane.benali@example.com	imane.jpg	Étudiante en 1ère année GI	2025-05-03 23:26:53.03388
 M001	CIN001	0600000001	$2b$10$lXwUpW569qS9f4ICGYeTnOwR0k5mDC16gw3dz86tY9ot9I4FTloNO	admin	Nadad	eloukili.nada@etu.uae.ac.ma	nada.jpg	Admin principale	2025-05-03 15:54:01.377623
 da93bdeb-a589-4bd3-9138-a207f691c62b	CIN125433	\N	$2b$10$vMk20kgZwo4VYWZsAmxXo.FtuUN/joMukeTbetOAsBlT18qIsp2MK	student	hamza 	hamza@gamil.co	uploads\\1746404178323-R.png	nouveau 	2025-05-05 00:21:32.703476
 PRF001	GH901234	0664567890	$2b$10$lXwUpW569qS9f4ICGYeTnOwR0k5mDC16gw3dz86tY9ot9I4FTloNO	Professor	Dr. Hassan Benjelloun	hassan.benjelloun@univ.ma	profile_hassan.jpg	Professeur en Informatique - Spécialiste en IA	2023-01-05 11:15:00
@@ -789,8 +779,6 @@ STU002	IJ098765	0678901234	$2a$10$rstuvwxyzabcdefghijklm	student	Imane Chahid	im
 STU003	KL876543	0679012345	$2a$10$stuvwxyzabcdefghijklmn	student	Amine Rahmani	amine.rahmani@student.univ.ma	profile_amine.jpg	Étudiant en Réseaux et Systèmes	2023-09-01 08:30:00
 STU004	MN654321	0680123456	$2a$10$tuvwxyzabcdefghijklmno	student	Yasmine Tazi	yasmine.tazi@student.univ.ma	profile_yasmine.jpg	Étudiante en Génie Logiciel	2023-09-01 08:45:00
 STU005	OP432109	0681234567	$2a$10$uvwxyzabcdefghijklmnop	student	Mehdi Ouazzani	mehdi.ouazzani@student.univ.ma	profile_mehdi.jpg	Étudiant en Intelligence Artificielle	2023-09-01 09:00:00
-STU006	QR210987	0682345678	$2a$10$vwxyzabcdefghijklmnopq	student	Hajar Mansouri	hajar.mansouri@student.univ.ma	profile_hajar.jpg	Étudiante en Cybersécurité	2023-09-01 09:15:00
-STU007	ST098765	0683456789	$2a$10$wxyzabcdefghijklmnopqr	student	Karim Zidani	karim.zidani@student.univ.ma	profile_karimz.jpg	Étudiant en Développement Web	2023-09-01 09:30:00
 STU008	UV876543	0684567890	$2a$10$xyzabcdefghijklmnopqrs	student	Leila Benjelloun	leila.benjelloun@student.univ.ma	profile_leilab.jpg	Étudiante en Business Intelligence	2023-09-01 09:45:00
 STU009	WX654321	0685678901	$2a$10$yzabcdefghijklmnopqrst	student	Omar Fadil	omar.fadil@student.univ.ma	profile_omarf.jpg	Étudiant en Systèmes Embarqués	2023-09-01 10:00:00
 STU010	YZ432109	0686789012	$2a$10$zabcdefghijklmnopqrstu	student	Safia Idrissi	safia.idrissi@student.univ.ma	profile_safia.jpg	Étudiante en Cloud Computing	2023-09-01 10:15:00
@@ -813,10 +801,25 @@ c8a7c097-3d09-4638-aacd-3b346a291186	AB123456fffffda44	\N	$2b$10$SxsDQZIjDKP7Xl6
 d26151a7-5ac8-41cd-8460-c4abf4fc67cf	qqwqew	\N	$2b$10$ZkwjPzN/McDCL4I9yTuCy.GE416gTT1hhD8UNryZMUUetK/f17NMi	student	jaousde	eloukili.nadsssxdsca@etu.uae.ac.ma	\N	sdvcdcascsa	2025-06-03 18:48:57.559193
 0dfeeb2d-11b4-4a10-9a12-3dfbf102e447	qqwqeww	\N	$2b$10$Mg1Xcot/Sv1y9OvJyMZXLeG9nFWErfnitIKxy38zfYioyLAZmLMKO	student	jaousde	eloukili.nadsssswwxdscaxx@etu.uae.ac.ma	\N	sdvcdcascsa	2025-06-03 18:49:23.850784
 941181b7-e1f8-435e-8cf6-4f6f551208de	C232343	\N	$2b$10$meaDhRqrRestznIj..5JPurltH4nsTfugI5YDCszu/lu0Wnt.Ifdy	student	jskljdklaj	hamzadedasd@gamil.com	\N	ejekljkhjaksjdiljàljlk	2025-06-03 18:54:34.865484
-7617a2ab-6241-4e4f-8cb0-27536f5e4796	ELJLSFV	\N	$2b$10$U2FQ0QXHLitS62W5WCjfLu8XOh2tsMSk/xfANsuWWP0N846v3E3Xm	Professor	JAOUAD	eloukili.nada@etu.uae.ac.SDSma	\N	MCSD.KVNXFZ,V	2025-06-03 19:23:59.595635
 SUP005	YZ345678	0673456789	$2a$10$mnopqrstuvwxyzabcdefgh	Supervisor	Hamza El Alami	hamza.elalami@inwi.ma	profile_hamza.jpg	Architecte Solutions chez Inwi	2023-03-05 10:45:00
-15128dd0-f5c6-43ad-ad49-ada45edb9a4d	K794789	\N	$2b$10$QXxXI2j8s/AT65Pkko.z2uJE0jjSlWnnoIXdqxg1YsldnRWKhG2eW	Professor	Salman	elghrich.sky@gmail.com	\N	Very good teacher	2025-06-04 19:32:30.398483
 4372c117-fa1d-4eff-9062-0b94f94e2659	22122	\N	$2b$10$7Qh78Bx4yizKLi.BnZB0gOYEEHsiH4yXwbgoEn1IPBuoeGMyV5Qey	student	SNMNM	NZAJON2J@JNXL	\N	holla	2025-06-04 23:53:07.700976
+3de7f5b0-cb85-44a5-89a8-f11c1e561abc	123212222	\N	$2b$10$cXTxXX..5luhrxf3ToQHgO4ivrUz/YlZaXO2ohh9mAEfNZwr9DEgG	coach	jaouad	kokok@gmail.com	\N		2025-06-05 21:55:00.847144
+8ecc0871-62dc-4f14-b41f-ad17c0d12490	ewrerere	\N	$2b$10$VOpD6CCfx4FdpUtHqTqcke5Mh1Lw6OamL8QO6uv4nG.8gC0rZwQmK	coach	jijij	kokocck@gmail.com	\N	ccdscdda	2025-06-06 00:11:34.460744
+1e7e6475-93ce-4947-92b1-ef1100ee2efa	T33443	\N	$2b$10$zmUzcAhByHM642aCPhHzPuQiQJRjSM96V2VfoLDFGjinJMxKgKBou	student	EL HAIL JAOUAD 	elhailjaouad@gmail.com	\N		2025-06-06 02:13:28.597451
+eb3984fd-f3fa-4b78-98b3-b9e47de9c382	T12	\N	$2b$10$zTk0dl/kOfPuvSj/5WnzsOo1CkF3XlNvwYS56gXxU2RJIZwPBB.OS	student	EL GHRICH SALMAN	salman123@gmail.com	\N		2025-06-06 02:14:57.68473
+103f6326-9935-4002-b471-42114d3433f6	T13	\N	$2b$10$A5krTV/zSIA8Ip7XwL/2e.hV1irfHM7YJ1ITFeuFpwrs73DcDlefO	student	NADA EL OUKILI 	oukili@gmail.com	\N		2025-06-06 02:15:53.442792
+e1a830cd-bff6-47fe-b34f-201f855e6e26	T15	\N	$2b$10$UwXdd1ji9jW7El/KJFfxweR1QP6GjfwBv0dnRo.8bv0Vnt1el6FWi	student	SOUKAINA EL AMADI	soukaina123@gmail.com	\N		2025-06-06 02:17:11.11253
+f8da5d76-de29-4062-bf7a-b1b6931ccc55	T54	\N	$2b$10$TO0EjhMncKpO3zc45OM7pu0lNg1umbjK3kt.zV3L1p0A3IiDzT5ye	student	SARA EL HAJII	sara123@gmail.com	\N		2025-06-06 02:18:52.343312
+3da9a278-2a21-49d9-8cc5-f0c2fc028339	T01	\N	$2b$10$tXFzjJfsVziHdSQwTpWot.QV5g/zSI0awJ1klWAR5OwFhUOJaC7kS	student	Yassine Bouno	bouno@gmail.com	\N		2025-06-06 02:20:21.642316
+7915e0fc-a198-4ceb-9d94-e7460dc92de9	S2132	\N	$2b$10$zOhe8z5/ojp3rGmEgYPK2uy2JRzQSLpeQqtEb9GOcYUt2nb2q9KNS	Professor	Dr. Mouad Tamasna	tamasna@gmail.com	\N		2025-06-06 02:53:04.456056
+d60cc2e1-2789-48ad-a653-8c1558ba3d0d	T33232	\N	$2b$10$G2TVxF2/0KGFbfQbrZkkn.PN6iNkvuO7QcmuSWisLpXWbaUDq6Usa	Professor	Dr . Mariem Boukaiba 	boukaiba@gmail.com	\N		2025-06-06 02:54:45.950574
+212cfe01-1262-494a-877c-a5dc2041d8e2	T232233	\N	$2b$10$AUTPnEWPaQMXWiexbPhF6OrsNKEnj9Rnkkd5as.m0LNCzJ.jURGLG	Professor	Dr. Yassine Lahlo	lahlo@gmail.com	\N		2025-06-06 02:56:10.576474
+effa96bb-9ea9-4ad1-b85d-13d94c9eda52	T32343	\N	$2b$10$VFpnCpjOgosxymy2OnN9fu/CAcvMwL4cfGt6bwA/IBGnfb9Rnm7AO	Professor	Prof. Hassan Ben Lmoudan	benmoudan@gmail.com	\N		2025-06-06 02:57:03.356819
+98b4fa4b-c123-4edb-9e7d-179acb96dc45	E234222	\N	$2b$10$j2Y.z0hcrXXmpBloSsHR7uLysK1etWJci/8xVlqAJLkSXDQrGIElm	Professor	Prof. Said Nichan 	said@gmail.com	\N		2025-06-06 02:57:53.886538
+1dd5bde1-b1ff-43cd-a16d-5e2cd19b04cc	T2342123	\N	$2b$10$EVrWMTOvH4wOUrsM1on/sOUYlq3E2RzvpWFUQRE8lYtTWFZDH.T9O	Professor	Prof . Nada Lmotawakile	lmoutaki@gmail.com	\N		2025-06-06 02:59:14.01813
+4bbbe3e1-b3ba-4066-9f09-6475d2160f1e	T234332	\N	$2b$10$PTjcRObcZwihxyFHQpgEnerqSctTUIKOQJwjnVk1pKhebZHPGbFTS	Professor	Prof. Samir El Alami	samir@gmail.com	\N		2025-06-06 03:00:06.152348
+8cb93546-54ad-4869-8c05-d6aab1d7cf11	T125322	\N	$2b$10$0yLHuX8xW49en8zj7q/I6.yV8iOPlizfaGuew4bXFy.SF10UQIGf.	Professor	Prof Soumia Youkna	youkna@gmail.com	\N		2025-06-06 03:02:45.557882
+c3e78aec-53f6-4b16-8138-69bdf55b663a	T21343	\N	$2b$10$GoGHYgK.nffstiL9xfOkL.UTc/al.tXKLq/i9I9dviv8P0zpaRbIy	Professor	El Hail Jaouad	jaoaud2122@gmail.com	\N		2025-06-06 03:11:54.473753
 \.
 
 
@@ -882,9 +885,15 @@ PRF001	Informatique	PROF-INF-001
 PRF002	Data Science	PROF-DS-001
 PRF003	Réseaux	PROF-RES-001
 PRF004	Génie Logiciel	PROF-GL-001
-7617a2ab-6241-4e4f-8cb0-27536f5e4796	\N	DDFASDFV
-PRF005	Mathématiques	PROF-MAT-001
-15128dd0-f5c6-43ad-ad49-ada45edb9a4d	\N	K747897
+7915e0fc-a198-4ceb-9d94-e7460dc92de9	\N	212212
+d60cc2e1-2789-48ad-a653-8c1558ba3d0d	\N	121567
+212cfe01-1262-494a-877c-a5dc2041d8e2	\N	212343
+effa96bb-9ea9-4ad1-b85d-13d94c9eda52	\N	345675
+98b4fa4b-c123-4edb-9e7d-179acb96dc45	\N	233223
+1dd5bde1-b1ff-43cd-a16d-5e2cd19b04cc	\N	1232122
+4bbbe3e1-b3ba-4066-9f09-6475d2160f1e	\N	E212332
+8cb93546-54ad-4869-8c05-d6aab1d7cf11	\N	3245675
+c3e78aec-53f6-4b16-8138-69bdf55b663a	\N	3285454
 \.
 
 
@@ -930,12 +939,9 @@ COPY public.rate (id_rate, id_member) FROM stdin;
 
 COPY public.report (id_reporter, id_reported, id_signal) FROM stdin;
 PRF001	STU001	1
-PRF005	STU004	2
 COA001	STU011	3
-PRF004	STU003	5
 COA002	STU009	9
 COA003	STU020	11
-PRF004	STU013	12
 PRF002	STU015	14
 \.
 
@@ -953,6 +959,7 @@ AP1	Année préparatoire 1ère année	ADM003
 AP2	Année préparatoire 2ème année	ADM003
 Hello	Just testing 	\N
 AP3	hello fdljfaduflku	M001
+JAOUAD	YASLEJD	M001
 \.
 
 
@@ -985,12 +992,12 @@ COPY public.signal (id_signal, approved, message, anony, option_signal, id_solut
 --
 
 COPY public.skill (skill_name, description_skill, question1, question2, question3, id_admin) FROM stdin;
-Communication	Ability to express ideas clearly and adapt communication to different audiences	Does this person express their ideas clearly and understandably?	Do they listen actively and let others finish speaking?	Do they adapt their communication style depending on the audience?	ADM001
 Teamwork	Ability to collaborate and support group efforts effectively	Does this person collaborate effectively with teammates?	Are they open to others’ ideas and feedback?	Do they support the team in achieving common goals?	ADM001
 Problem-Solving	Ability to approach and resolve challenges with logical and creative thinking	Does this person approach problems calmly and analytically?	Do they contribute useful solutions when challenges arise?	Are they willing to seek help or input when needed?	ADM001
 Time Management	Ability to manage time and prioritize tasks efficiently	Does this person prioritize tasks effectively to meet deadlines?	Does this person allocate time appropriately across multiple responsibilities?	Does this person avoid unnecessary delays or procrastination?	ADM001
 Critical Thinking	Ability to assess situations logically and question assumptions constructively	Does this person analyze information carefully before forming conclusions?	Does this person question assumptions or challenge ideas constructively?	Does this person evaluate the strengths and weaknesses of arguments or solutions?	ADM001
 Creativity	Ability to generate innovative ideas and explore alternative approaches	Does this person generate original or innovative ideas?	Does this person approach tasks with imagination or out-of-the-box thinking?	Does this person explore multiple possibilities before settling on a solution?	ADM001
+Communication	Ability to communicate under stress.	Does this person express their ideas clearly and understandably?	Do they listen actively and let others finish speaking?	Do they adapt their communication style depending on the audience?	ADM001
 \.
 
 
@@ -1003,7 +1010,6 @@ COPY public.skill_evaluation (id_evaluation, note_evaluation, type_evaluation, c
 2	15	Supervisor	Communication claire, mais pourrait améliorer la résolution de problèmes	1	\N	\N	STU001	SUP001	2023-08-05	internship
 5	14.5	Self	Je dois améliorer mes compétences en communication technique	\N	ginf1	\N	STU004	STU004	2023-09-10	class
 6	16	Pair	Bon esprit d'équipe et aide volontiers les autres	\N	\N	5	STU002	STU008	2024-07-05	project
-11	14	Self	Je dois améliorer ma gestion du temps et mon organisation	\N	ginf2	\N	STU007	STU007	2023-06-20	class
 15	15.5	Professor	Bon travail d'équipe mais peut améliorer ses compétences techniques	\N	\N	2	STU015	PRF001	2023-06-18	project
 17	16	Professor	Bonne compréhension des concepts mais doit travailler sa communication	\N	ginf3	\N	STU015	PRF002	2024-08-12	class
 18	17.5	Pair	Excellent leadership et capacité à motiver l'équipe	\N	\N	7	STU010	STU016	2024-08-15	project
@@ -1016,7 +1022,6 @@ COPY public.skill_evaluation (id_evaluation, note_evaluation, type_evaluation, c
 25	17.5	Professor	Excellente maîtrise des concepts de machine learning	\N	ginf3	\N	STU008	PRF001	2024-06-15	class
 3	8.2	Professor	Bonne implication dans le projet et respect des délais	\N	\N	\N	STU003	PRF001	2023-06-20	project
 4	9.1	Professor	Participation active en réunion, peut approfondir l'aspect technique	\N	\N	\N	STU004	PRF001	2023-06-25	project
-7	7.5	Professor	Doit améliorer la régularité du travail et la communication	\N	\N	\N	STU007	PRF001	2023-07-02	project
 8	9.1	Professor	Très bon niveau technique et esprit collaboratif	\N	\N	\N	STU008	PRF001	2023-07-05	project
 9	8	Professor	Bonne compréhension du sujet mais manque d’initiative	\N	\N	\N	STU009	PRF001	2023-07-10	project
 10	9.4	Professor	Travail rigoureux, mais peut mieux gérer le temps imparti	\N	\N	\N	STU010	PRF001	2023-07-15	project
@@ -1055,28 +1060,30 @@ COPY public.solution (id_solution, option_solution, subject_solution, periode, s
 COPY public.student (id_member, cne, id_class) FROM stdin;
 M001	\N	\N
 M002	\N	\N
-7ba19de9-a3b5-45fc-b64b-bdb68799088e	p13790	GINF1
-STU001	D13456789	ginf1
-STU002	G98765432	ginf2
-STU003	R14785236	ginf3
-STU004	S36925814	gind1
-STU005	B12345678	gind2
-STU006	M25836914	gind3
-STU007	K74185296	cys1
-STU008	H96385274	cys2
-STU009	F45678912	cys3
-STU010	E78945612	gsea1
-STU011	Z15975364	gsea2
-STU012	Y75395146	gsea3
-STU013	U12378945	gsr1
-STU014	V45612378	gsr2
-STU015	T78945632	gsr3
-STU016	W12356479	td1
-STU017	X78945613	td2
-STU018	P12397845	td3
-STU019	O89456123	td4
-STU020	N56123789	td5
-S100	CNE789456	GINF1
+STU009	F45678912	CYS1
+STU001	D13456789	CYS1
+STU002	G98765432	CYS1
+1e7e6475-93ce-4947-92b1-ef1100ee2efa	\N	GINF1
+eb3984fd-f3fa-4b78-98b3-b9e47de9c382	\N	GINF1
+103f6326-9935-4002-b471-42114d3433f6	\N	GINF1
+e1a830cd-bff6-47fe-b34f-201f855e6e26	\N	GINF1
+f8da5d76-de29-4062-bf7a-b1b6931ccc55	\N	GINF1
+3da9a278-2a21-49d9-8cc5-f0c2fc028339	\N	GINF1
+STU003	R14785236	GINF1
+STU004	S36925814	GINF1
+STU005	B12345678	CYS1
+STU008	H96385274	GINF1
+STU010	E78945612	CYS1
+STU011	Z15975364	GINF1
+STU012	Y75395146	GINF1
+STU013	U12378945	CYS1
+STU014	V45612378	GINF1
+STU015	T78945632	GINF1
+STU016	W12356479	CYS1
+STU017	X78945613	CYS1
+STU018	P12397845	CYS1
+STU019	O89456123	GINF1
+STU020	N56123789	CYS1
 \.
 
 
@@ -1087,12 +1094,8 @@ S100	CNE789456	GINF1
 COPY public.supervise (id_supervisor, id_student, id_internship) FROM stdin;
 SUP001	STU001	1
 SUP002	STU002	2
-SUP003	STU003	3
-SUP004	STU006	4
-SUP005	STU007	5
 SUP001	STU011	6
 SUP002	STU012	7
-SUP003	STU013	8
 SUP004	STU016	9
 SUP005	STU017	10
 \.
@@ -1116,18 +1119,16 @@ SUP005	SUP-INWI-001	Inwi	Architecte Solutions
 --
 
 COPY public.teach (id_member, id_class, course) FROM stdin;
-7617a2ab-6241-4e4f-8cb0-27536f5e4796	GINF1	JAOUD
-PRF001	ginf1	Intelligence Artificielle
-PRF001	ginf2	Machine Learning
-PRF002	ginf3	Data Mining
-PRF002	cys2	Big Data Analytics
-PRF003	cys3	Sécurité des Réseaux
-PRF003	gsr3	Cryptographie Avancée
-PRF004	gind1	Génie Logiciel
-PRF004	gsea2	Méthodes Agiles
-PRF005	ginf1	Analyse Numérique
-PRF005	gsr1	Statistiques pour Data Science
-15128dd0-f5c6-43ad-ad49-ada45edb9a4d	GINF1	Maths
+7915e0fc-a198-4ceb-9d94-e7460dc92de9	CYS1	PHP For Beginners
+d60cc2e1-2789-48ad-a653-8c1558ba3d0d	GINF1	Réseau avancée
+212cfe01-1262-494a-877c-a5dc2041d8e2	GINF1	CPP OOP
+effa96bb-9ea9-4ad1-b85d-13d94c9eda52	GINF1	
+98b4fa4b-c123-4edb-9e7d-179acb96dc45	GINF1	
+1dd5bde1-b1ff-43cd-a16d-5e2cd19b04cc	CYS1	EL Founoune Rakmia
+4bbbe3e1-b3ba-4066-9f09-6475d2160f1e	GINF1	
+8cb93546-54ad-4869-8c05-d6aab1d7cf11	GINF1	JAVA
+c3e78aec-53f6-4b16-8138-69bdf55b663a	GINF1	Python
+c3e78aec-53f6-4b16-8138-69bdf55b663a	CYS1	Java 
 \.
 
 
@@ -1156,7 +1157,6 @@ COPY public.team_student (id_team, student_id) FROM stdin;
 3	STU009
 3	STU013
 3	STU019
-4	STU007
 4	STU017
 5	STU002
 5	STU008
@@ -1164,11 +1164,9 @@ COPY public.team_student (id_team, student_id) FROM stdin;
 5	STU018
 6	STU005
 6	STU015
-7	STU006
 7	STU010
 7	STU016
 7	STU020
-8	STU007
 8	STU017
 \.
 
@@ -1198,7 +1196,7 @@ SELECT pg_catalog.setval('public.notifications_id_notification_seq', 4, true);
 -- Name: project_id_project_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.project_id_project_seq', 31, true);
+SELECT pg_catalog.setval('public.project_id_project_seq', 46, true);
 
 
 --

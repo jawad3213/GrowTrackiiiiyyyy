@@ -12,7 +12,7 @@ exports.getAllNotifications = async (id_student) => {
         console.error("Error retrieving notifications:", error);
         throw error;
     }}
-
+/*
 exports.getDeatilsOfSolution = async (id_signal) => {
     try {
         const result = await pool.query(
@@ -25,3 +25,4 @@ exports.getDeatilsOfSolution = async (id_signal) => {
         throw error;
     }
 }
+*/

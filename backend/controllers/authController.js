@@ -81,14 +81,15 @@ exports.RefreshToken = async (req, res) => {
       }
       
       const new_access_token = JWT.sign(
-        { id: user.id_member, role: user.role, fullname: user.fullname},
+        { id: user.id_member, role: user.role, fullname: user.full_name},
         process.env.ACCESS_SECRET,
         { expiresIn: '15m' }
       );
+      /*
       if(useCookies){
       res.cookie("access_token", new_access_token, {
         httpOnly: true,
-        secure: true,
+        secure: false,
         sameSite: "Strict",
         maxAge: RememberMe ? 15 * 60 * 1000 : undefined 
       });
@@ -98,8 +99,32 @@ exports.RefreshToken = async (req, res) => {
       else{
         return res.status(201).json({
         message: "The new access token is set!", access_token: new_access_token
-      });
-    }
+      });*/
+      if(useCookies){
+        // FIXED: Proper cookie expiration logic
+        const cookieOptions = {
+          httpOnly: true,
+          secure: false, // Change to true in production with HTTPS
+          sameSite: "Strict"
+        };
+
+        // If RememberMe is true, make it persistent with maxAge
+        // If RememberMe is false, make it a session cookie (no maxAge)
+        if (RememberMe) {
+          cookieOptions.maxAge = 15 * 60 * 1000; // 15 minutes for persistent cookie
+        }
+
+        res.cookie("access_token", new_access_token, cookieOptions);
+        
+        return res.status(200).json({ // Changed from 201 to 200
+          message: "The new access token is set!"
+        });
+      } else {
+        return res.status(200).json({ // Changed from 201 to 200
+          message: "The new access token is set!", 
+          access_token: new_access_token
+        });
+      }
   
     } catch (error) {
       res.clearCookie("refresh_token");
@@ -111,12 +136,12 @@ exports.Logout=(req, res)=>{
     try {
         res.clearCookie("refresh_token", {
             httpOnly: true,
-            secure: true,
+            secure: false,
             sameSite: "Strict"
           });;
         res.clearCookie("access_token", {
             httpOnly: true,
-            secure: true,
+            secure: false,
             sameSite: "Strict"
           });;
         return res.status(200).json({ message: "Logout successful" });
