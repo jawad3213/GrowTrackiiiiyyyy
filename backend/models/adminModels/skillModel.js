@@ -63,11 +63,26 @@ exports.deleteSkillById = async (skill_name) => {
   }
 };
 
-exports.total = async () => {
+/*exports.total = async () => {
   try {
     const result = await pool.query(
       "SELECT COUNT(skill_name) AS total FROM public.skill"
     );
+    return result.rows[0];
+  } catch (error) {
+    console.error("Error retrieving total number of skills:", error);
+    throw error;
+  }
+};*/
+exports.total = async () => {
+  try {
+    console.log('total function called');
+    const result = await pool.query(
+      "SELECT COUNT(skill_name) AS total FROM public.skill"
+    );
+    console.log('pool.query result:', result);
+    console.log('result.rows:', result.rows);
+    console.log('result.rows[0]:', result.rows[0]);
     return result.rows[0];
   } catch (error) {
     console.error("Error retrieving total number of skills:", error);

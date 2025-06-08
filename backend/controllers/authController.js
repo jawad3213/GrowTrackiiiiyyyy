@@ -81,12 +81,13 @@ exports.RefreshToken = async (req, res) => {
       }
       
       const new_access_token = JWT.sign(
-        { id: user.id_member, role: user.role, fullname: user.fullname},
+        { id: user.id_member, role: user.role, fullname: user.full_name},
         process.env.ACCESS_SECRET,
         { expiresIn: '15m' }
       );
       res.cookie("access_token", new_access_token, {
         httpOnly: true,
+        secure: false,
         secure: false,
         sameSite: "Strict",
         maxAge: RememberMe ? 15 * 60 * 1000 : undefined 
@@ -104,12 +105,12 @@ exports.Logout=(req, res)=>{
     try {
         res.clearCookie("refresh_token", {
             httpOnly: true,
-            secure: true,
+            secure: false,
             sameSite: "Strict"
           });;
         res.clearCookie("access_token", {
             httpOnly: true,
-            secure: true,
+            secure: false,
             sameSite: "Strict"
           });;
         return res.status(200).json({ message: "Logout successful" });

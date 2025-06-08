@@ -61,7 +61,7 @@ exports.getMemberProject = async (id_student,id_projet) => {
         )
         return result.rows;
     }catch(error){
-        console.error("erreur dans getProjects", error);
+        console.error("erreur dans getMemberProjects", error);
         throw error;
     }
 }
@@ -72,7 +72,7 @@ exports.addSignal = async (id_student, reported , title, description,anony) => {
         const result = await pool.query(
             `
             INSERT INTO public.signal (id_signal,id_member, message, anony, option_signal) 
-            VALUES (89,$1, $2, $3, $4)
+            VALUES ($1, $2, $3, $4)
             RETURNING *
             `, [id_student, description, anony, title]
 
@@ -120,16 +120,10 @@ exports.setEvaluation = async (id_student, id_team, ratings, evaluated, message)
 
         const result = await client.query(`
             INSERT INTO public.skill_evaluation (id_evaluation, note_evaluation, type_evaluation, comment_evaluation, id_team, id_student, id_evaluator, evaluation_context, date_add)
-            VALUES (30,$1, $2, $3, $4, $5, $6, $7, NOW()) RETURNING id_evaluation`,
+            VALUES ($1, $2, $3, $4, $5, $6, $7, NOW()) RETURNING id_evaluation`,
             [rate * 0.3, 'Pair', message, id_team, evaluated, id_student, 'project']
         );
         const id_evaluation = result.rows[0].id_evaluation;
-
-        
-
-        
-
-        
 
         for (const rating of ratings) {
             await client.query(
@@ -148,9 +142,19 @@ exports.setEvaluation = async (id_student, id_team, ratings, evaluated, message)
         await client.query('COMMIT');
         return { success: true };
     } catch (error) {
-        await client.query('ROLLBACK');
-        console.error("Erreur dans setEvaluation", error);
-        throw error;
+        //just smtg to help with debugging and errors
+        // Store the original error
+        const originalError = error;
+        
+        try {
+            await client.query('ROLLBACK');
+        } catch (rollbackError) {
+            // Log the rollback error but don't let it override the original error
+            console.error('ROLLBACK failed:', rollbackError);
+        }
+        
+        console.error("Erreur dans setEvaluation", originalError);
+        throw originalError; // Always throw the original error, not the rollback error
     } finally {
         client.release();
     }

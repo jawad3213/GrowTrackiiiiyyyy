@@ -41,16 +41,19 @@ exports.delete_project_Controller =  async (req, res) => {
 };
 
 /////////// 3
-exports.add_project_Controller =  async (req, res) => {
+// Fixed version of add_project_Controller
+exports.add_project_Controller = async (req, res) => {
   try {
     const id = req.user.id;
-    const {name,month_start,month_number,description,level,field}=req.body;
+    const {name, month_start, month_number, description, level, field} = req.body;
     const [month, year] = month_start.split('/');
     const start_date = new Date(`${year}-${month}-01`);
     const end_date = new Date(start_date);
-    end_date.setMonth(end_date.getMonth() + parseInt(month_number), 0); // jour 0 = dernier jour du mois precedent
+    
+    // Add the months, then move to next month and set to day 0 (last day of target month)
+    end_date.setMonth(end_date.getMonth() + parseInt(month_number) + 1, 0);
 
-    const result = await project_Model.add_project_Model(id,name,start_date,end_date,description,level,field);
+    const result = await project_Model.add_project_Model(id, name, start_date, end_date, description, level, field);
     
     if (result) {
       return res.status(200).json({

@@ -43,7 +43,7 @@ api.interceptors.response.use(
       console.log("Begin of interceptor")
       const errorCode = error.response.data?.errorCode;
       // ⿢ Only refresh if the errorCode is TOKEN_EXPIRED
-      if (errorCode === 'TOKEN_EXPIRED' ) {
+      if (errorCode === 'TOKEN_EXPIRED' ||errorCode === "INVALID_TOKEN" ) {
         originalRequest._retry = true; // Mark that we are retrying
         try {
           await api.post('/api/auth/refresh', {headers : {
