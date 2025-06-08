@@ -542,34 +542,25 @@ import {useAuthStore} from '@/stores/auth'
 
 router.beforeEach(async (to, from, next) => {
     const auth = useAuthStore();
-    
-    // If route doesn't require authentication, allow access
     if (to?.meta?.DoNotrequiresAuth) {
         return next();
     }
-    
-    // Route requires authentication
     if (!auth.isAuthenticated) {
         try {
-            // Try to check/refresh authentication
             await auth.checkAuth();
-            
-            // After successful auth check, verify role if required
             if (to?.meta?.role && to.meta.role !== auth.Role) {
                 return next('/Error');
             }
-            
             return next();
+
         } catch (error) {
             console.log('Authentication check failed:', error);
             return next('/Login');
         }
     } else {
-        // User is already authenticated, just check role
         if (to?.meta?.role && to.meta.role !== auth.Role) {
             return next('/Error');
         }
-        
         return next();
     }
 });

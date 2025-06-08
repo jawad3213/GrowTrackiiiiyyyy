@@ -34,32 +34,39 @@
             </tr>
           </thead>
           <tbody>
-            <tr
-              v-for="project in filteredProjects"
-              :key="project.id"
-              class="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800"
-            >
-              <td class="p-3">{{ project.projectName }}</td>
-              <td class="p-3 flex items-center gap-2">
-                <img :src="project.avatar" class="w-8 h-8 rounded-full object-cover" />
-                <div>
-                  <div class="font-medium text-gray-800 dark:text-white">{{ project.fullName }}</div>
-                  <div class="text-xs text-gray-500">@{{ project.username }}</div>
-                </div>
-              </td>
-              <td class="p-3">{{ project.moduleName }}</td>
-
-              <td class="p-3">{{ project.groupName }}</td>
-               <td class="p-3 text-purple-600 hover:underline cursor-pointer" @click="ViewMembers(project.id)">
-                 →
-              </td>
-              <viewMembers />
+            <template v-for="project in filteredProjects" :key="project.id_project">
+              <tr class="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+                <td class="p-3">{{ project.name_project }}</td>
+                <td class="p-3 flex items-center gap-2">
+                    <div class="font-medium text-gray-800 dark:text-white">{{ project.professor_name }}</div>
+                </td>
+                <td class="p-3">{{ project.module }}</td>
+                <td class="p-3">{{ project.team_name }}</td>
+                <td class="p-3">
+                  <button 
+                    @click="toggleMembers(project.id_project)"
+                    class="px-4 py-2 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-all duration-300 shadow"
+                  >
+                    {{ selectedProjectId === project.id_project && showMembersPopup ? 'Hide Members' : 'View Members' }}
+                  </button>
+                </td>
+              </tr>
               
-            </tr>
+              <!-- Members dropdown row -->
+              <tr v-if="selectedProjectId === project.id_project && showMembersPopup" class="!border-t-0">
+                <td colspan="5" class="p-0">
+                  <viewMembers 
+                    :project_id="project.id_project"
+                    :is_visible="true"
+                    @close="hideMembers"
+                  />
+                </td>
+              </tr>
+            </template>
           </tbody>
         </table>
       </div>
-  
+      
       <!-- Pagination -->
       <div class="flex justify-between items-center mt-6 text-sm text-gray-600 dark:text-white">
         <span>Page 1 of 10</span>
@@ -69,44 +76,56 @@
         </div>
       </div>
     </div>
-</StudentLayout>
-  </template>
-  
-  <script setup>
-  import { ref, computed, onMounted } from 'vue'
-  import { useRouter } from 'vue-router'
-  import StudentLayout from '@/components/layout/StudentLayout.vue'
-  import viewMembers from '../viewMembers.vue'
-  import api from '@/services/api'
-  import { useAuthStore } from '@/stores/auth'
-  
-  const authStore = useAuthStore();
-  const router = useRouter()
-  const projects = ref([])
-  const search = ref('')
-  const fetchProjects = async () => {
-    try {
-      const res = await api.get(`/student/projects/all_projects/${authStore.ID}`)
-      projects.value = res.data.data
-      console.log(res.data.data)
-    } catch (err) {
-      console.error('Erreur chargement des projets  :', err)
-    }
-  }
-  
-  onMounted(fetchProjects)
-  
-  const filteredProjects = computed(() =>
-    projects.value.filter((s) =>
-      s.fullName.toLowerCase().includes(search.value.toLowerCase())
-    )
-  )
-  
-  function ViewMembers(id){
-        router.push(`/viewMembers?id=${id}`)
-  }
-  
-  
+    </StudentLayout>
+</template>
 
-  </script>
-  
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import StudentLayout from '@/components/layout/StudentLayout.vue'
+import viewMembers from '../viewMembers.vue'
+import api from '@/services/api'
+import { useAuthStore } from '@/stores/auth'
+
+const authStore = useAuthStore();
+const router = useRouter()
+const projects = ref([])
+const search = ref('')
+const showMembersPopup = ref(false)
+const selectedProjectId = ref(null)
+
+function toggleMembers(id_project) {
+  if (selectedProjectId.value === id_project) {
+    showMembersPopup.value = !showMembersPopup.value
+  } else {
+    selectedProjectId.value = id_project
+    showMembersPopup.value = true
+  }
+}
+
+function hideMembers() {
+  showMembersPopup.value = false
+}
+
+const fetchProjects = async () => {
+  try {
+    const res = await api.get(`/student/projects/all_projects/${authStore.ID}`)
+    projects.value = res.data.data
+    console.log(res.data.data)
+  } catch (err) {
+    console.error('Erreur chargement des projets  :', err)
+  }
+}
+
+onMounted(fetchProjects)
+
+const filteredProjects = computed(() =>
+  projects.value.filter((s) =>
+    s.name_project.toLowerCase().includes(search.value.toLowerCase())
+  )
+)
+
+function ViewMembers(id){
+  router.push(`/viewMembers?id=${id}`)
+}
+</script>

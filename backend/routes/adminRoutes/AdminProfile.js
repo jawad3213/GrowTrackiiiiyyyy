@@ -2,12 +2,11 @@ const express = require("express");
 const router = express.Router();
 const AdminProfile = require('../../controllers/adminControllers/AdminProfile_Controller.js');
 const {verifyToken}= require('../../middlewares/VerifyToken');
-const verifyRolee = require('../../middlewares/verificationRole');
-
-
+const verifyRole = require('../../middlewares/verificationRole');
 
 router.use(verifyToken)
-router.use(verifyRolee("admin"))
+
+router.use(verifyRole("admin"))
 //ne donne rien par front , id de jwt va passé directement a cette fonction , le lien est passé par back entant objet picture_URL
 router.get('/picture',AdminProfile.picture_controller);
 

@@ -10,12 +10,11 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="member in members" :key="member.id" class="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+          <tr v-for="member in members" :key="member.id_member" class="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
             <td class="p-4 flex items-center gap-3">
-              <img :src="project.avatar" class="w-10 h-10 rounded-full object-cover shadow" />
               <div>
-                <div class="font-medium text-gray-800 dark:text-white">{{ member.fullName }}</div>
-                <div class="text-xs text-gray-400">@{{ member.id }}</div>
+                <div class="font-medium text-gray-800 dark:text-white">{{ member.full_name }}</div>
+                <div class="text-xs text-gray-400">@{{ member.id_member }}</div>
               </div>
             </td>
             <td class="p-4 text-center">
@@ -33,39 +32,88 @@
               </div>
             </td>
           </tr>
+          <tr v-if="isLoading == true">
+            <td colspan="2" class="p-4 text-center text-gray-500 dark:text-gray-400">
+              Loading ...
+            </td>
+          </tr>
+          <tr v-else="members.length === 0">
+            <td colspan="2" class="p-4 text-center text-gray-500 dark:text-gray-400">
+              No members found in this project
+            </td>
+          </tr>
         </tbody>
       </table>
+      
     </div>
+    <button 
+          @click="close"
+          class="px-4 py-2 bg-gray-500 text-white font-semibold rounded-lg hover:bg-gray-600 transition-all duration-300 shadow"
+        >
+          Close
+        </button>
   </div>
 </div>
-
 </template>
+
 <script setup>
 import { useRoute } from 'vue-router';
 import router from '@/routers';
-import axios from 'axios'
-import {ref, onMounted} from 'vue'
+import { ref, onMounted, watch } from 'vue'
+import api from '@/services/api';
+import { useAuthStore } from '@/stores/auth';
 
+const props = defineProps({
+  project_id: {
+    required: true
+  },
+  is_visible:{
+    required: true
+  }
+})
+const auth = useAuthStore();
+
+const emit = defineEmits(['close'])
+console.log(props.is_visible, props.project_id)
 const members = ref([])
 const project = ref({});
-const route = useRoute()
-const id = route.query.id 
-onMounted(async function fetchMembers(){
-   try {
-     const res = await axios.get(`http://localhost:3001/studProjects/${id}`)
-         project.value = res.data; 
-    members.value = res.data.members   //accéder à .members ici
-   } catch (error) {
-    console.log('error api', error)
-   }
-}) 
+const isLoading = ref(false)
+const error = ref(null)
 
-function evaluate(id){
-    router.push(`/studentEvaluate?id=${id}` )
+async function fetchMembers() {
+  try {
+    isLoading.value = true
+    error.value = null
+    const res = await api.get(`/student/projects/member_project?project_id=${props.project_id}&id_student=${auth.ID}`)
+    console.log(res.data)
+    members.value = res.data.data
+  } catch (err) {
+    error.value = err.message || 'Failed to load members'
+    console.error('API error:', err)
+  } finally {
+    isLoading.value = false
+  }
 }
 
-function signal(id){
-    router.push(`/StudentSignal?id=${id}` )
+function evaluate(id) {
+  router.push(`/studentEvaluate?id=${id}`)
 }
 
+function signal(id) {
+  router.push(`/StudentSignal?id=${id}`)
+}
+
+function close() {
+  emit('close')
+}
+
+watch(() => props.is_visible, async (visible) => {
+  if (visible) {
+    fetchMembers()
+  }
+})
+// Fetch members when component mounts or project_id changes
+onMounted(async()=>{
+  fetchMembers();
+})
 </script>

@@ -7,7 +7,7 @@ router.get("/number_projects/:id_student", projectController.numberOfProdjects);
 
 router.get("/all_projects/:id_student", projectController.getAllProjects);
 
-router.get("/member_project/:id_student", projectController.getMemberProject);
+router.get("/member_project", projectController.getMemberProject);
 
 router.post("/add_signal/:id_student", projectController.addSignal);
 

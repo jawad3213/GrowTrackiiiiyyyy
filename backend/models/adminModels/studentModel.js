@@ -73,57 +73,82 @@ exports.getStudentByCin = async (cin) => {
 
 // Mise à jour partielle d’un utilisateur (PATCH)
 
-  exports.updateStudentById = async (id, fieldsToUpdate) => {
-    try {
-      // Cloner fieldsToUpdate pour éviter de modifier l'original
-      const fields = { ...fieldsToUpdate };
-  
-      // Préparer les parties à mettre à jour dans chaque table
-      const memberFields = {};
-      const studentFields = {};
-  
-      // Séparer les champs selon leur table
-      for (const key in fields) {
-        if (["full_name", "cin", "email", "password", "role", "description", "profile_picture"].includes(key)) {
-          memberFields[key] = fields[key];
-        } else if (["cne", "id_class"].includes(key)) {
-          studentFields[key] = fields[key];
-        }
+ exports.updateStudentById = async (id, fieldsToUpdate) => {
+  try {
+    // Cloner fieldsToUpdate pour éviter de modifier l'original
+    const fields = { ...fieldsToUpdate };
+    
+    // Préparer les parties à mettre à jour dans chaque table
+    const memberFields = {};
+    const studentFields = {};
+    console.log("Fields to update:", fieldsToUpdate);
+    
+    // Séparer les champs selon leur table
+    for (const key in fields) {
+      if (["full_name", "cin", "email", "password", "role", "description", "profile_picture"].includes(key)) {
+        memberFields[key] = fields[key];
+      } else if (["cne", "id_class"].includes(key)) {
+        studentFields[key] = fields[key];
       }
-  
-      // Résultat final
-      let updatedMember = null;
-  
-      // 1. Mise à jour de la table member s'il y a des champs à modifier
-      if (Object.keys(memberFields).length > 0) {
-        const memberKeys = Object.keys(memberFields);
-        const memberValues = Object.values(memberFields);
-  
-        const setClauseMember = memberKeys.map((key, i) => `${key} = $${i + 1}`).join(", ");
-        const queryMember = `UPDATE public.member SET ${setClauseMember} WHERE id_member = $${memberKeys.length + 1} RETURNING *`;
-  
-        const result = await pool.query(queryMember, [...memberValues, id]);
-        updatedMember = result.rows[0];
-      }
-  
-      // 2. Mise à jour de la table student s'il y a des champs à modifier
-      if (Object.keys(studentFields).length > 0) {
-        const studentKeys = Object.keys(studentFields);
-        const studentValues = Object.values(studentFields);
-  
-        const setClauseStudent = studentKeys.map((key, i) => `${key} = $${i + 1}`).join(", ");
-        const queryStudent = `UPDATE public.student SET ${setClauseStudent} WHERE id_member = $${studentKeys.length + 1}`;
-  
-        await pool.query(queryStudent, [...studentValues, id]);
-      }
-  
-      return updatedMember; // on retourne seulement ce qu'on a mis à jour dans member (comme tu faisais avant)
-      
-    } catch (error) {
-      console.error("Error updating student:", error);
-      throw error;
     }
-  };
+    
+    console.log("Member fields:", memberFields);
+    console.log("Student fields:", studentFields);
+    
+    // Résultat final
+    let updatedMember = null;
+    
+    // 1. Mise à jour de la table member s'il y a des champs à modifier
+    if (Object.keys(memberFields).length > 0) {
+      const memberKeys = Object.keys(memberFields);
+      const memberValues = Object.values(memberFields);
+      
+      const setClauseMember = memberKeys.map((key, i) => `${key} = $${i + 1}`).join(", ");
+      const queryMember = `UPDATE public.member SET ${setClauseMember} WHERE id_member = $${memberKeys.length + 1} RETURNING *`;
+      
+      console.log("Member query:", queryMember);
+      console.log("Member values:", [...memberValues, id]);
+      
+      const result = await pool.query(queryMember, [...memberValues, id]);
+      updatedMember = result.rows[0];
+      console.log("Updated member:", updatedMember);
+    }
+    
+    // 2. Mise à jour de la table student s'il y a des champs à modifier
+    if (Object.keys(studentFields).length > 0) {
+      const studentKeys = Object.keys(studentFields);
+      const studentValues = Object.values(studentFields);
+      
+      const setClauseStudent = studentKeys.map((key, i) => `${key} = $${i + 1}`).join(", ");
+      const queryStudent = `UPDATE public.student SET ${setClauseStudent} WHERE id_member = $${studentKeys.length + 1}`;
+      
+      console.log("Student query:", queryStudent);
+      console.log("Student values:", [...studentValues, id]);
+      
+      const studentResult = await pool.query(queryStudent, [...studentValues, id]);
+      console.log("Student update result:", studentResult.rowCount, "rows affected");
+      
+      // Vérifier si la mise à jour a affecté des lignes
+      if (studentResult.rowCount === 0) {
+        console.warn(`No student record found with id_member = ${id}`);
+      }
+    }
+    
+    // Si on a mis à jour seulement les champs student, on peut récupérer les infos member
+    if (!updatedMember && Object.keys(studentFields).length > 0) {
+      const memberQuery = `SELECT * FROM public.member WHERE id_member = $1`;
+      const memberResult = await pool.query(memberQuery, [id]);
+      updatedMember = memberResult.rows[0];
+    }
+    
+    return updatedMember;
+    
+  } catch (error) {
+    console.error("Error updating student:", error);
+    console.error("Error details:", error.message);
+    throw error;
+  }
+};
   
 
 exports.deleteStudentById = async (id) => {
