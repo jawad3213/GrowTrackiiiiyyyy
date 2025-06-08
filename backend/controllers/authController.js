@@ -1,3 +1,5 @@
+// ✅ AJOUT 3 : Import du pool en haut du fichier
+const pool = require('../config/db');
 const authModel = require("../models/authModel");
 const JWT = require('jsonwebtoken');
 require('dotenv').config();
@@ -14,6 +16,9 @@ exports.Login =
 async (req , res) =>{
   const {password, email, RememberMe} = req.body;
   const useCookies = req.headers['use-cookies'] === 'true' ;
+   // ✅ AJOUT 1 : Monitoring au début
+  console.log(`🔍 Pool: Total=${pool.totalCount}, Idle=${pool.idleCount}, Waiting=${pool.waitingCount}`);
+  
   
   try {
       const user = await authModel.LoginModel(email, password);
@@ -58,6 +63,8 @@ async (req , res) =>{
       }
 
   } catch (error) {
+      // ✅ AJOUT 2 : Stats du pool en cas d'erreur
+    console.error(`❌ Pool stats on error: Total=${pool.totalCount}, Idle=${pool.idleCount}, Waiting=${pool.waitingCount}`);
       return res.status(500).json({ message: "Server Error, Please try again later!" });
   }
 }

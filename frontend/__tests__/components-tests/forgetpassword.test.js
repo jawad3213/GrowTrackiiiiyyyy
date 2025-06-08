@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
-import ForgotPassword from '../../src/components/forgotPassword.vue' // Adjust path as needed
+import ForgotPassword from '../../src/components/forgotPassword.vue'
 
 // Mock router
 const mockPush = vi.fn()
