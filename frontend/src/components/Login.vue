@@ -98,7 +98,7 @@ const email = ref('');
 const password = ref('');
 const showPassword = ref(false);
 const isSubmitting = ref(false);
-const RememberMe = ref(false);
+const RememberMe = ref(localStorage.getItem("remember_me"));
 
 
 const togglePassword = () => (showPassword.value = !showPassword.value);

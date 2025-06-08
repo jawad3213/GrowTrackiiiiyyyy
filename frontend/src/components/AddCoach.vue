@@ -127,7 +127,6 @@
   async function submitForm() {
     try {
       const sanitizedData = formStore.sanitizeInputs(coach.value)
-      console.log(sanitizedData)
       const valid = await formStore.validateWithSchema(sanitizedData,coachSchema)
       if (!valid) return
       await formStore.submitForm('/admin/coachs/create', sanitizedData, () => {

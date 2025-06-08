@@ -5,9 +5,20 @@ const api = axios.create({
   baseURL: 'http://localhost:3000', 
   withCredentials: true 
 })
+function getCookie(name) {
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  return match ? match[2] : null;
+}
 
-api.interceptors.request.use(config => {
-  const token = localStorage.getItem('access_token'); // Works for both cases
+api.interceptors.request.use(async config => {
+  if (['post', 'put', 'patch', 'delete'].includes(config.method)) {
+  await api.get('/api/csrf-token');// sets the XSRF-TOKEN cookie
+  config.headers['X-XSRF-TOKEN'] = getCookie('XSRF-TOKEN');
+}
+  const rememberMe = localStorage.getItem("remember_me")
+  const token = rememberMe ?
+  localStorage.getItem('access_token')
+  : sessionStorage.getItem('access_token'); 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -23,40 +34,32 @@ api.interceptors.response.use(
     return response;
   },
   async (error) => {
+    const CookiesAccepted = localStorage.getItem("cookiesAccepted");
+    if(CookiesAccepted){
     const originalRequest = error.config;
     const auth = useAuthStore();
 
-
-    // ⿡ Check if the error is 401 Unauthorized
     if (error.response?.status === 401 && !originalRequest._retry) {
       console.log("Begin of interceptor")
       const errorCode = error.response.data?.errorCode;
-      const CookiesAccepted = localStorage.getItem("cookiesAccepted");
       // ⿢ Only refresh if the errorCode is TOKEN_EXPIRED
-      if (errorCode === 'TOKEN_EXPIRED' || errorCode === 'NO_TOKEN' || errorCode === 'INVALID_TOKEN') {
+      if (errorCode === 'TOKEN_EXPIRED' ||errorCode === "INVALID_TOKEN" ) {
         originalRequest._retry = true; // Mark that we are retrying
         try {
-          const refresh_token = localStorage.getItem('refresh_token');
-          if (!refresh_token) throw new Error('No refresh token');
-          const data = await api.post('/api/auth/refresh', { 
-          refresh_token: refresh_token }, {headers : {
+          await api.post('/api/auth/refresh', {headers : {
                     'use-cookies': CookiesAccepted
                 }});
-          localStorage.setItem('access_token', data.data?.access_token);
-          originalRequest.headers.authorization = `Bearer ${data.data?.access_token}`;
           return api(originalRequest);
         } catch (refreshError) {
           // ⿥ If refresh also fails, force user to login
           auth.isAuthenticated = false;
-          localStorage.removeItem('access_token');
-          localStorage.removeItem('refresh_token');
           return Promise.reject(refreshError);
         }
       }
     }
-    
     // ⿦ Any other error → just reject
     return Promise.reject(error);
+  }
   }
 );
 

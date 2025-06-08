@@ -6,6 +6,7 @@
         <p class="text-gray-600 text-sm">
           We use cookies to enhance your browsing experience and make it as smooth as possible.
           By clicking "Accept", you consent to our use of cookies.
+          And By not accepting, It will hard for us to provide a good user experience for you.
         </p>
       </div>
       <div class="flex gap-3">

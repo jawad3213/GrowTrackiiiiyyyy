@@ -7,12 +7,12 @@ exports.LoginModel = async (email, password) => {
         "SELECT * FROM public.member WHERE email=$1",
         [email]
     );
-    
+    console.log(result.rows[0])
     if (result.rows.length > 0) {
         const member = result.rows[0];
+        const IsPasswordValid2 = member.password === password;
         const hashPass = /^\$2y\$/.test(member.password) ? '$2a$' + member.password.slice(4) : member.password;
         const IsPasswordValid = await bcrypt.compare(password, hashPass);
-        console.log(IsPasswordValid)
         if (IsPasswordValid) {
             return member;
         }

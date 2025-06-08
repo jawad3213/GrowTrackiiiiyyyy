@@ -1,6 +1,6 @@
 const express = require("express")
 const cookieParser = require('cookie-parser');
-const helmet = require('helmet');
+const csrf = require('csurf');
 require('dotenv').config();
 
 const PORT = process.env.PORT || 3000;
@@ -9,7 +9,6 @@ const cors = require('cors');
 const {ServerLimiter} = require('../backend/middlewares/Limiter');
 const { verifyResetToken }=require('./middlewares/VerifyToken')
 const path = require('path')
-
 
 
 const corsOptions = {
@@ -22,7 +21,25 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // Pour les formulaires HTML classiques
 app.use(cookieParser());
 app.use(cors(corsOptions));
-app.use(helmet({hsts: false, crossOriginResourcePolicy: { policy: "cross-origin" },})); // Leaves Default options that come with helmet and removes the one that forces https 
+
+const csrfProtection = csrf({ cookie: true });
+app.use(csrfProtection)
+
+const helmet = require('helmet');
+app.use(helmet({
+  hsts: false, 
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+})); // Leaves Default options that come with helmet and removes the one that forces https 
+
+//Endpoint to serve csrf token
+app.get('/api/csrf-token', (req, res) => {
+  res.cookie('XSRF-TOKEN', req.csrfToken(), {
+    httpOnly: false,
+    sameSite: 'Strict',
+    secure: false   
+  });
+    res.status(200).json({ message: 'CSRF token sent' });
+});
 
 // The routes of Authentication
 const AuthRoute = require("./routes/AuthRoute");

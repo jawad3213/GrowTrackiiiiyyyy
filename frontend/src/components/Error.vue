@@ -38,7 +38,7 @@
                  px-10 py-5 rounded-full text-xl
                  hover:bg-red-600 transition transform hover:-translate-y-1 hover:shadow-2xl"
         >
-          Go to Home
+          Go to the Home page
         </router-link>
       </div>
     </div>
@@ -51,13 +51,7 @@ export default {
 };
 </script>
 <script setup>
-import { useAuthStore } from '@/stores/auth';
-import router from '@/routers';
-const auth = useAuthStore()
-auth.checkAuth();
-if(!auth.errorMsg){
-  router.push('/login')
-}
+
 
 </script>
 <style>

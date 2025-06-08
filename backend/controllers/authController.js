@@ -23,18 +23,21 @@ async (req , res) =>{
   try {
       const user = await authModel.LoginModel(email, password);
       if(user){
+
           Authlimiter.resetKey(req.ip);
 
+          const acces_expires = (!useCookies && RememberMe)? '45m' : '15m'
           const access_token = JWT.sign(
             { id: user.id_member, role: user.role, fullname: user.full_name},
             process.env.ACCESS_SECRET,
-            { expiresIn: '15m'})
+            { expiresIn: acces_expires})
 
-          const refresh_token = JWT.sign(
+          if(useCookies){
+            const refresh_token = JWT.sign(
             {id: user.id_member, type:"refresh", RememberMe:RememberMe}
             ,process.env.REFRESH_SECRET,
             { expiresIn: '7d'})
-          if(useCookies){
+          
             if(RememberMe){ // Normal Cookies with expiration
                 res.cookie("access_token", access_token,{
                     ...cookieOptions,
@@ -54,9 +57,9 @@ async (req , res) =>{
                 });
             }
   
-          return res.status(200).json({message: "Connected Successfully Avec Cookies!" ,role: user.role, access_token, refresh_token, email: user.email, fullname: user.full_name});
+          return res.status(200).json({message: "Connected Successfully with Cookies!" ,role: user.role, email: user.email, fullname: user.full_name});
         }else{ // else dyal if cookies
-          return res.status(200).json({message: "Connected Successfully Sans Cookies !" , role: user.role, access_token, refresh_token, email: user.email, fullname: user.full_name});
+          return res.status(200).json({message: "Connected Successfully without Cookies !" , role: user.role, access_token, email: user.email, fullname: user.full_name});
         }
     }else{ //else dyal if user
           return res.status(401).json({message: "Email or Password is incorrect"})
@@ -71,7 +74,7 @@ async (req , res) =>{
 
 
 exports.RefreshToken = async (req, res) => {
-    const refresh_token = req.cookies.refresh_token || req.body.refresh_token;
+    const refresh_token = req.cookies.refresh_token ;
     if (!refresh_token) {
       return res.status(401).json({ message: "No token refresh was found, Please login again!" });
     }
@@ -79,10 +82,7 @@ exports.RefreshToken = async (req, res) => {
     try {
       const decoded = JWT.verify(refresh_token, process.env.REFRESH_SECRET);
       const RememberMe = decoded.RememberMe;
-      const useCookies = req.headers['use-cookies'] === 'true';
       const user = await authModel.GetUserById(decoded.id);
-      console.log(decoded.id)
-      console.log(user)
       if (!user) {
         return res.status(400).json({ message: "Please log in" });
       }
@@ -92,46 +92,15 @@ exports.RefreshToken = async (req, res) => {
         process.env.ACCESS_SECRET,
         { expiresIn: '15m' }
       );
-      /*
-      if(useCookies){
       res.cookie("access_token", new_access_token, {
         httpOnly: true,
+        secure: false,
         secure: false,
         sameSite: "Strict",
         maxAge: RememberMe ? 15 * 60 * 1000 : undefined 
       });
       return res.status(201).json({
         message: "The new access token is set!",})
-      }
-      else{
-        return res.status(201).json({
-        message: "The new access token is set!", access_token: new_access_token
-      });*/
-      if(useCookies){
-        // FIXED: Proper cookie expiration logic
-        const cookieOptions = {
-          httpOnly: true,
-          secure: false, // Change to true in production with HTTPS
-          sameSite: "Strict"
-        };
-
-        // If RememberMe is true, make it persistent with maxAge
-        // If RememberMe is false, make it a session cookie (no maxAge)
-        if (RememberMe) {
-          cookieOptions.maxAge = 15 * 60 * 1000; // 15 minutes for persistent cookie
-        }
-
-        res.cookie("access_token", new_access_token, cookieOptions);
-        
-        return res.status(200).json({ // Changed from 201 to 200
-          message: "The new access token is set!"
-        });
-      } else {
-        return res.status(200).json({ // Changed from 201 to 200
-          message: "The new access token is set!", 
-          access_token: new_access_token
-        });
-      }
   
     } catch (error) {
       res.clearCookie("refresh_token");
@@ -176,7 +145,7 @@ exports.ResetPass =
           if(!user) {return res.status(400).json({ message: "User not found with this email ❌" });}
           else {
               const Reset_Token = JWT.sign(
-                  { id: user.id_member},
+                  { id: user.id_member, role: user.role, },
                   process.env.RESET_SECRET,
                   { expiresIn: '15m'})
           
