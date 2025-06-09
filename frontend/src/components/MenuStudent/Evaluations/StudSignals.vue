@@ -1,5 +1,5 @@
 <template>
-    <ProfLayout>
+    <StudentLayout>
     <div class="p-6 min-h-screen bg-gray-50 dark:bg-[#121212]">
       <h1 class="text-2xl font-bold mb-6 text-gray-800 dark:text-white">
         Signals <span class="bg-purple-100 text-purple-600 text-sm font-semibold px-3 py-1 rounded-full">{{ signals.length }} signals in months</span>
@@ -17,6 +17,25 @@
           />
         </div>
       </div>
+
+      <!-- Search and Filter -->
+      <div class="flex gap-3 mb-4">
+        <select v-model="searchType" class="border rounded px-2 py-1">
+          <option value="all">All</option>
+          <option value="name">By Name</option>
+          <option value="module">By Module</option>
+          <option value="signal_state">By Signal State</option>
+          <option value="solution_state">By Solution State</option>
+        </select>
+        <input
+          v-model="search"
+          type="text"
+          placeholder="Search value"
+          class="border rounded px-2 py-1"
+          :disabled="searchType === 'all'"
+        />
+        <button @click="doSearch" class="bg-purple-600 text-white px-4 py-1 rounded">Search</button>
+      </div>
   
       <!-- Table -->
       <div class="overflow-x-auto">
@@ -32,31 +51,34 @@
             </tr>
           </thead>
           <tbody>
-            <tr
-              v-for="signal in filteredSignals"
-              :key="signal.id"
-              class="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800"
-            >
-              <td class="p-3"><input type="checkbox" /></td>
-              <td class="p-3">{{ signal.signalId }}</td>
-              <td class="p-3 flex items-center gap-2">
-                <img :src="signal.avatar" class="w-8 h-8 rounded-full object-cover" />
-                <div>
-                  <div class="font-medium text-gray-800 dark:text-white">{{ signal.fullName }}</div>
-                  <div class="text-xs text-gray-500">@{{ signal.username }}</div>
-                </div>
-              </td>
-              <td class="p-3">
-                <span :class="badgeClass(signal.status)">{{ signal.status }}</span>
-              </td>
-              <td class="p-3">
-                <span :class="solutionClass(signal.solution)">{{ signal.solution }}</span>
-              </td>
-              <td class="p-3 text-purple-600 hover:underline cursor-pointer" @click="viewSignal(signal.id)">
-                View the Solution Taken →
-              </td>
-            </tr>
-          </tbody>
+             <tr v-if="signals.length === 0">
+    <td colspan="6" class="text-center text-gray-500 py-6">No signals found.</td>
+  </tr>
+  <tr
+    v-for="signal in filteredSignals"
+    :key="signal.id_signal"
+    class="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800"
+  >
+    <td class="p-3"><input type="checkbox" /></td>
+    <td class="p-3">{{ signal.id_signal }}</td>
+    <td class="p-3 flex items-center gap-2">
+      <img :src="signal.profile_picture" class="w-8 h-8 rounded-full object-cover" />
+      <div>
+        <div class="font-medium text-gray-800 dark:text-white">{{ signal.full_name }}</div>
+        <!-- Username non disponible -->
+      </div>
+    </td>
+    <td class="p-3">
+      <span :class="badgeClass(signal.signal_state)">{{ signal.signal_state }}</span>
+    </td>
+    <td class="p-3">
+      <span :class="solutionClass(signal.solution_state)">{{ signal.solution_state }}</span>
+    </td>
+    <td class="p-3 text-purple-600 hover:underline cursor-pointer" @click="viewSignal(signal.id_signal)">
+      View the Solution Taken →
+    </td>
+  </tr>
+</tbody>
         </table>
       </div>
   
@@ -69,50 +91,54 @@
         </div>
       </div>
     </div>
-</ProfLayout>
+  </StudentLayout>
   </template>
   
   <script setup>
-  import { ref, computed, onMounted } from 'vue'
-  import axios from 'axios'
-  import { useRouter } from 'vue-router'
-import ProfLayout from '@/components/layout/ProfLayout.vue'
-  
-  const router = useRouter()
-  const signals = ref([])
-  const search = ref('')
-  
-  const fetchSignals = async () => {
-    try {
-      const res = await axios.get('http://localhost:3001/signals')
-      signals.value = res.data
-    } catch (err) {
-      console.error('Erreur chargement des signaux :', err)
+import { ref, onMounted, computed } from 'vue'
+import api from '@/services/api'
+import { useRouter } from 'vue-router'
+import StudentLayout from '@/components/layout/StudentLayout.vue'
+
+const router = useRouter()
+const signals = ref([])
+const searchType = ref('all')
+const search = ref('')
+
+const filteredSignals = computed(() => signals.value)
+
+const doSearch = async () => {
+  const token = localStorage.getItem('token')
+  let url = '/api/student_signal_history/signal_history_all'
+  if (searchType.value === 'name' && search.value) {
+    url = `/api/student_signal_history/signal_history_search_id_all/${encodeURIComponent(search.value)}`
+  } else if (searchType.value === 'module' && search.value) {
+    url = `/api/student_signal_history/signal_history_search_module_all/${encodeURIComponent(search.value)}`
+  } else if (searchType.value === 'signal_state' && search.value) {
+    url = `/api/student_signal_history/signal_history_filtre_statesignal_all/${encodeURIComponent(search.value)}`
+  } else if (searchType.value === 'solution_state' && search.value) {
+    url = `/api/student_signal_history/signal_history_filtre_solutionsignal_all/${encodeURIComponent(search.value)}`
+  }
+  try {
+    const res = await api.get(url, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    console.log('Signals fetched:', res.data)
+    signals.value = res.data
+  } catch (err) {
+    if (err.response && err.response.status === 404) {
+      signals.value = []
+      // Affiche un message utilisateur si tu veux :
+      // alert("Aucun signal trouvé.")
+    } else {
+      console.error('Erreur lors de la recherche :', err)
     }
   }
-  
-  onMounted(fetchSignals)
-  
-  const filteredSignals = computed(() =>
-    signals.value.filter((s) =>
-      s.fullName.toLowerCase().includes(search.value.toLowerCase())
-    )
-  )
-  
-  const badgeClass = (status) => {
-    if (status === 'Approved') return 'text-green-700 bg-green-100 px-2 py-1 rounded-full text-xs font-semibold'
-    if (status === 'Rejected') return 'text-red-700 bg-red-100 px-2 py-1 rounded-full text-xs font-semibold'
-    return 'text-blue-700 bg-blue-100 px-2 py-1 rounded-full text-xs font-semibold'
-  }
-  
-  const solutionClass = (solution) => {
-    if (solution === 'Resolved') return 'text-green-700 bg-green-100 px-2 py-1 rounded-full text-xs font-semibold'
-    if (solution === 'In Progress') return 'text-pink-700 bg-pink-100 px-2 py-1 rounded-full text-xs font-semibold'
-    if (solution === 'Blocked') return 'text-red-700 bg-red-100 px-2 py-1 rounded-full text-xs font-semibold'
-    return 'text-gray-600 bg-gray-100 px-2 py-1 rounded-full text-xs font-semibold'
-  }
-  
-  const viewSignal = (id) => {
-    router.push(`/SolutionSignal?id=${id}`)
 }
+
+const viewSignal = (id_signal) => {
+  router.push({ name: 'StudSolution', query: { id: id_signal } })
+}
+
+onMounted(doSearch)
 </script>

@@ -28,7 +28,7 @@
               :key="qIndex"
               class="mb-5"
             >
-              <label class="font-semibold block mb-2 text-lg">{{ q.text }}</label>
+              <label class="font-semibold block mb-2 text-lg">{{ q }}</label>
               <input
                 type="range"
                 min="0"
@@ -94,73 +94,106 @@
 
 <script>
 import StudentLayout from '@/components/layout/StudentLayout.vue'
-import axios from 'axios'
+import api from '@/services/api'
 
 export default {
   components: { StudentLayout },
   data() {
     return {
       skills: [
-        { name: "Conflict Resolution", open: false, questions: [], ratings: [] },
-        { name: "Influence and Persuasion", open: false, questions: [], ratings: [] },
-        { name: "Communication", open: false, questions: [], ratings: [] },
-        { name: "Leadership", open: false, questions: [], ratings: [] },
-        { name: "Critical Thinking", open: false, questions: [], ratings: [] },
-        { name: "Adaptability", open: false, questions: [], ratings: [] },
+        { name: 'Teamwork', open: false, questions: [
+          'Does this person collaborate effectively with teammates?',
+          'Are they open to others ideas and feedback?',
+          'Do they support the team in achieving common goals?'
+        ], ratings: [0, 0, 0] },
+        { name: 'Problem-Solving', open: false, questions: [
+          'Does this person approach problems calmly and analytically?',
+          'Do they contribute useful solutions when challenges arise?',
+          'Are they willing to seek help or input when needed?'
+        ], ratings: [0, 0, 0] },
+        { name: 'Time Management', open: false, questions: [
+          'Does this person prioritize tasks effectively to meet deadlines?',
+          'Does this person allocate time appropriately across multiple responsibilities?',
+          'Does this person avoid unnecessary delays or procrastination?'
+        ], ratings: [0, 0, 0] },
+        { name: 'Critical Thinking', open: false, questions: [
+          'Does this person analyze information carefully before forming conclusions?',
+          'Does this person question assumptions or challenge ideas constructively?',
+          'Does this person evaluate the strengths and weaknesses of arguments or solutions?'
+        ], ratings: [0, 0, 0] },
+        { name: 'Creativity', open: false, questions: [
+          'Does this person generate original or innovative ideas?',
+          'Does this person approach tasks with imagination or out-of-the-box thinking?',
+          'Does this person explore multiple possibilities before settling on a solution?'
+        ], ratings: [0, 0, 0] },
+        { name: 'Communication', open: false, questions: [
+          'Does this person express their ideas clearly and understandably?',
+          'Do they listen actively and let others finish speaking?',
+          'Do they adapt their communication style depending on the audience?'
+        ], ratings: [0, 0, 0] }
       ],
       recapOpen: false,
       recapText: ''
     }
   },
   methods: {
-    async toggle(index) {
+    toggle(index) {
       if (index === this.skills.length) {
         this.recapOpen = !this.recapOpen
         return
       }
-
-      const skill = this.skills[index]
-      skill.open = !skill.open
-
-      if (skill.open && skill.questions.length === 0) {
-        try {
-          const res = await axios.get(
-            `http://localhost:3001/questions?skill=${encodeURIComponent(skill.name)}`
-          )
-          this.$set(this.skills[index], 'questions', res.data)
-          this.$set(
-            this.skills[index],
-            'ratings',
-            Array(res.data.length).fill(0)
-          )
-        } catch (error) {
-          console.error(`Erreur lors du chargement des questions pour ${skill.name}`, error)
-        }
-      }
+      this.skills[index].open = !this.skills[index].open
     },
-
     averageRating(ratings) {
       if (!ratings.length) return '0.0'
       const sum = ratings.reduce((acc, r) => acc + r, 0)
       return (sum / ratings.length).toFixed(1)
     },
-
     async submit() {
+      // Vérification : toutes les notes doivent être renseignées
       for (const skill of this.skills) {
-        const answers = skill.questions.map((q, i) => ({
-          skill: skill.name,
-          question: q.text,
-          rating: skill.ratings[i] ?? 0
-        }))
-
-        await axios.post('http://localhost:3001/answers', {
-          skill: skill.name,
-          answers
-        })
+        if (skill.ratings.some(r => r === 0 || r === null || r === undefined)) {
+          alert(`Please rate all questions for the skill "${skill.name}" before submitting.`)
+          return
+        }
       }
-
-      alert("Your answers have been submitted. Thank you!")
-      // You can redirect or clear fields here if needed
+      const token = localStorage.getItem('token')
+      const body = {
+        skill1: this.skills[0].name,
+        rate1_skill1: this.skills[0].ratings[0],
+        rate2_skill1: this.skills[0].ratings[1],
+        rate3_skill1: this.skills[0].ratings[2],
+        skill2: this.skills[1].name,
+        rate1_skill2: this.skills[1].ratings[0],
+        rate2_skill2: this.skills[1].ratings[1],
+        rate3_skill2: this.skills[1].ratings[2],
+        skill3: this.skills[2].name,
+        rate1_skill3: this.skills[2].ratings[0],
+        rate2_skill3: this.skills[2].ratings[1],
+        rate3_skill3: this.skills[2].ratings[2],
+        skill4: this.skills[3].name,
+        rate1_skill4: this.skills[3].ratings[0],
+        rate2_skill4: this.skills[3].ratings[1],
+        rate3_skill4: this.skills[3].ratings[2],
+        skill5: this.skills[4].name,
+        rate1_skill5: this.skills[4].ratings[0],
+        rate2_skill5: this.skills[4].ratings[1],
+        rate3_skill5: this.skills[4].ratings[2],
+        skill6: this.skills[5].name,
+        rate1_skill6: this.skills[5].ratings[0],
+        rate2_skill6: this.skills[5].ratings[1],
+        rate3_skill6: this.skills[5].ratings[2],
+        comment: this.recapText
+      }
+      try {
+        await api.post('/api/student_evaluation_byself/new_evaluation', body, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        alert("Your answers have been submitted. Thank you!")
+        // Redirection possible ici
+      } catch (err) {
+        alert('Error submitting evaluation: ' + (err.response?.data?.message || err.message))
+      }
     }
   }
 }
