@@ -1,223 +1,383 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+// components/__tests__/Login.test.js
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createRouter, createWebHistory } from 'vue-router'
-import { createPinia, setActivePinia } from 'pinia'
+import { setActivePinia, createPinia } from 'pinia'
 import { nextTick } from 'vue'
-import LoginComponent from '@/components/Login.vue' // Adjust path as needed
-import { useAuthStore } from '@/stores/auth'
+import Login from '../../src/components/Login.vue'
+import { useAuthStore } from '../../src/stores/auth'
 
-// Mock router
-const router = createRouter({
-  history: createWebHistory(),
-  routes: [
-    { path: '/dashboard', component: { template: '<div>Dashboard</div>' } },
-    { path: '/forgotpass', component: { template: '<div>Forgot Password</div>' } }
-  ]
+// Mock the auth store
+vi.mock('../../src/stores/auth')
+
+// Mock localStorage
+const localStorageMock = {
+  getItem: vi.fn(),
+  setItem: vi.fn(),
+  removeItem: vi.fn(),
+  clear: vi.fn()
+}
+Object.defineProperty(window, 'localStorage', {
+  value: localStorageMock
 })
 
-// Mock auth store
-vi.mock('@/stores/auth', () => ({
-  useAuthStore: vi.fn()
-}))
-
-describe('LoginComponent', () => {
+describe('Login Component', () => {
   let wrapper
-  let mockStore
-  let pinia
+  let mockAuthStore
+  let mockRouter
+  let router
 
-  beforeEach(() => {
-    // Create fresh pinia instance
-    pinia = createPinia()
-    setActivePinia(pinia)
+  beforeEach(async () => {
+    // Setup Pinia
+    setActivePinia(createPinia())
+    
+    // Create router for testing
+    router = createRouter({
+      history: createWebHistory(),
+      routes: [
+        { path: '/login', component: { template: '<div>Login</div>' } },
+        { path: '/dashboard', component: { template: '<div>Dashboard</div>' } },
+        { path: '/dashstud', component: { template: '<div>Student Dashboard</div>' } },
+        { path: '/dashSupervisor', component: { template: '<div>Supervisor Dashboard</div>' } },
+        { path: '/DashboardProf', component: { template: '<div>Professor Dashboard</div>' } },
+        { path: '/forgotpass', component: { template: '<div>Forgot Password</div>' } }
+      ]
+    })
 
-    // Mock store implementation
-    mockStore = {
-      errorMsg: '',
-      isAuthenticated: false,
+    // Mock the auth store
+    mockAuthStore = {
       Login: vi.fn(),
-      Clearstatus: vi.fn()
+      checkAuth: vi.fn(),
+      Clearstatus: vi.fn(),
+      isAuthenticated: false,
+      errorMsg: null,
+      Role: null
     }
+    
+    vi.mocked(useAuthStore).mockReturnValue(mockAuthStore)
+    
+    // Clear localStorage mock
+    localStorageMock.getItem.mockReturnValue(null)
+    
+    // Mount component
+    wrapper = mount(Login, {
+      global: {
+        plugins: [router]
+      }
+    })
 
-    // Mock the store hook
-    vi.mocked(useAuthStore).mockReturnValue(mockStore)
-
-    // Mock router push
-    vi.spyOn(router, 'push').mockResolvedValue()
+    await router.isReady()
   })
 
-  const createWrapper = (props = {}) => {
-    return mount(LoginComponent, {
-      global: {
-        plugins: [router, pinia],
-        stubs: {
-          'router-link': {
-            template: '<a><slot /></a>',
-            props: ['to']
-          }
-        }
-      },
-      ...props
-    })
-  }
+  afterEach(() => {
+    wrapper?.unmount()
+    vi.clearAllMocks()
+  })
 
   describe('Component Rendering', () => {
-    it('renders login form correctly', () => {
-      wrapper = createWrapper()
-      
+    it('should render login form correctly', () => {
       expect(wrapper.find('h2').text()).toBe('Log In')
       expect(wrapper.find('input[type="email"]').exists()).toBe(true)
       expect(wrapper.find('input[type="password"]').exists()).toBe(true)
       expect(wrapper.find('button[type="submit"]').exists()).toBe(true)
     })
 
-    it('renders logo image', () => {
-      wrapper = createWrapper()
-      
+    it('should render logo image', () => {
       const logo = wrapper.find('img[alt="Logo"]')
       expect(logo.exists()).toBe(true)
-      // Image paths are resolved during testing, so we check for the resolved path
-      expect(logo.attributes('src')).toContain('logo.png')
+      expect(logo.attributes('src')).toBe('/src/assets/logo.png')
     })
 
-    it('renders illustration on desktop', () => {
-      wrapper = createWrapper()
-      
+    it('should render illustration on larger screens', () => {
       const illustration = wrapper.find('img[alt="Login Illustration"]')
       expect(illustration.exists()).toBe(true)
-      // Image paths are resolved during testing, check for the filename
-      expect(illustration.attributes('src')).toContain('Sign%20in-amico.svg')
+      expect(illustration.attributes('src')).toBe('/src/assets/Sign%20in-amico.svg')
     })
 
-    it('renders forgot password link', () => {
-      wrapper = createWrapper()
-      
-      // Look for the actual anchor tag created by router-link stub
-      const forgotLink = wrapper.find('a')
+    it('should have forgot password link', () => {
+      const forgotLink = wrapper.find('a[href="/forgotpass"]')
       expect(forgotLink.exists()).toBe(true)
-      expect(forgotLink.text()).toContain('Forgot Password?')
+      expect(forgotLink.text()).toBe('Forgot Password?')
     })
   })
 
   describe('Form Interactions', () => {
-    beforeEach(() => {
-      wrapper = createWrapper()
-    })
-
-    it('updates email input value', async () => {
+    it('should update email when input changes', async () => {
       const emailInput = wrapper.find('input[type="email"]')
       await emailInput.setValue('test@example.com')
       
       expect(emailInput.element.value).toBe('test@example.com')
     })
 
-    it('updates password input value', async () => {
+    it('should update password when input changes', async () => {
       const passwordInput = wrapper.find('input[type="password"]')
       await passwordInput.setValue('password123')
       
       expect(passwordInput.element.value).toBe('password123')
     })
 
-    it('toggles password visibility', async () => {
-      const passwordInput = wrapper.find('input[type="password"]')
+    it('should toggle password visibility', async () => {
       const toggleButton = wrapper.find('button[type="button"]')
       
-      expect(passwordInput.attributes('type')).toBe('password')
+      // Initially password input should exist
+      expect(wrapper.find('input[type="password"]').exists()).toBe(true)
       
       await toggleButton.trigger('click')
       await nextTick()
       
-      expect(passwordInput.attributes('type')).toBe('text')
+      // After toggle, the password input should become text type
+      const passwordField = wrapper.find('input[placeholder="Password"]')
+      expect(passwordField.attributes('type')).toBe('text')
       
       await toggleButton.trigger('click')
       await nextTick()
       
-      expect(passwordInput.attributes('type')).toBe('password')
+      // After second toggle, should be back to password
+      expect(passwordField.attributes('type')).toBe('password')
     })
 
-    it('shows correct eye icon based on password visibility', async () => {
-      const toggleButton = wrapper.find('button[type="button"]')
+    it('should handle remember me checkbox', async () => {
+      const checkbox = wrapper.find('input[type="checkbox"]')
+      await checkbox.setChecked(true)
       
-      // Initially should show "eye" icon (password hidden)
-      expect(wrapper.find('svg').exists()).toBe(true)
-      
-      await toggleButton.trigger('click')
-      await nextTick()
-      
-      // After toggle, should show "eye-slash" icon (password visible)
-      expect(wrapper.findAll('svg').length).toBeGreaterThan(0)
+      expect(checkbox.element.checked).toBe(true)
     })
   })
 
   describe('Form Submission', () => {
-    beforeEach(() => {
-      wrapper = createWrapper()
-    })
-
-    it('calls store.Login with correct credentials on form submit', async () => {
+    it('should call store.Login with correct parameters on form submit', async () => {
       const emailInput = wrapper.find('input[type="email"]')
       const passwordInput = wrapper.find('input[type="password"]')
+      const checkbox = wrapper.find('input[type="checkbox"]')
       const form = wrapper.find('form')
 
       await emailInput.setValue('test@example.com')
       await passwordInput.setValue('password123')
+      await checkbox.setChecked(true)
+
+      mockAuthStore.Login.mockResolvedValue()
+      mockAuthStore.errorMsg = null
+
       await form.trigger('submit.prevent')
 
-      expect(mockStore.Login).toHaveBeenCalledWith('test@example.com', 'password123')
+      expect(mockAuthStore.Login).toHaveBeenCalledWith('test@example.com', 'password123', true)
     })
 
-    it('shows loading state during submission', async () => {
-      mockStore.Login.mockImplementation(() => new Promise(resolve => setTimeout(resolve, 100)))
-      
-      const submitButton = wrapper.find('button[type="submit"]')
+    it('should show loading state during submission', async () => {
       const form = wrapper.find('form')
+      const submitButton = wrapper.find('button[type="submit"]')
 
-      await form.trigger('submit.prevent')
+      // Mock a delayed login
+      let resolveLogin
+      mockAuthStore.Login.mockImplementation(() => new Promise(resolve => {
+        resolveLogin = resolve
+      }))
+
+      const submitPromise = form.trigger('submit.prevent')
       await nextTick()
 
       expect(submitButton.attributes('disabled')).toBeDefined()
       expect(submitButton.text()).toContain('loging In...')
       expect(wrapper.find('.animate-spin').exists()).toBe(true)
-    })
 
-    it('redirects to dashboard on successful login', async () => {
-      mockStore.Login.mockResolvedValue()
-      mockStore.errorMsg = '' // No error
-
-      const form = wrapper.find('form')
-      await form.trigger('submit.prevent')
+      // Resolve the promise
+      resolveLogin()
+      await submitPromise
       await nextTick()
 
-      expect(router.push).toHaveBeenCalledWith('/dashboard')
+      expect(submitButton.attributes('disabled')).toBe(undefined)
+      expect(submitButton.text()).toBe('Log In')
     })
 
-    it('does not redirect when there is an error', async () => {
-      mockStore.Login.mockResolvedValue()
-      mockStore.errorMsg = 'Invalid credentials'
-
+    it('should handle login error', async () => {
       const form = wrapper.find('form')
+      
+      mockAuthStore.Login.mockRejectedValue(new Error('Login failed'))
+      
+      // Set error message on the store
       await form.trigger('submit.prevent')
+      
+      // Manually set the error message since we're mocking the store
+      mockAuthStore.errorMsg = 'Invalid credentials'
+      await wrapper.vm.$forceUpdate()
       await nextTick()
 
-      expect(router.push).not.toHaveBeenCalled()
-    })
-
-    it('handles login errors gracefully', async () => {
-      const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
-      mockStore.Login.mockRejectedValue(new Error('Network error'))
-
-      const form = wrapper.find('form')
-      await form.trigger('submit.prevent')
-      await nextTick()
-
-      expect(consoleError).toHaveBeenCalledWith('Login error:', expect.any(Error))
-      consoleError.mockRestore()
+      expect(wrapper.find('.bg-red-100').exists()).toBe(true)
+      expect(wrapper.find('.bg-red-100').text()).toBe('Invalid credentials')
     })
   })
 
-  describe('Error Handling', () => {
-    it('displays error message when present', async () => {
-      mockStore.errorMsg = 'Invalid email or password'
-      wrapper = createWrapper()
+  describe('Navigation Based on Role', () => {
+    it('should redirect admin to dashboard after login', async () => {
+      const routerPush = vi.spyOn(router, 'push')
+      const form = wrapper.find('form')
+
+      mockAuthStore.Login.mockResolvedValue()
+      mockAuthStore.errorMsg = null
+      mockAuthStore.Role = 'admin'
+
+      await form.trigger('submit.prevent')
+      await nextTick()
+
+      expect(routerPush).toHaveBeenCalledWith('/dashboard')
+    })
+
+    it('should redirect student to student dashboard after login', async () => {
+      const routerPush = vi.spyOn(router, 'push')
+      const form = wrapper.find('form')
+
+      mockAuthStore.Login.mockResolvedValue()
+      mockAuthStore.errorMsg = null
+      mockAuthStore.Role = 'student'
+
+      await form.trigger('submit.prevent')
+      await nextTick()
+
+      expect(routerPush).toHaveBeenCalledWith('/dashstud')
+    })
+
+    it('should redirect supervisor to supervisor dashboard after login', async () => {
+      const routerPush = vi.spyOn(router, 'push')
+      const form = wrapper.find('form')
+
+      mockAuthStore.Login.mockResolvedValue()
+      mockAuthStore.errorMsg = null
+      mockAuthStore.Role = 'supervisor'
+
+      await form.trigger('submit.prevent')
+      await nextTick()
+
+      expect(routerPush).toHaveBeenCalledWith('/dashSupervisor')
+    })
+
+    it('should redirect professor to professor dashboard after login', async () => {
+      const routerPush = vi.spyOn(router, 'push')
+      const form = wrapper.find('form')
+
+      mockAuthStore.Login.mockResolvedValue()
+      mockAuthStore.errorMsg = null
+      mockAuthStore.Role = 'Professor'
+
+      await form.trigger('submit.prevent')
+      await nextTick()
+
+      expect(routerPush).toHaveBeenCalledWith('/DashboardProf')
+    })
+
+    it('should redirect to login for unknown role', async () => {
+      const routerPush = vi.spyOn(router, 'push')
+      const form = wrapper.find('form')
+
+      mockAuthStore.Login.mockResolvedValue()
+      mockAuthStore.errorMsg = null
+      mockAuthStore.Role = 'unknown'
+
+      await form.trigger('submit.prevent')
+      await nextTick()
+
+      expect(routerPush).toHaveBeenCalledWith('/login')
+    })
+  })
+
+  describe('Component Lifecycle', () => {
+    it('should redirect authenticated users on mount', async () => {
+      const routerPush = vi.spyOn(router, 'push')
+      
+      mockAuthStore.isAuthenticated = true
+      mockAuthStore.Role = 'admin'
+
+      // Remount component to trigger onMounted
+      wrapper.unmount()
+      wrapper = mount(Login, {
+        global: {
+          plugins: [router]
+        }
+      })
+
+      await nextTick()
+
+      expect(routerPush).toHaveBeenCalledWith('/dashboard')
+    })
+
+    it('should check auth if not authenticated on mount', async () => {
+      mockAuthStore.isAuthenticated = false
+
+      // Remount component to trigger onMounted
+      wrapper.unmount()
+      wrapper = mount(Login, {
+        global: {
+          plugins: [router]
+        }
+      })
+
+      await nextTick()
+
+      expect(mockAuthStore.checkAuth).toHaveBeenCalled()
+    })
+
+    it('should clear status on mount', async () => {
+      // Remount component to trigger onMounted
+      wrapper.unmount()
+      wrapper = mount(Login, {
+        global: {
+          plugins: [router]
+        }
+      })
+
+      await nextTick()
+
+      expect(mockAuthStore.Clearstatus).toHaveBeenCalled()
+    })
+  })
+
+  describe('LocalStorage Integration', () => {
+    it('should initialize RememberMe from localStorage', () => {
+      localStorageMock.getItem.mockReturnValue('true')
+
+      wrapper.unmount()
+      wrapper = mount(Login, {
+        global: {
+          plugins: [router]
+        }
+      })
+
+      expect(localStorageMock.getItem).toHaveBeenCalledWith('remember_me')
+    })
+
+    it('should handle null localStorage value', () => {
+      localStorageMock.getItem.mockReturnValue(null)
+
+      wrapper.unmount()
+      wrapper = mount(Login, {
+        global: {
+          plugins: [router]
+        }
+      })
+
+      expect(localStorageMock.getItem).toHaveBeenCalledWith('remember_me')
+      // Component should still work normally
+      expect(wrapper.find('input[type="checkbox"]').exists()).toBe(true)
+    })
+  })
+
+  describe('Error Display', () => {
+    it('should show error message when store has error', async () => {
+      // Create a new wrapper with error state
+      wrapper.unmount()
+      
+      const errorStore = {
+        ...mockAuthStore,
+        errorMsg: 'Invalid email or password'
+      }
+      
+      vi.mocked(useAuthStore).mockReturnValue(errorStore)
+      
+      wrapper = mount(Login, {
+        global: {
+          plugins: [router]
+        }
+      })
+      
       await nextTick()
 
       const errorDiv = wrapper.find('.bg-red-100')
@@ -225,102 +385,45 @@ describe('LoginComponent', () => {
       expect(errorDiv.text()).toBe('Invalid email or password')
     })
 
-    it('hides error message when not present', () => {
-      mockStore.errorMsg = ''
-      wrapper = createWrapper()
-
-      const errorDiv = wrapper.find('.bg-red-100')
-      expect(errorDiv.exists()).toBe(false)
-    })
-  })
-
-  describe('Component Lifecycle', () => {
-    it('redirects to dashboard if already authenticated on mount', async () => {
-      mockStore.isAuthenticated = true
-      wrapper = createWrapper()
-      await nextTick()
-
-      expect(router.push).toHaveBeenCalledWith('/dashboard')
-    })
-
-    it('clears store status on mount', () => {
-      wrapper = createWrapper()
+    it('should hide error message when no error', async () => {
+      mockAuthStore.errorMsg = null
       
-      expect(mockStore.Clearstatus).toHaveBeenCalled()
-    })
+      await wrapper.vm.$nextTick()
 
-    it('does not redirect if not authenticated on mount', async () => {
-      mockStore.isAuthenticated = false
-      wrapper = createWrapper()
-      await nextTick()
-
-      expect(router.push).not.toHaveBeenCalled()
+      expect(wrapper.find('.bg-red-100').exists()).toBe(false)
     })
   })
 
-  describe('Accessibility and UX', () => {
-    beforeEach(() => {
-      wrapper = createWrapper()
-    })
-
-    it('has proper input placeholders', () => {
+  describe('Accessibility', () => {
+    it('should have proper form labels and structure', () => {
       const emailInput = wrapper.find('input[type="email"]')
       const passwordInput = wrapper.find('input[type="password"]')
-
+      
       expect(emailInput.attributes('placeholder')).toBe('you@example.com')
       expect(passwordInput.attributes('placeholder')).toBe('Password')
     })
 
-    it('has remember me checkbox', () => {
-      const checkbox = wrapper.find('input[type="checkbox"]')
-      expect(checkbox.exists()).toBe(true)
-      
-      const label = wrapper.find('label')
-      expect(label.text()).toContain('Remember me')
-    })
-
-    it('applies focus styles with proper classes', () => {
-      const emailInput = wrapper.find('input[type="email"]')
-      expect(emailInput.classes()).toContain('focus:ring-2')
-      expect(emailInput.classes()).toContain('focus:ring-indigo-500')
-    })
-
-    it('has hover effects on interactive elements', () => {
+    it('should have proper button states', () => {
       const submitButton = wrapper.find('button[type="submit"]')
-      expect(submitButton.classes()).toContain('hover:scale-105')
+      expect(submitButton.attributes('type')).toBe('submit')
     })
   })
 
-  describe('Form Validation', () => {
-    beforeEach(() => {
-      wrapper = createWrapper()
+  describe('Styling and Animations', () => {
+    it('should have correct CSS classes for styling', () => {
+      expect(wrapper.find('.animate-fade-in').exists()).toBe(true)
+      expect(wrapper.find('.animate-slide-in-right').exists()).toBe(true)
+      expect(wrapper.find('.bg-gradient-to-r').exists()).toBe(true)
     })
 
-    it('prevents form submission when button is disabled', async () => {
-      // Mock the store to simulate a loading state
-      mockStore.Login.mockImplementation(() => new Promise(resolve => setTimeout(resolve, 100)))
-      
-      const form = wrapper.find('form')
-      const emailInput = wrapper.find('input[type="email"]')
-      const passwordInput = wrapper.find('input[type="password"]')
-
-      // Fill in the form
-      await emailInput.setValue('test@example.com')
-      await passwordInput.setValue('password123')
-      
-      // Submit the form which will set isSubmitting to true
-      await form.trigger('submit.prevent')
-      await nextTick()
-
-      // Now the button should be disabled and show loading state
+    it('should have hover effects on interactive elements', () => {
       const submitButton = wrapper.find('button[type="submit"]')
-      expect(submitButton.attributes('disabled')).toBeDefined()
-      expect(submitButton.text()).toContain('loging In...')
-    })
-
-    it('accepts email input type', () => {
-      const emailInput = wrapper.find('input[type="email"]')
-      expect(emailInput.attributes('type')).toBe('email')
+      expect(submitButton.classes()).toContain('hover:scale-105')
+      
+      const inputs = wrapper.findAll('input[type="email"], input[type="password"]')
+      inputs.forEach(input => {
+        expect(input.classes()).toContain('hover:scale-[1.01]')
+      })
     })
   })
 })

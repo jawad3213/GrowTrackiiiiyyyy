@@ -1,217 +1,376 @@
-// Tests for stores/form.js
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+// stores/__tests__/form.test.js
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
-import { useFormStore } from '@/stores/form'
+import { useFormStore } from '../../src/stores/form'
 import api from '@/services/api'
 import DOMPurify from 'dompurify'
 
-// Mock the API module
-vi.mock('@/services/api', () => ({
-  default: {
-    post: vi.fn()
-  }
-}))
+// Mock dependencies
+vi.mock('@/services/api')
+vi.mock('dompurify')
 
-// Mock DOMPurify
-vi.mock('dompurify', () => ({
-  default: {
-    sanitize: vi.fn(str => str.replace(/<script>.*?<\/script>/g, ''))
-  }
-}))
-
-describe('Form Store', () => {
+describe('useFormStore', () => {
   let store
+  let mockApi
+  let mockDOMPurify
 
   beforeEach(() => {
-    // Create a fresh pinia and make it active so it's automatically picked
-    // up by any useStore() call without having to pass it to it
+    // Create a fresh pinia instance for each test
     setActivePinia(createPinia())
     store = useFormStore()
     
-    // Reset all mocks before each test
+    // Setup mocks
+    mockApi = vi.mocked(api)
+    mockDOMPurify = vi.mocked(DOMPurify)
+    
+    // Reset all mocks
     vi.clearAllMocks()
   })
 
+  afterEach(() => {
+    vi.resetAllMocks()
+  })
+
   describe('Initial State', () => {
-    it('has initial state set correctly', () => {
+    it('should initialize with correct default values', () => {
       expect(store.loading).toBe(false)
-      expect(store.error).toBeNull()
-      expect(store.success).toBeNull()
+      expect(store.error).toBe(null)
+      expect(store.success).toBe(null)
       expect(store.errors).toEqual({})
+      expect(store.SelectedObj).toBe(null)
     })
   })
 
   describe('submitForm', () => {
-    it('submits form data successfully', async () => {
-      // Setup
-      const mockData = { name: 'Test User', email: 'test@example.com' }
-      const mockResponse = { id: 1, ...mockData }
-      api.post.mockResolvedValue({ data: mockResponse })
-      const onSuccessMock = vi.fn()
+    it('should successfully submit form and update state', async () => {
+      // Arrange
+      const mockResponse = { data: { id: 1, name: 'Test User' } }
+      const mockOnSuccess = vi.fn()
+      mockApi.post.mockResolvedValue(mockResponse)
 
-      // Execute
-      await store.submitForm('/users', mockData, onSuccessMock)
+      const endpoint = '/addStudent'
+      const data = { name: 'John Doe', email: 'john@example.com' }
 
-      // Verify
-      expect(api.post).toHaveBeenCalledWith('/users', mockData)
+      // Act
+      await store.submitForm(endpoint, data, mockOnSuccess)
+
+      // Assert
+      expect(mockApi.post).toHaveBeenCalledWith(endpoint, data)
       expect(store.loading).toBe(false)
-      expect(store.error).toBeNull()
       expect(store.success).toBe('Submitted successfully')
-      expect(onSuccessMock).toHaveBeenCalledWith(mockResponse)
+      expect(store.error).toBe(null)
+      expect(store.errors).toBe(null)
+      expect(mockOnSuccess).toHaveBeenCalledWith(mockResponse.data)
     })
 
-    it('handles API errors properly', async () => {
-      // Setup - simulate API error
-      const mockData = { name: 'Test User' }
-      const mockError = new Error('API Error')
-      mockError.response = { data: { message: 'Invalid data provided' } }
-      api.post.mockRejectedValue(mockError)
+    it('should handle API errors with validation errors', async () => {
+      // Arrange
+      const mockError = {
+        response: {
+          data: {
+            message: 'Validation failed',
+            errors: [
+              { path: 'name', msg: 'Name is required' },
+              { path: 'email', msg: 'Invalid email format' }
+            ]
+          }
+        }
+      }
+      mockApi.post.mockRejectedValue(mockError)
 
-      // Execute
-      await store.submitForm('/users', mockData)
+      const endpoint = '/addStudent'
+      const data = { name: '', email: 'invalid-email' }
 
-      // Verify
-      expect(api.post).toHaveBeenCalledWith('/users', mockData)
+      // Act
+      await store.submitForm(endpoint, data)
+
+      // Assert
       expect(store.loading).toBe(false)
-      expect(store.error).toBe('Invalid data provided')
-      expect(store.success).toBeNull()
+      expect(store.error).toBe('Validation failed')
+      expect(store.success).toBe(null)
+      expect(store.errors).toEqual({
+        name: 'Name is required',
+        email: 'Invalid email format'
+      })
     })
 
-    it('sets generic error message if API error has no specific message', async () => {
-      // Setup - simulate generic error
-      api.post.mockRejectedValue(new Error('Network error'))
+    it('should handle API errors with error field', async () => {
+      // Arrange
+      const mockError = {
+        response: {
+          data: {
+            error: 'Database connection failed'
+          }
+        }
+      }
+      mockApi.post.mockRejectedValue(mockError)
 
-      // Execute
-      await store.submitForm('/users', {})
+      // Act
+      await store.submitForm('/addStudent', {})
 
-      // Verify
+      // Assert
+      expect(store.error).toBe('Database connection failed')
+      expect(store.errors).toEqual({})
+    })
+
+    it('should handle generic errors', async () => {
+      // Arrange
+      const mockError = {
+        response: {
+          data: {}
+        }
+      }
+      mockApi.post.mockRejectedValue(mockError)
+
+      // Act
+      await store.submitForm('/addStudent', {})
+
+      // Assert
+      expect(store.error).toBe("Couldn't submit the form. Please retry again later")
+    })
+
+    it('should handle network errors', async () => {
+      // Arrange
+      const mockError = new Error('Network Error')
+      mockApi.post.mockRejectedValue(mockError)
+
+      // Act
+      await store.submitForm('/addStudent', {})
+
+      // Assert
+      expect(store.error).toBe("Couldn't submit the form. Please retry again later")
+    })
+
+    it('should work without onSuccess callback', async () => {
+      // Arrange
+      const mockResponse = { data: { id: 1 } }
+      mockApi.post.mockResolvedValue(mockResponse)
+
+      // Act
+      await store.submitForm('/addStudent', {})
+
+      // Assert
+      expect(store.success).toBe('Submitted successfully')
+      expect(store.error).toBe(null)
+    })
+
+    it('should set loading state correctly during execution', async () => {
+      // Arrange
+      let loadingDuringExecution = false
+      mockApi.post.mockImplementation(() => {
+        loadingDuringExecution = store.loading
+        return Promise.resolve({ data: {} })
+      })
+
+      // Act
+      await store.submitForm('/addStudent', {})
+
+      // Assert
+      expect(loadingDuringExecution).toBe(true)
       expect(store.loading).toBe(false)
-      expect(store.error).toBe('Submission failed')
+    })
+  })
+
+  describe('Update', () => {
+    it('should successfully update and call onSuccess', async () => {
+      // Arrange
+      const mockResponse = { data: { id: 1, name: 'Updated User' } }
+      const mockOnSuccess = vi.fn()
+      mockApi.patch.mockResolvedValue(mockResponse)
+
+      const endpoint = '/updateStudent/1'
+      const data = { name: 'Updated Name' }
+
+      // Act
+      await store.Update(endpoint, data, mockOnSuccess)
+
+      // Assert
+      expect(mockApi.patch).toHaveBeenCalledWith(endpoint, data)
+      expect(store.loading).toBe(false)
+      expect(store.success).toBe('Submitted successfully')
+      expect(store.error).toBe(null)
+      expect(store.errors).toBe(null)
+      expect(mockOnSuccess).toHaveBeenCalledWith(mockResponse.data)
+    })
+
+    it('should handle update errors', async () => {
+      // Arrange
+      const mockError = {
+        response: {
+          data: {
+            message: 'Update failed',
+            errors: [
+              { path: 'name', msg: 'Name cannot be empty' }
+            ]
+          }
+        }
+      }
+      mockApi.patch.mockRejectedValue(mockError)
+
+      // Act
+      await store.Update('/updateStudent/1', { name: '' })
+
+      // Assert
+      expect(store.error).toBe('Update failed')
+      expect(store.errors).toEqual({
+        name: 'Name cannot be empty'
+      })
     })
   })
 
   describe('validateWithSchema', () => {
-    it('returns true for valid data', async () => {
-      // Setup - mock schema that always validates successfully
+    it('should return true for valid data', async () => {
+      // Arrange
       const mockSchema = {
         validate: vi.fn().mockResolvedValue(true)
       }
-      const data = { field: 'value' }
+      const data = { name: 'John', email: 'john@example.com' }
 
-      // Execute
+      // Act
       const result = await store.validateWithSchema(data, mockSchema)
 
-      // Verify
+      // Assert
       expect(result).toBe(true)
       expect(store.errors).toEqual({})
       expect(mockSchema.validate).toHaveBeenCalledWith(data, { abortEarly: false })
     })
 
-    it('returns false and sets errors for invalid data', async () => {
-      // Setup - mock schema that fails validation
-      const mockValidationError = {
+    it('should return false and set errors for invalid data', async () => {
+      // Arrange
+      const mockError = {
         inner: [
-          { path: 'email', message: 'Email is required' },
-          { path: 'password', message: 'Password must be at least 6 characters' }
+          { path: 'name', message: 'Name is required' },
+          { path: 'email', message: 'Email is invalid' }
         ]
       }
       const mockSchema = {
-        validate: vi.fn().mockRejectedValue(mockValidationError)
+        validate: vi.fn().mockRejectedValue(mockError)
       }
-      const data = { field: 'value' }
+      const data = { name: '', email: 'invalid' }
 
-      // Execute
+      // Act
       const result = await store.validateWithSchema(data, mockSchema)
 
-      // Verify
+      // Assert
       expect(result).toBe(false)
       expect(store.errors).toEqual({
-        email: 'Email is required',
-        password: 'Password must be at least 6 characters'
+        name: 'Name is required',
+        email: 'Email is invalid'
       })
     })
   })
 
   describe('sanitizeInputs', () => {
-    it('sanitizes string values in an object', () => {
-      // Setup
-      const inputData = {
-        name: 'Test User <script>alert("XSS")</script>',
-        age: 30,
-        bio: '<script>malicious code</script> Safe content'
+    it('should sanitize string values', () => {
+      // Arrange
+      mockDOMPurify.sanitize.mockImplementation((input) => `cleaned_${input}`)
+      const input = {
+        name: '<script>alert("xss")</script>John',
+        age: 25,
+        active: true
       }
 
-      // Execute
-      const result = store.sanitizeInputs(inputData)
+      // Act
+      const result = store.sanitizeInputs(input)
 
-      // Verify
-      expect(DOMPurify.sanitize).toHaveBeenCalledTimes(2) // Only called for the two string properties
+      // Assert
+      expect(mockDOMPurify.sanitize).toHaveBeenCalledWith('<script>alert("xss")</script>John')
       expect(result).toEqual({
-        name: 'Test User ',
-        age: 30,
-        bio: ' Safe content'
+        name: 'cleaned_<script>alert("xss")</script>John',
+        age: 25,
+        active: true
       })
     })
 
-    it('preserves non-string values without sanitizing', () => {
-      // Setup
-      const inputData = {
-        age: 30,
-        active: true,
-        scores: [95, 87, 92]
+    it('should not sanitize non-string values', () => {
+      // Arrange
+      const input = {
+        count: 42,
+        isActive: false,
+        tags: ['tag1', 'tag2']
       }
 
-      // Execute
-      const result = store.sanitizeInputs(inputData)
+      // Act
+      const result = store.sanitizeInputs(input)
 
-      // Verify
-      expect(DOMPurify.sanitize).not.toHaveBeenCalled()
-      expect(result).toEqual(inputData) // Should be the same as input
+      // Assert
+      expect(mockDOMPurify.sanitize).not.toHaveBeenCalled()
+      expect(result).toEqual(input)
+    })
+
+    it('should handle empty object', () => {
+      // Act
+      const result = store.sanitizeInputs({})
+
+      // Assert
+      expect(result).toEqual({})
     })
   })
 
   describe('clearStatus', () => {
-    it('resets all status-related state', () => {
-      // Setup - set some initial state
+    it('should reset all state values', () => {
+      // Arrange - set some values first
       store.loading = true
-      store.error = 'Previous error'
-      store.success = 'Previous success'
-      store.errors = { field: 'Field error' }
+      store.error = 'Some error'
+      store.success = 'Success message'
+      store.errors = { name: 'Error message' }
 
-      // Execute
+      // Act
       store.clearStatus()
 
-      // Verify
+      // Assert
       expect(store.loading).toBe(false)
-      expect(store.error).toBeNull()
-      expect(store.success).toBeNull()
+      expect(store.error).toBe(null)
+      expect(store.success).toBe(null)
       expect(store.errors).toEqual({})
     })
   })
 
-  // Testing the full workflow
-  describe('Integration', () => {
-    it('follows the complete form submission workflow', async () => {
-      // Setup
+  describe('SelectedObj', () => {
+    it('should allow setting and getting SelectedObj', () => {
+      // Arrange
+      const testObj = { id: 1, name: 'Test Object' }
+
+      // Act
+      store.SelectedObj = testObj
+
+      // Assert
+      expect(store.SelectedObj).toEqual(testObj)
+    })
+
+    it('should start as null', () => {
+      expect(store.SelectedObj).toBe(null)
+    })
+  })
+
+  describe('Integration Tests', () => {
+    it('should handle complete form submission workflow', async () => {
+      // Arrange
+      const mockResponse = { data: { id: 1, name: 'John Doe' } }
+      mockApi.post.mockResolvedValue(mockResponse)
+      
       const mockSchema = {
         validate: vi.fn().mockResolvedValue(true)
       }
-      const rawData = { name: 'User <script>alert(1)</script>', email: 'user@example.com' }
-      const sanitizedData = { name: 'User ', email: 'user@example.com' }
-      api.post.mockResolvedValue({ data: { id: 1 } })
+      
+      mockDOMPurify.sanitize.mockImplementation((input) => input.replace(/<[^>]*>/g, ''))
 
-      // Execute - validate, sanitize then submit
+      const rawData = { name: '<b>John Doe</b>', email: 'john@example.com' }
+
+      // Act
       const isValid = await store.validateWithSchema(rawData, mockSchema)
       expect(isValid).toBe(true)
-      
-      const cleanData = store.sanitizeInputs(rawData)
-      expect(cleanData).toEqual(sanitizedData)
-      
-      await store.submitForm('/users', cleanData)
 
-      // Verify
-      expect(api.post).toHaveBeenCalledWith('/users', sanitizedData)
+      const sanitizedData = store.sanitizeInputs(rawData)
+      await store.submitForm('/addStudent', sanitizedData)
+
+      // Assert
       expect(store.success).toBe('Submitted successfully')
+      expect(store.error).toBe(null)
+      expect(mockApi.post).toHaveBeenCalledWith('/addStudent', {
+        name: 'John Doe',
+        email: 'john@example.com'
+      })
     })
   })
 })

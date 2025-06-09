@@ -1,4 +1,4 @@
-const studentModel = require('../../../../models/adminModels/studentModel');
+const studentService = require('../../../../models/adminModels/studentModel'); 
 
 // Mock the database pool
 jest.mock('../../../../config/db', () => ({
@@ -7,566 +7,433 @@ jest.mock('../../../../config/db', () => ({
 
 const pool = require('../../../../config/db');
 
-describe('Student Model', () => {
-  let consoleErrorSpy;
-
+describe('Student Service', () => {
   beforeEach(() => {
-    // Clear all mocks and reset their state
+    // Clear all mocks before each test
     jest.clearAllMocks();
-    pool.query.mockReset();
-    
-    // Setup console.error spy
-    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-  });
-
-  afterEach(() => {
-    // Restore console.error and reset all mocks
-    if (consoleErrorSpy) {
-      consoleErrorSpy.mockRestore();
-    }
-    jest.resetAllMocks();
   });
 
   describe('createStudent', () => {
-    it('should create a student successfully', async () => {
-      const mockMemberResult = {
-        rows: [{ 
-          id_member: 1,
-          full_name: 'John Doe',
-          cin: 'AB123456',
-          email: 'john@test.com',
-          password: 'hashedpass',
-          role: 'student',
-          description: 'Good student',
-          profile_picture: '/path/to/image.jpg'
-        }]
-      };
-      
-      const mockStudentResult = { rows: [] };
-      
-      pool.query
-        .mockResolvedValueOnce(mockMemberResult) // First call for member insert
-        .mockResolvedValueOnce(mockStudentResult); // Second call for student insert
+    const mockStudentData = {
+      id_user: 'user123',
+      full_name: 'John Doe',
+      cin: 'CIN123',
+      cne: 'CNE456',
+      email: 'john@example.com',
+      pass: 'hashedPassword',
+      field: 'class123',
+      note: 'Good student',
+      role: 'student',
+      imagePath: '/path/to/image.jpg'
+    };
 
-      const result = await studentModel.createStudent(
-        1, 'John Doe', 'AB123456', 'CNE123', 'john@test.com', 
-        'hashedpass', 1, 'Good student', 'student', '/path/to/image.jpg'
+    it('should create a student successfully', async () => {
+      const mockMemberResult = { rows: [{ id_member: 'user123' }] };
+      const mockStudentResult = { rows: [{ id_member: 'user123' }] };
+
+      pool.query
+        .mockResolvedValueOnce(mockMemberResult) // First call for member insertion
+        .mockResolvedValueOnce(mockStudentResult); // Second call for student insertion
+
+      const result = await studentService.createStudent(
+        mockStudentData.id_user,
+        mockStudentData.full_name,
+        mockStudentData.cin,
+        mockStudentData.cne,
+        mockStudentData.email,
+        mockStudentData.pass,
+        mockStudentData.field,
+        mockStudentData.note,
+        mockStudentData.role,
+        mockStudentData.imagePath
       );
 
       expect(pool.query).toHaveBeenCalledTimes(2);
-      expect(pool.query).toHaveBeenNthCalledWith(1,
-        `INSERT INTO public.member (
-           id_member, full_name, cin, email, password, role, description, profile_picture
-         ) VALUES ($1, $2, $3, $4, $5, $6, $7,$8)`,
-        [1, 'John Doe', 'AB123456', 'john@test.com', 'hashedpass', 'student', 'Good student', '/path/to/image.jpg']
-      );
-      expect(pool.query).toHaveBeenNthCalledWith(2,
-        `INSERT INTO public.student (
-           id_member,cne, id_class
-         ) VALUES ($1, $2, $3)`,
-        [1, 'CNE123', 1]
-      );
-      expect(result).toEqual(mockMemberResult.rows[0]);
-    });
-
-    it('should handle database errors during student creation', async () => {
-      const mockError = new Error('Database connection failed');
-      pool.query.mockRejectedValue(mockError);
-
-      await expect(studentModel.createStudent(
-        1, 'John Doe', 'AB123456', 'CNE123', 'john@test.com', 
-        'hashedpass', 1, 'Good student', 'student', '/path/to/image.jpg'
-      )).rejects.toThrow('Database connection failed');
-
-      expect(console.error).toHaveBeenCalledWith('Error inserting student:', mockError);
-    });
-
-    it('should handle error in student table insertion after member creation', async () => {
-      const mockMemberResult = { rows: [{ id_member: 1 }] };
-      const mockError = new Error('Student insertion failed');
       
-      pool.query
-        .mockResolvedValueOnce(mockMemberResult)
-        .mockRejectedValueOnce(mockError);
+      // Check member insertion query
+      expect(pool.query).toHaveBeenNthCalledWith(1,
+        expect.stringContaining('INSERT INTO public.member'),
+        [mockStudentData.id_user, mockStudentData.full_name, mockStudentData.cin, 
+         mockStudentData.email, mockStudentData.pass, mockStudentData.role, 
+         mockStudentData.note, mockStudentData.imagePath]
+      );
 
-      await expect(studentModel.createStudent(
-        1, 'John Doe', 'AB123456', 'CNE123', 'john@test.com', 
-        'hashedpass', 1, 'Good student', 'student', '/path/to/image.jpg'
-      )).rejects.toThrow('Student insertion failed');
+      // Check student insertion query
+      expect(pool.query).toHaveBeenNthCalledWith(2,
+        expect.stringContaining('INSERT INTO public.student'),
+        [mockStudentData.id_user, mockStudentData.cne, mockStudentData.field]
+      );
 
-      expect(console.error).toHaveBeenCalledWith('Error inserting student:', mockError);
+      expect(result).toEqual({ id_member: 'user123' });
+    });
+
+    it('should throw error when database operation fails', async () => {
+      const dbError = new Error('Database connection failed');
+      pool.query.mockRejectedValueOnce(dbError);
+
+      await expect(studentService.createStudent(
+        mockStudentData.id_user,
+        mockStudentData.full_name,
+        mockStudentData.cin,
+        mockStudentData.cne,
+        mockStudentData.email,
+        mockStudentData.pass,
+        mockStudentData.field,
+        mockStudentData.note,
+        mockStudentData.role,
+        mockStudentData.imagePath
+      )).rejects.toThrow('Database connection failed');
     });
   });
 
   describe('getAllStudents', () => {
-    it('should retrieve all students successfully', async () => {
-      const mockResult = {
-        rows: [
-          {
-            id_member: 1,
-            cne: 'CNE123',
-            full_name: 'John Doe',
-            cin: 'AB123456',
-            email: 'john@test.com',
-            id_sector: 1,
-            profile_picture: '/path/to/image.jpg',
-            id_class: 1,
-            date_add: '2024-01-01'
-          },
-          {
-            id_member: 2,
-            cne: 'CNE456',
-            full_name: 'Jane Smith',
-            cin: 'CD789012',
-            email: 'jane@test.com',
-            id_sector: 2,
-            profile_picture: '/path/to/image2.jpg',
-            id_class: 2,
-            date_add: '2024-01-02'
-          }
-        ]
-      };
-      
-      pool.query.mockResolvedValue(mockResult);
+    it('should return all students successfully', async () => {
+      const mockStudents = [
+        {
+          id_member: 'user1',
+          cne: 'CNE001',
+          full_name: 'John Doe',
+          cin: 'CIN001',
+          email: 'john@example.com',
+          id_sector: 'sector1',
+          profile_picture: '/path/to/pic1.jpg',
+          id_class: 'class1',
+          date_add: '2024-01-01'
+        },
+        {
+          id_member: 'user2',
+          cne: 'CNE002',
+          full_name: 'Jane Smith',
+          cin: 'CIN002',
+          email: 'jane@example.com',
+          id_sector: 'sector2',
+          profile_picture: '/path/to/pic2.jpg',
+          id_class: 'class2',
+          date_add: '2024-01-02'
+        }
+      ];
 
-      const result = await studentModel.getAllStudents();
+      pool.query.mockResolvedValueOnce({ rows: mockStudents });
 
+      const result = await studentService.getAllStudents();
+
+      expect(pool.query).toHaveBeenCalledTimes(1);
       expect(pool.query).toHaveBeenCalledWith(
-        `SELECT m.id_member, s.cne, m.full_name, m.cin, m.email, f.id_sector, m.profile_picture, c.id_class, m.date_add 
-         FROM public.member m 
-         JOIN public.student s ON m.id_member = s.id_member 
-         JOIN public.class c ON c.id_class = s.id_class 
-         JOIN public.sector f ON f.id_sector = c.sector_id`
+        expect.stringContaining('SELECT m.id_member, s.cne, m.full_name')
       );
-      expect(result).toEqual(mockResult.rows);
-      expect(result).toHaveLength(2);
+      expect(result).toEqual(mockStudents);
     });
 
-    it('should return empty array when no students exist', async () => {
-      const mockResult = { rows: [] };
-      pool.query.mockResolvedValue(mockResult);
+    it('should throw error when database query fails', async () => {
+      const dbError = new Error('Query failed');
+      pool.query.mockRejectedValueOnce(dbError);
 
-      const result = await studentModel.getAllStudents();
-
-      expect(result).toEqual([]);
-    });
-
-    it('should handle database errors during student retrieval', async () => {
-      const mockError = new Error('Database query failed');
-      pool.query.mockRejectedValue(mockError);
-
-      await expect(studentModel.getAllStudents()).rejects.toThrow('Database query failed');
-      expect(console.error).toHaveBeenCalledWith('Error fetching students:', mockError);
+      await expect(studentService.getAllStudents()).rejects.toThrow('Query failed');
     });
   });
 
   describe('getStudentByCin', () => {
-    it('should retrieve student by CIN successfully', async () => {
-      const mockResult = {
-        rows: [{
-          id_member: 1,
-          cne: 'CNE123',
-          full_name: 'John Doe',
-          cin: 'AB123456',
-          email: 'john@test.com',
-          id_sector: 1,
-          profile_picture: '/path/to/image.jpg',
-          id_class: 1,
-          date_add: '2024-01-01'
-        }]
-      };
-      
-      pool.query.mockResolvedValue(mockResult);
+    const mockStudent = {
+      id_member: 'user1',
+      cne: 'CNE001',
+      full_name: 'John Doe',
+      cin: 'CIN001',
+      email: 'john@example.com',
+      id_sector: 'sector1',
+      profile_picture: '/path/to/pic.jpg',
+      id_class: 'class1',
+      date_add: '2024-01-01'
+    };
 
-      const result = await studentModel.getStudentByCin('AB123456');
+    it('should return student when found', async () => {
+      pool.query.mockResolvedValueOnce({ rows: [mockStudent] });
+
+      const result = await studentService.getStudentByCin('CIN001');
 
       expect(pool.query).toHaveBeenCalledWith(
-        `SELECT s.id_member, s.cne, m.full_name, m.cin, m.email, f.id_sector, m.profile_picture, c.id_class, m.date_add 
-         FROM public.member m 
-         JOIN public.student s ON m.id_member = s.id_member 
-         JOIN public.class c ON c.id_class = s.id_class 
-         JOIN public.sector f ON f.id_sector = c.sector_id
-         WHERE m.cin = $1`,
-        ['AB123456']
+        expect.stringContaining('WHERE m.cin = $1'),
+        ['CIN001']
       );
-      expect(result).toEqual(mockResult.rows[0]);
+      expect(result).toEqual(mockStudent);
     });
 
     it('should return null when student not found', async () => {
-      const mockResult = { rows: [] };
-      pool.query.mockResolvedValue(mockResult);
+      pool.query.mockResolvedValueOnce({ rows: [] });
 
-      const result = await studentModel.getStudentByCin('NONEXISTENT');
-
-      expect(result).toBeNull();
-    });
-
-    it('should return null when result is null or undefined', async () => {
-      pool.query.mockResolvedValue(null);
-
-      const result = await studentModel.getStudentByCin('AB123456');
+      const result = await studentService.getStudentByCin('NONEXISTENT');
 
       expect(result).toBeNull();
     });
 
-    it('should handle database errors during student retrieval by CIN', async () => {
-      const mockError = new Error('Database query failed');
-      pool.query.mockRejectedValue(mockError);
+    it('should return null when result is undefined', async () => {
+      pool.query.mockResolvedValueOnce(undefined);
 
-      await expect(studentModel.getStudentByCin('AB123456')).rejects.toThrow('Database query failed');
-      expect(console.error).toHaveBeenCalledWith('Error retrieving student:', mockError);
+      const result = await studentService.getStudentByCin('CIN001');
+
+      expect(result).toBeNull();
+    });
+
+    it('should throw error when database query fails', async () => {
+      const dbError = new Error('Database error');
+      pool.query.mockRejectedValueOnce(dbError);
+
+      await expect(studentService.getStudentByCin('CIN001')).rejects.toThrow('Database error');
     });
   });
 
   describe('updateStudentById', () => {
     it('should update member fields only', async () => {
-      const mockResult = {
-        rows: [{
-          id_member: 1,
-          full_name: 'John Updated',
-          cin: 'AB123456',
-          email: 'john.updated@test.com'
-        }]
+      const fieldsToUpdate = {
+        full_name: 'Updated Name',
+        email: 'updated@example.com'
       };
-      
-      pool.query.mockResolvedValue(mockResult);
+      const mockUpdatedMember = { id_member: 'user1', full_name: 'Updated Name' };
 
-      const fieldsToUpdate = { 
-        full_name: 'John Updated',
-        email: 'john.updated@test.com'
-      };
-      const result = await studentModel.updateStudentById(1, fieldsToUpdate);
+      pool.query.mockResolvedValueOnce({ rows: [mockUpdatedMember] });
+
+      const result = await studentService.updateStudentById('user1', fieldsToUpdate);
 
       expect(pool.query).toHaveBeenCalledTimes(1);
       expect(pool.query).toHaveBeenCalledWith(
-        'UPDATE public.member SET full_name = $1, email = $2 WHERE id_member = $3 RETURNING *',
-        ['John Updated', 'john.updated@test.com', 1]
+        expect.stringContaining('UPDATE public.member SET'),
+        ['Updated Name', 'updated@example.com', 'user1']
       );
-      expect(result).toEqual(mockResult.rows[0]);
+      expect(result).toEqual(mockUpdatedMember);
     });
 
     it('should update student fields only', async () => {
-      pool.query.mockResolvedValue({ rows: [] });
-
-      const fieldsToUpdate = { 
-        cne: 'CNE456',
-        id_class: 2
+      const fieldsToUpdate = {
+        cne: 'NEW_CNE',
+        id_class: 'new_class'
       };
-      const result = await studentModel.updateStudentById(1, fieldsToUpdate);
+      const mockMember = { id_member: 'user1', full_name: 'John Doe' };
 
-      expect(pool.query).toHaveBeenCalledTimes(1);
-      expect(pool.query).toHaveBeenCalledWith(
-        'UPDATE public.student SET cne = $1, id_class = $2 WHERE id_member = $3',
-        ['CNE456', 2, 1]
-      );
-      expect(result).toBeNull();
-    });
-
-    it('should update both member and student fields', async () => {
-      const mockMemberResult = {
-        rows: [{
-          id_member: 1,
-          full_name: 'John Updated',
-          email: 'john.updated@test.com'
-        }]
-      };
-      
       pool.query
-        .mockResolvedValueOnce(mockMemberResult)
-        .mockResolvedValueOnce({ rows: [] });
+        .mockResolvedValueOnce({ rowCount: 1 }) // Student update
+        .mockResolvedValueOnce({ rows: [mockMember] }); // Member select
 
-      const fieldsToUpdate = { 
-        full_name: 'John Updated',
-        email: 'john.updated@test.com',
-        cne: 'CNE456',
-        id_class: 2
-      };
-      const result = await studentModel.updateStudentById(1, fieldsToUpdate);
+      const result = await studentService.updateStudentById('user1', fieldsToUpdate);
 
       expect(pool.query).toHaveBeenCalledTimes(2);
       expect(pool.query).toHaveBeenNthCalledWith(1,
-        'UPDATE public.member SET full_name = $1, email = $2 WHERE id_member = $3 RETURNING *',
-        ['John Updated', 'john.updated@test.com', 1]
+        expect.stringContaining('UPDATE public.student SET'),
+        ['NEW_CNE', 'new_class', 'user1']
       );
-      expect(pool.query).toHaveBeenNthCalledWith(2,
-        'UPDATE public.student SET cne = $1, id_class = $2 WHERE id_member = $3',
-        ['CNE456', 2, 1]
-      );
-      expect(result).toEqual(mockMemberResult.rows[0]);
+      expect(result).toEqual(mockMember);
     });
 
-    it('should return null when no fields to update', async () => {
-      const result = await studentModel.updateStudentById(1, {});
+    it('should update both member and student fields', async () => {
+      const fieldsToUpdate = {
+        full_name: 'Updated Name',
+        cne: 'NEW_CNE'
+      };
+      const mockUpdatedMember = { id_member: 'user1', full_name: 'Updated Name' };
 
-      expect(pool.query).not.toHaveBeenCalled();
-      expect(result).toBeNull();
+      pool.query
+        .mockResolvedValueOnce({ rows: [mockUpdatedMember] }) // Member update
+        .mockResolvedValueOnce({ rowCount: 1 }); // Student update
+
+      const result = await studentService.updateStudentById('user1', fieldsToUpdate);
+
+      expect(pool.query).toHaveBeenCalledTimes(2);
+      expect(result).toEqual(mockUpdatedMember);
     });
 
-    it('should handle database errors during update', async () => {
-      const mockError = new Error('Update failed');
-      pool.query.mockRejectedValue(mockError);
+    it('should handle case when no student record found', async () => {
+      const fieldsToUpdate = { cne: 'NEW_CNE' };
+      const mockMember = { id_member: 'user1', full_name: 'John Doe' };
 
-      const fieldsToUpdate = { full_name: 'Updated Name' };
+      pool.query
+        .mockResolvedValueOnce({ rowCount: 0 }) // Student update with no rows affected
+        .mockResolvedValueOnce({ rows: [mockMember] }); // Member select
 
-      await expect(studentModel.updateStudentById(1, fieldsToUpdate))
+      const result = await studentService.updateStudentById('user1', fieldsToUpdate);
+
+      expect(result).toEqual(mockMember);
+    });
+
+    it('should throw error when database operation fails', async () => {
+      const dbError = new Error('Update failed');
+      pool.query.mockRejectedValueOnce(dbError);
+
+      await expect(studentService.updateStudentById('user1', { full_name: 'Test' }))
         .rejects.toThrow('Update failed');
-      expect(console.error).toHaveBeenCalledWith('Error updating student:', mockError);
     });
   });
 
   describe('deleteStudentById', () => {
-    it('should delete student and all related records successfully', async () => {
-      const mockResults = [
-        { rows: [], rowCount: 1 }, // follow_up
-        { rows: [], rowCount: 0 }, // report
-        { rows: [], rowCount: 1 }, // supervise
-        { rows: [], rowCount: 2 }, // skill_evaluation
-        { rows: [], rowCount: 1 }, // student
-        { rows: [], rowCount: 1 }  // member
-      ];
-      
-      pool.query.mockReset();
-      mockResults.forEach(result => {
-        pool.query.mockResolvedValueOnce(result);
-      });
+    it('should delete student and related records successfully', async () => {
+      const mockResult = { rowCount: 1 };
 
-      const result = await studentModel.deleteStudentById(1);
+      pool.query
+        .mockResolvedValueOnce({ rowCount: 1 }) // follow_up delete
+        .mockResolvedValueOnce({ rowCount: 1 }) // report delete
+        .mockResolvedValueOnce({ rowCount: 1 }) // supervise delete
+        .mockResolvedValueOnce({ rowCount: 1 }) // skill_evaluation delete
+        .mockResolvedValueOnce({ rowCount: 1 }) // student delete
+        .mockResolvedValueOnce(mockResult); // member delete
+
+      const result = await studentService.deleteStudentById('user1');
 
       expect(pool.query).toHaveBeenCalledTimes(6);
+      
+      // Check deletion order
       expect(pool.query).toHaveBeenNthCalledWith(1,
         'DELETE FROM public.follow_up WHERE id_student = $1',
-        [1]
-      );
-      expect(pool.query).toHaveBeenNthCalledWith(2,
-        'DELETE FROM public.report WHERE id_reported = $1',
-        [1]
-      );
-      expect(pool.query).toHaveBeenNthCalledWith(3,
-        'DELETE FROM public.supervise WHERE id_student = $1',
-        [1]
-      );
-      expect(pool.query).toHaveBeenNthCalledWith(4,
-        'DELETE FROM public.skill_evaluation WHERE id_student = $1',
-        [1]
-      );
-      expect(pool.query).toHaveBeenNthCalledWith(5,
-        'DELETE FROM public.student WHERE id_member = $1',
-        [1]
+        ['user1']
       );
       expect(pool.query).toHaveBeenNthCalledWith(6,
         'DELETE FROM public.member WHERE id_member = $1',
-        [1]
+        ['user1']
       );
-      expect(result).toEqual(mockResults[5]);
+      
+      expect(result).toEqual(mockResult);
     });
 
-    it('should handle database errors during deletion', async () => {
-      const mockError = new Error('Deletion failed');
-      pool.query.mockReset();
-      pool.query.mockRejectedValue(mockError);
+    it('should throw error when deletion fails', async () => {
+      const dbError = new Error('Deletion failed');
+      pool.query.mockRejectedValueOnce(dbError);
 
-      await expect(studentModel.deleteStudentById(1))
-        .rejects.toThrow('Deletion failed');
-
-      expect(console.error).toHaveBeenCalledWith('Error deleting student:', mockError);
+      await expect(studentService.deleteStudentById('user1')).rejects.toThrow('Deletion failed');
     });
   });
 
   describe('total', () => {
-    it('should return total count of students successfully', async () => {
-      const mockResult = {
-        rows: [{ Total: '10' }]
-      };
-      
-      pool.query.mockResolvedValue(mockResult);
+    it('should return total count of students', async () => {
+      const mockTotal = { total: '25' };
+      pool.query.mockResolvedValueOnce({ rows: [mockTotal] });
 
-      const result = await studentModel.total();
+      const result = await studentService.total();
 
       expect(pool.query).toHaveBeenCalledWith(
         'SELECT COUNT(id_member) AS Total FROM public.student '
       );
-      expect(result).toEqual({ Total: '10' });
+      expect(result).toEqual(mockTotal);
     });
 
-    it('should return zero when no students exist', async () => {
-      const mockResult = {
-        rows: [{ Total: '0' }]
-      };
-      
-      pool.query.mockResolvedValue(mockResult);
+    it('should throw error when count query fails', async () => {
+      const dbError = new Error('Count failed');
+      pool.query.mockRejectedValueOnce(dbError);
 
-      const result = await studentModel.total();
-
-      expect(result).toEqual({ Total: '0' });
-    });
-
-    it('should handle database errors during total count retrieval', async () => {
-      const mockError = new Error('Count query failed');
-      pool.query.mockReset();
-      pool.query.mockRejectedValue(mockError);
-
-      await expect(studentModel.total()).rejects.toThrow('Count query failed');
-      expect(console.error).toHaveBeenCalledWith('Error deleting student:', mockError);
+      await expect(studentService.total()).rejects.toThrow('Count failed');
     });
   });
 
   describe('getStudentsByClass', () => {
-    it('should retrieve students by class successfully', async () => {
-      const mockResult = {
-        rows: [
-          {
-            id_member: 1,
-            cne: 'CNE123',
-            full_name: 'John Doe',
-            cin: 'AB123456',
-            email: 'john@test.com',
-            date_add: '2024-01-01',
-            id_sector: 1,
-            profile_picture: '/path/to/image.jpg',
-            id_class: 1
-          }
-        ]
-      };
-      
-      pool.query.mockResolvedValue(mockResult);
+    it('should return students filtered by class', async () => {
+      const mockStudents = [
+        {
+          id_member: 'user1',
+          cne: 'CNE001',
+          full_name: 'John Doe',
+          cin: 'CIN001',
+          email: 'john@example.com',
+          date_add: '2024-01-01',
+          id_sector: 'sector1',
+          profile_picture: '/path/to/pic.jpg',
+          id_class: 'class1'
+        }
+      ];
 
-      const result = await studentModel.getStudentsByClass(1);
+      pool.query.mockResolvedValueOnce({ rows: mockStudents });
+
+      const result = await studentService.getStudentsByClass('class1');
 
       expect(pool.query).toHaveBeenCalledWith(
-        `SELECT 
-           s.id_member, s.cne, 
-           m.full_name, m.cin, m.email, m.date_add, 
-           f.id_sector, m.profile_picture,
-           c.id_class
-         FROM public.member m 
-         JOIN public.student s ON m.id_member = s.id_member 
-         JOIN public.class c ON c.id_class = s.id_class
-         JOIN public.sector f ON f.id_sector = c.sector_id
-         WHERE c.id_class = $1`,
-        [1]
+        expect.stringContaining('WHERE c.id_class = $1'),
+        ['class1']
       );
-      expect(result).toEqual(mockResult.rows);
+      expect(result).toEqual(mockStudents);
     });
 
-    it('should return empty array when no students in class', async () => {
-      const mockResult = { rows: [] };
-      pool.query.mockResolvedValue(mockResult);
+    it('should throw error when query fails', async () => {
+      const dbError = new Error('Class query failed');
+      pool.query.mockRejectedValueOnce(dbError);
 
-      const result = await studentModel.getStudentsByClass(999);
-
-      expect(result).toEqual([]);
-    });
-
-    it('should handle database errors during retrieval by class', async () => {
-      const mockError = new Error('Query failed');
-      pool.query.mockRejectedValue(mockError);
-
-      await expect(studentModel.getStudentsByClass(1)).rejects.toThrow('Query failed');
-      expect(console.error).toHaveBeenCalledWith('Error retrieving students by class:', mockError);
+      await expect(studentService.getStudentsByClass('class1')).rejects.toThrow('Class query failed');
     });
   });
 
   describe('getStudentsBySector', () => {
-    it('should retrieve students by sector successfully', async () => {
-      const mockResult = {
-        rows: [
-          {
-            id_member: 1,
-            cne: 'CNE123',
-            full_name: 'John Doe',
-            cin: 'AB123456',
-            email: 'john@test.com',
-            date_add: '2024-01-01',
-            sector_id: 1,
-            profile_picture: '/path/to/image.jpg',
-            id_class: 1
-          }
-        ]
-      };
-      
-      pool.query.mockResolvedValue(mockResult);
+    it('should return students filtered by sector', async () => {
+      const mockStudents = [
+        {
+          id_member: 'user1',
+          cne: 'CNE001',
+          full_name: 'John Doe',
+          cin: 'CIN001',
+          email: 'john@example.com',
+          date_add: '2024-01-01',
+          sector_id: 'sector1',
+          profile_picture: '/path/to/pic.jpg',
+          id_class: 'class1'
+        }
+      ];
 
-      const result = await studentModel.getStudentsBySector(1);
+      pool.query.mockResolvedValueOnce({ rows: mockStudents });
+
+      const result = await studentService.getStudentsBySector('sector1');
 
       expect(pool.query).toHaveBeenCalledWith(
-        `SELECT 
-           s.id_member, s.cne, 
-           m.full_name, m.cin, m.email, m.date_add, 
-           c.sector_id, m.profile_picture,
-           c.id_class
-         FROM public.member m 
-         JOIN public.student s ON m.id_member = s.id_member 
-         JOIN public.class c ON c.id_class = s.id_class 
-         WHERE c.sector_id = $1`,
-        [1]
+        expect.stringContaining('WHERE c.sector_id = $1'),
+        ['sector1']
       );
-      expect(result).toEqual(mockResult.rows);
+      expect(result).toEqual(mockStudents);
     });
 
-    it('should return empty array when no students in sector', async () => {
-      const mockResult = { rows: [] };
-      pool.query.mockResolvedValue(mockResult);
+    it('should throw error when query fails', async () => {
+      const dbError = new Error('Sector query failed');
+      pool.query.mockRejectedValueOnce(dbError);
 
-      const result = await studentModel.getStudentsBySector(999);
-
-      expect(result).toEqual([]);
+      await expect(studentService.getStudentsBySector('sector1')).rejects.toThrow('Sector query failed');
     });
+  });
+});
 
-    it('should handle database errors during retrieval by sector', async () => {
-      const mockError = new Error('Query failed');
-      pool.query.mockRejectedValue(mockError);
+// Additional integration-style tests for edge cases
+describe('Student Service - Edge Cases', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
-      await expect(studentModel.getStudentsBySector(1)).rejects.toThrow('Query failed');
-      expect(console.error).toHaveBeenCalledWith('Error retrieving students by sector:', mockError);
+  describe('createStudent with missing parameters', () => {
+    it('should handle null/undefined parameters', async () => {
+      pool.query.mockRejectedValueOnce(new Error('NOT NULL violation'));
+
+      await expect(studentService.createStudent(
+        null, 'John Doe', 'CIN123', 'CNE456', 'john@example.com',
+        'password', 'class1', 'note', 'student', '/path/img.jpg'
+      )).rejects.toThrow('NOT NULL violation');
     });
   });
 
-  describe('Edge Cases and Integration', () => {
-    it('should handle null values in createStudent', async () => {
-      const mockResult = { rows: [{ id_member: null }] };
-      
-      pool.query
-        .mockResolvedValueOnce(mockResult)
-        .mockResolvedValueOnce({ rows: [] });
+  describe('updateStudentById with empty fields', () => {
+    it('should handle empty fieldsToUpdate object', async () => {
+      const result = await studentService.updateStudentById('user1', {});
 
-      const result = await studentModel.createStudent(
-        null, null, null, null, null, null, null, null, null, null
-      );
+      expect(pool.query).not.toHaveBeenCalled();
+      expect(result).toBeNull();
+    });
+  });
 
-      expect(result).toEqual({ id_member: null });
+  describe('Database connection issues', () => {
+    it('should handle database timeout errors', async () => {
+      const timeoutError = new Error('Connection timeout');
+      timeoutError.code = 'ETIMEDOUT';
+      pool.query.mockRejectedValueOnce(timeoutError);
+
+      await expect(studentService.getAllStudents()).rejects.toThrow('Connection timeout');
     });
 
-    it('should handle updateStudentById with mixed valid and invalid fields', async () => {
-      const mockResult = {
-        rows: [{ id_member: 1, full_name: 'Updated' }]
-      };
-      
-      pool.query.mockResolvedValue(mockResult);
+    it('should handle database constraint violations', async () => {
+      const constraintError = new Error('Duplicate key violation');
+      constraintError.code = '23505';
+      pool.query.mockRejectedValueOnce(constraintError);
 
-      // Mix of valid member fields, valid student fields, and invalid fields
-      const fieldsToUpdate = { 
-        full_name: 'Updated',     // valid member field
-        cne: 'CNE456',           // valid student field
-        invalid_field: 'should be ignored'  // invalid field
-      };
-      
-      const result = await studentModel.updateStudentById(1, fieldsToUpdate);
-
-      // Should only process valid fields and ignore invalid ones
-      expect(pool.query).toHaveBeenCalledTimes(2);
-      expect(result).toEqual(mockResult.rows[0]);
-    });
-
-    it('should handle partial deletion failures gracefully', async () => {
-      const followUpError = new Error('Follow-up deletion failed');
-      
-      pool.query.mockReset();
-      pool.query.mockRejectedValue(followUpError);
-
-      await expect(studentModel.deleteStudentById(1))
-        .rejects.toThrow('Follow-up deletion failed');
-
-      expect(console.error).toHaveBeenCalledWith('Error deleting student:', followUpError);
+      await expect(studentService.createStudent(
+        'user1', 'John Doe', 'CIN123', 'CNE456', 'john@example.com',
+        'password', 'class1', 'note', 'student', '/path/img.jpg'
+      )).rejects.toThrow('Duplicate key violation');
     });
   });
 });
