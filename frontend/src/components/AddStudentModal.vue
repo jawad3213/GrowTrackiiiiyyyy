@@ -53,6 +53,18 @@
           </div>
         </div>
 
+        <!-- CNE (newly added) -->
+        <div>
+          <label class="font-semibold">CNE*</label>
+          <input
+            v-model="Student.cne"
+            type="text"
+            placeholder="CNE000001"
+            class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+          />
+          <span class="text-red-500 text-sm">{{ formStore.errors.cne }}</span>
+        </div>
+
         <!-- Email -->
         <div>
           <label class="font-semibold">Email*</label>
@@ -111,7 +123,9 @@
               class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
             >
               <option disabled value="">-- select field --</option>
-              <option v-for="id_class in availableFields" :key="id_class">{{ id_class }}</option>
+              <option v-for="id_class in availableFields" :key="id_class">
+                {{ id_class }}
+              </option>
             </select>
             <span class="text-red-500 text-sm">{{ formStore.errors.id_class }}</span>
           </div>
@@ -130,28 +144,31 @@
         </div>
 
         <!-- Alerts -->
-        <p v-if="formStore.error" class="text-red-500 text-sm mb-2 animate-pulse">{{ formStore.error }}</p>
-        <p v-if="formStore.success" class="text-green-500 text-sm mb-2 animate-pulse">{{ formStore.success }}</p>
+        <p v-if="formStore.error" class="text-red-500 text-sm mb-2 animate-pulse">
+          {{ formStore.error }}
+        </p>
+        <p v-if="formStore.success" class="text-green-500 text-sm mb-2 animate-pulse">
+          {{ formStore.success }}
+        </p>
 
         <!-- Buttons -->
         <div class="flex gap-4 pt-4">
-  <button
-    type="button"
-    @click="closeModal"
-    class="flex-1 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100"
-  >
-    Cancel
-  </button>
-  <button
-    type="submit"
-    :disabled="formStore.loading"
-    class="flex-1 py-2 font-semibold text-white rounded-md bg-gradient-to-r from-purple-600 to-orange-400 hover:from-purple-700 hover:to-orange-500 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-  >
-    <span v-if="formStore.loading">Loading...</span>
-    <span v-else>Confirm</span>
-  </button>
-</div>
-
+          <button
+            type="button"
+            @click="closeModal"
+            class="flex-1 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            :disabled="formStore.loading"
+            class="flex-1 py-2 font-semibold text-white rounded-md bg-gradient-to-r from-purple-600 to-orange-400 hover:from-purple-700 hover:to-orange-500 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <span v-if="formStore.loading">Loading...</span>
+            <span v-else>Confirm</span>
+          </button>
+        </div>
       </form>
     </div>
   </div>
@@ -189,9 +206,11 @@ const availableFields = computed(() => {
   return []
 })
 
+// Initialize Student with cne added between cin and email
 const Student = ref({
   full_name: '',
   cin: '',
+  cne: '',         // ← New property for CNE
   email: '',
   pass: '',
   id_sector: 'AP1',
@@ -206,7 +225,9 @@ const student = computed(() => ({
 
 async function generatePassword() {
   try {
-    const res = await axios.get('https://api.genratr.com/?length=16&uppercase&lowercase&numbers')
+    const res = await axios.get(
+      'https://api.genratr.com/?length=16&uppercase&lowercase&numbers'
+    )
     const pass = res.data.password
     Student.value.pass = pass
   } catch (error) {
@@ -217,6 +238,7 @@ async function generatePassword() {
 async function submitForm() {
   if (!isEditMode) {
     try {
+      // Include cne in the data sent to API
       const sanitizedData = formStore.sanitizeInputs(student.value)
       const valid = await formStore.validateWithSchema(sanitizedData, AddStudentSchema)
       if (valid) {

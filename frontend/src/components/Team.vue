@@ -118,7 +118,7 @@ import jaouad from '../assets/personal/jaouad.jpg'
 import sara from '../assets/personal/sara.jpg'
 import soukaina from '../assets/personal/soukaina.jpg'
 import nada from '../assets/personal/nada.jpg'
-import nour from '../assets/personal/nour.jpg'
+import nour from '../assets/personal/nour.png'
 import mosab from '../assets/personal/mosab.jpg'
 
 
@@ -163,7 +163,7 @@ export default {
         {
           name: 'Ouhba Nourelhouda',
           position: 'CI/CD and Deployment Responsible',
-          bio: 'utomates testing, building, and deployment using CI/CD pipelines and Docker.',
+          bio: 'Automates testing, building, and deployment using CI/CD pipelines and Docker.',
           image: nour,
           linkedin: 'https://www.linkedin.com/in/nourelhouda-ouhba-18996a265?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app',
         },
@@ -192,8 +192,8 @@ export default {
         },
         {
           name: 'Ben Abdellah Mosab',
-          position: 'Customer Success',
-          bio: 'Lead CX chez Wealthsimple. Ancien PagerDuty & Sqreen.',
+          position: 'CI/CD and Deployment Responsible',
+          bio: 'CI/CD and Deployment Responsible',
           image: mosab,
           linkedin: 'https://www.linkedin.com/in/mosab-ben-abdellah-b6b7052b9?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app',
           
@@ -201,7 +201,7 @@ export default {
         {
           name: 'El Ibrahimi Rim',
           position: 'Customer Success',
-          bio: 'Lead CX chez Wealthsimple. Ancien PagerDuty & Sqreen.',
+          bio: 'CI/CD and Deployment Responsible',
           image: '/images/team/orlando.jpg',
           linkedin: 'https://linkedin.com/in/orlandodiggs',
           

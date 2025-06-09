@@ -213,6 +213,7 @@
   import {
     UserSittings,
     UserAdd,
+    DocsIcon,
     GridIcon,
     CalenderIcon,
     ChevronDownIcon,
@@ -232,7 +233,7 @@
       items: [
         { icon: GridIcon, name: "Dashboard", path: "/DashboardProf" },
         { 
-          icon: UserAdd, 
+          icon: PageIcon, 
           name: "Evaluation",
           subItems: [
             { name: "Classes", path: "/ClassesEval" },
@@ -242,16 +243,15 @@
         { icon: UserSittings, name: "Project Management", path: "/ProjectMang" },
         { 
           name: "Signal", 
-          icon: PageIcon,
+          icon:DocsIcon,
           subItems: [
             { name: "Classes", path: "/ClassesSignal" },
             { name: "History", path: "/HistoriqueSignal" },
           ]
         },
         { 
-          name: "Notification", icon: PageIcon, path : "/Notification" },
-          { 
-            name: "Rapport", icon: PageIcon, path : "/Rapport" },
+          name: "Notification", icon: HorizontalDots, path : "/Notification" },
+          
       ]
     }
   ];

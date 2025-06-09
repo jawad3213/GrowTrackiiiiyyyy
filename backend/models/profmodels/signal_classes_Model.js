@@ -32,6 +32,7 @@ exports.get_all_student_Model = async (id, id_class) => {
     SELECT
       t.id_member,
       t.cne,
+      r.full_name,
       r.profile_picture,
       (
         SELECT MAX(s.date_add)
@@ -168,29 +169,28 @@ exports.new_signal_Model = async (id, id_student, Title, Description, Anonyme) =
 
 //////// 7
 exports.signal_history_Model = async (id, id_student) => {
-  const signalIdsRes = await pool.query(`
-    SELECT id_signal
-    FROM report
-    WHERE id_reporter = $1 AND id_reported = $2
-  `, [id, id_student]);
+  const { rows } = await pool.query(
+    `SELECT
+       s.date_add,
+       s.solution_state,
+       CASE
+         WHEN s.approved IS TRUE  THEN 'Approved'
+         WHEN s.approved IS FALSE THEN 'Rejected'
+         ELSE 'New'
+       END AS signal_state,
+       m.full_name,
+       m.role
+     FROM report r
+     INNER JOIN signal s
+       ON r.id_signal = s.id_signal
+     INNER JOIN member m
+       ON r.id_reporter = m.id_member
+     WHERE r.id_reporter = $1
+       AND r.id_reported = $2
+     ORDER BY s.date_add DESC`,
+    [id, id_student]
+  );
 
-  const signalIds = signalIdsRes.rows.map(row => row.id_signal);
-
-  if (signalIds.length === 0) return [];
-
-  const result = await pool.query(`
-    SELECT
-      date_add,
-      solution_state,
-      CASE
-        WHEN approved = false THEN 'New'
-        WHEN approved = true THEN 'Approved'
-      END AS signal_state
-    FROM signal
-    WHERE id_signal = ANY($1)
-    ORDER BY date_add DESC
-  `, [signalIds]);
-
-  return result.rows;
+  return rows;
 };
 

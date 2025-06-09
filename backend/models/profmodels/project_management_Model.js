@@ -5,7 +5,7 @@ exports.all_project_Model = async (id) => {
   const result = await pool.query(`
     SELECT 
       p.name_project,
-      p.id_project,
+      p.id_project, 
       p.date_project,
       p.date_project,
       p.end_date,

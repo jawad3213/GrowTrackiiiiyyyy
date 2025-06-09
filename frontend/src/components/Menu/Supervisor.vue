@@ -46,7 +46,7 @@
           ></div>
         </div>
 
-        <!-- Tableau des supervisors (une fois chargé) -->
+        <!-- Tableau des supervisors -->
         <div v-else-if="sups.length > 0" class="p-6 overflow-x-auto">
           <table
             class="min-w-full bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden"
@@ -83,9 +83,19 @@
                 class="odd:bg-white even:bg-gray-50 dark:odd:bg-gray-800 dark:even:bg-gray-700
                        hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150"
               >
+                <!-- Letter-avatar + name -->
                 <td class="py-3 px-4 text-gray-800 dark:text-gray-100">
-                  {{ sup.full_name }}
+                  <div class="flex items-center space-x-3">
+                    <div
+                      class="w-8 h-8 rounded-full flex items-center justify-center text-white border border-gray-200"
+                      :style="{ backgroundColor: stringToColor(sup.full_name) }"
+                    >
+                      {{ sup.full_name.charAt(0).toUpperCase() }}
+                    </div>
+                    <span>{{ sup.full_name }}</span>
+                  </div>
                 </td>
+
                 <td class="py-3 px-4 text-gray-800 dark:text-gray-100">
                   {{ sup.registration_number }}
                 </td>
@@ -107,44 +117,27 @@
                     })
                   }}
                 </td>
-                <!-- Colonne “Actions” avec 2 icônes côte à côte -->
+                <!-- Actions -->
                 <td class="py-3 px-4 flex justify-center space-x-4">
-                  <!-- Icône “Modifier” (crayon) -->
                   <router-link
                     :to="`/EditSupervisor/${sup.id_member}`"
                     class="text-blue-500 hover:text-blue-700 transform hover:scale-110 transition-transform duration-150"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="h-5 w-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      stroke-width="2"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M15.232 5.232l3.536 3.536M4 17.25V21h3.75l11.064-11.064-3.75-3.75L4 17.25z"
-                      />
+                    <!-- edit icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15.232 5.232l3.536 3.536M4 17.25V21h3.75l11.064-11.064-3.75-3.75L4 17.25z"/>
                     </svg>
                   </router-link>
 
-                  <!-- Icône “Supprimer” (poubelle) -->
                   <router-link
                     :to="`/DeleteSupervisor/${sup.id_member}`"
                     class="text-red-500 hover:text-red-700 transform hover:scale-110 transition-transform duration-150"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      height="24px"
-                      viewBox="0 -960 960 960"
-                      width="24px"
-                      fill="#EA3323"
-                    >
-                      <path
-                        d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"
-                      />
+                    <!-- delete icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" fill="#EA3323">
+                      <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/>
                     </svg>
                   </router-link>
                 </td>
@@ -153,7 +146,7 @@
           </table>
         </div>
 
-        <!-- Pas de données (si la liste est vide et qu’on a terminé le chargement) -->
+        <!-- Pas de données -->
         <div
           v-else
           class="flex-1 flex flex-col items-center justify-center text-center
@@ -175,7 +168,6 @@
           </router-link>
         </div>
 
-        <!-- (facultatif) Pagination, etc. -->
       </main>
     </div>
   </admin-layout>
@@ -200,4 +192,16 @@ onMounted(async () => {
     isLoading.value = false
   }
 })
+
+/**
+ * Generate a reproducible HSL color from the full name.
+ */
+const stringToColor = (str) => {
+  let hash = 0
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash)
+  }
+  const hue = Math.abs(hash) % 360
+  return `hsl(${hue}, 50%, 60%)`
+}
 </script>

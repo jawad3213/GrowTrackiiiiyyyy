@@ -2,7 +2,7 @@
   <admin-layout>
   
   <h1 class="text-3xl font-bold text-gray-900 mb-7">
-    Welcome to Your Admin Dashboard <span class="uppercase">SOUKAINA  </span>,
+    Welcome to Your Admin Dashboard <span class="uppercase">SOUKAINA </span>,
     <span class="text-xl font-medium text-gray-500">
       Here’s what’s happening with your Plateform this month 
     </span>

@@ -1,73 +1,127 @@
 <template>
-  <div ref="reportContent" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 font-inter">
-    <div class="bg-white w-[800px] max-h-[100vh] p-6 rounded-xl shadow-xl overflow-y-auto">
-      <h1 class="text-6xl font-bold text-center mb-15">
-        Student <span class="bg-purple-600 text-white px-2 rounded">Report</span>
+  <div
+    ref="reportContent"
+    class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 font-inter p-6"
+  >
+    <div
+      class="relative bg-white w-full max-w-2xl max-h-[90vh] p-10 rounded-3xl border-4 border-purple-500 shadow-2xl overflow-y-auto space-y-8 animate-slide-up-fade"
+    >
+      <!-- Header -->
+      <h1 class="text-5xl font-extrabold text-center mb-8">
+        Student
+        <span class="bg-gradient-to-r from-purple-600 to-orange-500 text-white px-3 py-1 rounded-lg">
+          Report
+        </span>
       </h1>
 
       <!-- Profile Section -->
-      <details class="mb-4">
-        <summary class="bg-purple-200 px-4 py-2 font-semibold text-xl rounded cursor-pointer">Profile Section</summary>
-        <div class="mt-10 ml-10 text-2xl">
-          <p><strong>Student full name:</strong> {{ profile.name }}</p>
+      <details class="group">
+        <summary
+          class="bg-gradient-to-r from-purple-200 to-purple-300 px-4 py-2 font-semibold text-xl rounded-lg cursor-pointer transition-colors duration-200"
+        >
+          Profile Section
+        </summary>
+        <div class="mt-6 ml-8 text-lg space-y-2 animate-slide-up-fade">
+          <p><strong>Student full name:</strong> {{ profile.full_name }}</p>
           <p><strong>CNE:</strong> {{ profile.cne }}</p>
-          <p><strong>Level:</strong> {{ profile.level }}</p>
-          <p><strong>Field:</strong> {{ profile.field }}</p>
-          <p><strong>Projects:</strong> {{ joinedProjects }}</p>
+          <p><strong>Level:</strong> {{ profile.id_sector }}</p>
+          <p><strong>Field:</strong> {{ profile.id_class }}</p>
+
+          <p><strong>Projects:</strong></p>
+          <div class="ml-8">
+            <p v-if="!profile.name_projects || profile.name_projects.length === 0" class="italic text-gray-500">
+              No projects assigned.
+            </p>
+            <ul v-else class="list-disc ml-6 space-y-1 text-base">
+              <li v-for="(proj, i) in profile.name_projects" :key="i">{{ proj }}</li>
+            </ul>
+          </div>
         </div>
       </details>
 
-
       <!-- Evaluation Section -->
-      <details class="mb-4">
-        <summary class="bg-purple-200 px-4 py-2 font-semibold text-xl rounded cursor-pointer">Evaluation Section</summary>
-        <div class="mt-10 ml-10 text-2xl">
-          <p><strong>Number of Evaluations Completed:</strong> {{ evaluations.completed }}</p>
-          <p><strong>Number of Evaluations Received:</strong> {{ evaluations.received }}</p>
-          <p><strong>Average Score:</strong> {{ evaluations.average }}</p>
+      <details class="group">
+        <summary
+          class="bg-gradient-to-r from-purple-200 to-purple-300 px-4 py-2 font-semibold text-xl rounded-lg cursor-pointer transition-colors duration-200"
+        >
+          Evaluation Section
+        </summary>
+        <div class="p-6 max-w-xl mx-auto font-sans animate-slide-up-fade">
+          <h1 class="text-3xl font-bold mb-4">Student Evaluation</h1>
 
-          <!-- Skills Average Table -->
-          <h4 class="font-bold text-2xl mb-4 mt-8">Skill Evaluation:</h4>
-           <table class="w-full border text-lg text-center">
-            <thead class="bg-gray-100">
-              <tr>
-                <th class="p-2">Date</th>
-                <th v-for="skill in skillNames" :key="skill" class="p-2">{{ skill }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="date in uniqueDates" :key="date" class="border-t">
-                <td class="p-2 font-medium">{{ date }}</td>
-                <td v-for="skill in skillNames" :key="skill + date" class="p-2">
-                  {{ getAverageRating(date, skill) ?? '-' }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <!-- Source Pie Chart Placeholder -->
-          <h4 class="font-bold text-2xl mt-4">Evaluation Sources:</h4>
-          <div class="relative max-h-[195px]">
-            <div id="chartTwo" class="h-full">
-              <div class="radial-bar-chart">
-                  <VueApexCharts
-                    width="400"
-                    type="pie"
-                    :options="chartOptions"
-                    :series="chartSeries"
-                  />
-                  
+          <div v-if="!evale">Loading…</div>
+          <div v-else>
+            <section class="mb-6">
+              <p><strong>Completed:</strong> {{ evale.completed }}</p>
+              <p><strong>Received:</strong> {{ evale.received }}</p>
+            </section>
+
+            <!-- Skill Evaluations Table -->
+            <section class="mb-6">
+              <h2 class="text-2xl font-semibold mb-2">Skill Evaluations</h2>
+              <div class="overflow-x-auto">
+                <table class="min-w-full bg-white border">
+                  <thead>
+                    <tr class="bg-gray-100">
+                      <th class="px-4 py-2 border">Date</th>
+                      <th
+                        v-for="(skill, i) in evale.skill_evaluation"
+                        :key="i"
+                        class="px-4 py-2 border"
+                      >
+                        {{ skill.skill_name }}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="px-4 py-2 border text-center">
+                        {{ formatDate(evale.skill_evaluation[0].date) }}
+                      </td>
+                      <td
+                        v-for="(skill, i) in evale.skill_evaluation"
+                        :key="i"
+                        class="px-4 py-2 border text-center"
+                      >
+                        {{ skill.note_skill.toFixed(2) }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
-            </div>
-          </div>
+            </section>
 
+            <section class="mb-6">
+              <p>
+                <strong>Average Score:</strong>
+                <span class="text-indigo-600 font-bold">{{ evale.average_score.toFixed(2) }}</span>
+              </p>
+            </section>
+
+            <section>
+              <h2 class="text-2xl font-semibold mb-2">Evaluation Sources</h2>
+              <ul class="list-disc list-inside space-y-1">
+                <li v-for="(src, i) in evale.evaluation_sources" :key="i">
+                  {{ src.type_evaluation }}: {{ src.count }}
+                </li>
+              </ul>
+            </section>
+          </div>
         </div>
       </details>
 
       <!-- Signal Section -->
-      <details class="mb-4">
-        <summary class="bg-purple-200 px-4 py-2 font-semibold text-xl rounded cursor-pointer">Signal Section</summary>
-        <div class="mt-10 mb-10">
-          <table class="w-full text-sm border">
+      <details class="group">
+        <summary
+          class="bg-gradient-to-r from-purple-200 to-purple-300 px-4 py-2 font-semibold text-xl rounded-lg cursor-pointer transition-colors duration-200"
+        >
+          Signal Section
+        </summary>
+
+        <div v-if="signalLoading" class="p-6 text-center">Loading signals…</div>
+        <div v-else-if="signalError" class="p-6 text-red-600">{{ signalError }}</div>
+        <div v-else class="mt-6 mb-6 animate-slide-up-fade overflow-x-auto">
+          <table class="w-full text-sm border text-center">
             <thead class="bg-gray-100">
               <tr>
                 <th class="p-2">Date</th>
@@ -79,13 +133,17 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="sig in signals" :key="sig.id" class="text-center border-t">
-                <td class="p-2">{{ sig.date }}</td>
-                <td class="p-2">{{ sig.reporter }}</td>
+              <tr v-for="sig in signals" :key="sig.id_signal" class="border-t">
+                <td class="p-2">{{ formatDate(sig.date_add) }}</td>
+                <td class="p-2">{{ sig.full_name }}</td>
                 <td class="p-2">{{ sig.role }}</td>
-                <td class="p-2">{{ sig.status }}</td>
-                <td class="p-2">{{ sig.solution }}</td>
-                <td class="p-2">{{ sig.solutionTaken }}</td>
+                <td class="p-2">
+                  <span :class="getStatusClass(sig.signal_state)">{{ sig.signal_state }}</span>
+                </td>
+                <td class="p-2">
+                  <span :class="getSolutionClass(sig.solution_state)">{{ sig.solution_state ?? 'No Action' }}</span>
+                </td>
+                <td class="p-2">{{ sig.id_solution ?? '–' }}</td>
               </tr>
             </tbody>
           </table>
@@ -93,196 +151,192 @@
       </details>
 
       <!-- Comment Section -->
-      <details class="mb-4">
-        <summary class="bg-purple-200 px-4 py-2 font-semibold text-xl rounded cursor-pointer">Comment Section</summary>
-        <div class="ml-10 mt-10">
-          <div v-for="role in Object.keys(comments)" :key="role">
-            <p class="font-bold mb-4 text-2xl text-orange-600">Comments given by {{ role }}:</p>
-            <ul class="list-disc mb-6 text-lg ml-15">
-              <li v-for="(comment, i) in comments[role]" :key="i">{{ comment }}</li>
+      <details class="group">
+        <summary
+          class="bg-gradient-to-r from-purple-200 to-purple-300 px-4 py-2 font-semibold text-xl rounded-lg cursor-pointer transition-colors duration-200"
+        >
+          Comment Section
+        </summary>
+
+        <div v-if="commentsLoading" class="p-6 text-center">Loading comments…</div>
+        <div v-else-if="commentsError" class="p-6 text-red-600">{{ commentsError }}</div>
+        <div v-else class="ml-8 mt-6 space-y-6 animate-slide-up-fade">
+          <div v-if="commentResults.professor.length">
+            <p class="font-bold mb-2 text-xl text-orange-600">Comments by Professor:</p>
+            <ul class="list-disc ml-6 space-y-1 text-base">
+              <li v-for="(c, i) in commentResults.professor" :key="i">{{ c.comment_evaluation }}</li>
             </ul>
+          </div>
+          <div v-if="commentResults.supervisor.length">
+            <p class="font-bold mb-2 text-xl text-orange-600">Comments by Supervisor:</p>
+            <ul class="list-disc ml-6 space-y-1 text-base">
+              <li v-for="(c, i) in commentResults.supervisor" :key="i">{{ c.comment_evaluation }}</li>
+            </ul>
+          </div>
+          <div v-if="commentResults.student.length">
+            <p class="font-bold mb-2 text-xl text-orange-600">Comments by Student:</p>
+            <ul class="list-disc ml-6 space-y-1 text-base">
+              <li v-for="(c, i) in commentResults.student" :key="i">{{ c.comment_evaluation }}</li>
+            </ul>
+          </div>
+          <div
+            v-if="!commentResults.professor.length && !commentResults.supervisor.length && !commentResults.student.length"
+            class="italic text-gray-500"
+          >
+            No comments available.
           </div>
         </div>
       </details>
 
       <!-- Actions -->
-      <div class="flex justify-between mt-10">
-        <button @click="goBack" class="bg-gray-200 px-6 py-4 rounded">Back</button>
-        <button @click="downloadPdf" class="bg-orange-500 text-white px-8 py-4 rounded">Download as PDF</button>
+      <div class="flex justify-between mt-8 space-x-4">
+        <button
+          @click="goBack"
+          class="flex-1 py-3 text-white text-lg font-semibold rounded-full shadow-lg transition-transform duration-200 hover:shadow-xl hover:scale-105 bg-gradient-to-r from-purple-600 to-orange-500"
+        >
+          Back
+        </button>
+        <button
+          @click="generatePdf"
+          :disabled="loading"
+          class="flex-1 py-3 text-white text-lg font-semibold rounded-full shadow-lg transition-transform duration-200 hover:shadow-xl hover:scale-105 bg-gradient-to-r from-purple-600 to-orange-500"
+        >
+          {{ loading ? 'Downloading…' : 'Download as PDF' }}
+        </button>
+      </div>
+
+      <div v-if="error" class="mt-4 text-center text-red-600">
+        {{ error }}
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
-  import { useRouter, useRoute } from 'vue-router'
-import api from '@/services/api'
-import html2pdf from 'html2pdf.js'
-import VueApexCharts from 'vue3-apexcharts'
+import { ref, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import axios from 'axios'
 
-const route = useRoute()
-const studentId = ref('')
+axios.defaults.withCredentials = true
 
+// Data refs
+const profile        = ref({})
+const evale          = ref(null)
+const signals        = ref([])
+const commentResults = ref({ professor: [], supervisor: [], student: [] })
 
-if (route.query.id) {
-  studentId.value = route.query.id
+// Loading/error refs used by generatePdf()
+const loading = ref(false)
+const error   = ref(null)
+
+// Other loading/error states…
+const signalLoading   = ref(true)
+const signalError     = ref(null)
+const commentsLoading = ref(true)
+const commentsError   = ref(null)
+
+const route     = useRoute()
+const studentId = route.query.id || ''
+const router    = useRouter()
+
+function formatDate(iso) {
+  return new Date(iso).toLocaleDateString()
 }
-    console.log('studentId:', studentId.value)
 
-    
-// 🧭 Navigation
-const router = useRouter()
-const reportContent = ref(null)
+function getStatusClass(status) {
+  if (status === 'new')    return 'bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs'
+  if (status === 'open')   return 'bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs'
+  if (status === 'closed') return 'bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs'
+  return 'bg-gray-200 text-gray-700 px-2 py-1 rounded-full text-xs'
+}
 
-// 🔹 Données Profil étudiant (statique ou récupérable si API dispo)
-// Script setup
-const joinedProjects = computed(() => profile.value.projects?.join(', ') || 'No projects')
-const profile = ref({
-  name: '',
- 
-})
+function getSolutionClass(sol) {
+  if (sol === 'Resolved')    return 'bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs'
+  if (sol === 'In Progress') return 'bg-pink-100 text-pink-800 px-2 py-1 rounded-full text-xs'
+  if (sol === 'Blocked')     return 'bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-xs'
+  return 'bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs'
+}
 
-// 🔸 Évaluations par date et par compétence
-const evaluations = ref([])
-
-// 🔸 Graphique circulaire
-const chartOptions = ref({
-  chart: {
-    type: 'pie'
-  },
-  labels: [], // ex: ["Professors", "Peers", "Supervisors"]
-  legend: {
-    position: 'right'
-  }
-})
-
-const chartSeries = ref([]) // ex: [100, 62, 50]
-
-// 🔸 Signaux
-const signals = ref([])
-
-// 🔸 Commentaires
-const comments = ref({})
-
-// 🟡 Initialisation des données
 onMounted(async () => {
   try {
-    // 1. Profile
-    const token = localStorage.getItem('token');
-    const response = await api.get(`/api/report/profile_section/${studentId.value}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    const data = response.data.result || [];
-    if (data.length > 0) {
-      profile.value = {
-        name: data[0].full_name,
-        cne: data[0].cne,
-        level: data[0].id_sector,
-        field: data[0].id_class,
-        projects: Array.isArray(data[0].id_project) ? data[0].id_project : [data[0].id_project]
-      }
-    }
+    const profRes = await axios.get(
+      `http://localhost:3000/api/report/Profile_Section/${studentId}`
+    )
+    profile.value = Array.isArray(profRes.data)
+      ? profRes.data[0]
+      : profRes.data.result
 
-    // 2. Evaluations
-    const { data: evalData } = await api.get(`/api/report/Evaluation_Section/${studentId.value}`)
-    evaluations.value = (evalData.skill_evaluation || []).map(e => ({
-      date: e.date,
-      skill: e.skill_name,
-      ratings: [e.note_skill]
-    }))
-    evaluations.completed = evalData.completed
-    evaluations.received = evalData.received
-    evaluations.average = evalData.average_score
-    chartOptions.value.labels = (evalData.evaluation_sources || []).map(e => e.type_evaluation)
-    chartSeries.value = (evalData.evaluation_sources || []).map(e => e.count)
+    const evalRes = await axios.get(
+      `http://localhost:3000/api/report/Evaluation_Section/${studentId}`
+    )
+    evale.value = Array.isArray(evalRes.data)
+      ? evalRes.data[0]
+      : evalRes.data.result
 
-    // 3. Signaux
-    const { data: signalData } = await api.get(`/api/report/Signal_History/${studentId.value}`)
-    signals.value = signalData.map(s => ({
-      date: new Date(s.date_add).toLocaleDateString(),
-      reporter: s.full_name,
-      role: s.role,
-      status: s.signal_state,
-      solution: s.id_solution,
-      solutionTaken: s.solution_state
-    }))
+    const sigRes = await axios.get(
+      `http://localhost:3000/api/report/Signal_History/${studentId}`
+    )
+    signals.value = sigRes.data.result
+  } catch (e) {
+    signalError.value = e.message || 'Failed to load signals'
+  } finally {
+    signalLoading.value = false
+  }
 
-    // 4. Commentaires
-    const { data: commentData } = await api.get(`/api/report/Comment_Section/${studentId.value}`)
-    comments.value = {
-      professor: (commentData.professor || []).map(c => c.comment_evaluation),
-      supervisor: (commentData.supervisor || []).map(c => c.comment_evaluation),
-      student: (commentData.student || []).map(c => c.comment_evaluation)
-    }
-  } catch (error) {
-    console.error("❌ Erreur chargement données:", error)
+  try {
+    const comRes = await axios.get(
+      `http://localhost:3000/api/report/Comment_Section/${studentId}`
+    )
+    commentResults.value = comRes.data.result
+  } catch (e) {
+    commentsError.value = e.message || 'Failed to load comments'
+  } finally {
+    commentsLoading.value = false
   }
 })
 
-// 📊 Colonnes dynamiques (compétences)
-const skillNames = computed(() => {
-  const names = evaluations.value.map(e => e.skill)
-  return [...new Set(names)] //ignorer les doublons
-})
-
-// 📆 Lignes dynamiques (dates)
-const uniqueDates = computed(() => {
-  const dates = evaluations.value.map(e => e.date)
-  return [...new Set(dates)]
-})
-
-// 🔢 Fonction moyenne par compétence/date
-const getAverageRating = (date, skill) => {
-  const entry = evaluations.value.find(e => e.date === date && e.skill === skill)
-  if (!entry) return '-'
-  const avg = entry.ratings.reduce((a, b) => a + b, 0) / entry.ratings.length
-  return avg.toFixed(1)
-}
-
-// ⬅️ Retour
 const goBack = () => router.back()
-console.log('hello back')
 
-// 📥 Télécharger PDF
-const downloadPdf = () => {
-  html2pdf().from(reportContent.value).save('Rapport.pdf')
-  console.log('hello hassan')
-}
+async function generatePdf() {
+  loading.value = true
+  error.value   = null
 
-// pour les couleurs metionnee dans le tableau
-const getStatusClass = (status) => {
-  switch (status) {
-    case 'Approved':
-      return 'bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold';
-    case 'Rejected':
-      return 'bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-xs font-semibold';
-    default:
-      return 'bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-xs font-semibold';
+  try {
+    const pdfRes = await axios.post(
+      'http://localhost:3000/api/generate-pdf',
+      {
+        profile: profile.value,
+        evale: evale.value,
+        signals: signals.value,
+        commentResults: commentResults.value
+      },
+      { responseType: 'blob' }
+    )
+
+    const blob = new Blob([pdfRes.data], { type: 'application/pdf' })
+    const url  = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href     = url
+    link.download = 'profile.pdf'
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    URL.revokeObjectURL(url)
+  } catch (err) {
+    console.error('PDF export failed:', err)
+    error.value = err.response?.data?.message || err.message || 'Failed to generate PDF.'
+  } finally {
+    loading.value = false
   }
 }
-
-const getSolutionClass = (solution) => {
-  switch (solution) {
-    case 'Resolved':
-      return 'bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold';
-    case 'In Progress':
-      return 'bg-pink-100 text-pink-700 px-3 py-1 rounded-full text-xs font-semibold';
-    case 'Blocked':
-      return 'bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-xs font-semibold';
-    case 'No Action Taken':
-      return 'bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs font-semibold';
-    default:
-      return 'bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-xs font-semibold';
-  }
-}
-
 </script>
 
-
 <style scoped>
-details[open] summary {
-  background-color: #d6bbfb;
+@keyframes slide-up-fade {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-
+.animate-slide-up-fade { animation: slide-up-fade 0.5s ease-out forwards; }
+details summary { outline: none; }
+details summary:hover { background-color: #e5d4fd; }
 </style>

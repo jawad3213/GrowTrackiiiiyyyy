@@ -140,7 +140,7 @@ exports.solution = async (id_signal, option_solution, details, name_coach, start
     );
 
     await pool.query(
-      `UPDATE public.signal SET approved = "TRUE" WHERE id_signal = $1`,
+      `UPDATE public.signal SET approved = TRUE WHERE id_signal = $1`,
       [id_signal]
     )
 

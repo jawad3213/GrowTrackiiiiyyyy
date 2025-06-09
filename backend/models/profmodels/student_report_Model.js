@@ -2,23 +2,35 @@ const pool = require("../../config/db");
 
 ///////// 1
 exports.Profile_Section_Model = async (id) => {
-  const Profile_Section = await pool.query(`
-    SELECT 
+  const { rows } = await pool.query(`
+    SELECT
       m.full_name,
       s.cne,
-      t.id_sector,
+      sec.id_sector,
       s.id_class,
-      (select p.id_project from team p join team_student t on t.id_team=p.id_team where student_id=m.id_member)
-      from member m 
-      join student s on m.id_member=s.id_member
-      join class l on s.id_class=l.id_class
-      join sector t on t.id_sector=l.sector_id
+      array_agg(p.id_project)       AS id_projects,
+      array_agg(proj.name_project)  AS name_projects
+    FROM member m
+    JOIN student s        ON m.id_member = s.id_member
+    JOIN class cls        ON s.id_class   = cls.id_class
+    JOIN sector sec       ON cls.sector_id = sec.id_sector
+    LEFT JOIN team_student ts ON ts.student_id = m.id_member
+    LEFT JOIN team p      ON p.id_team    = ts.id_team
+    LEFT JOIN project proj ON proj.id_project = p.id_project
     WHERE m.id_member = $1
-  `, [id]);  
+    GROUP BY m.full_name, s.cne, sec.id_sector, s.id_class
+  `, [id]);
 
-  
-    console.log("profile:",Profile_Section.rows)
-    return Profile_Section.rows;
+  if (!rows[0]) return null;
+
+  return {
+    full_name:    rows[0].full_name,
+    cne:          rows[0].cne,
+    id_sector:    rows[0].id_sector,
+    id_class:     rows[0].id_class,
+    id_projects:  rows[0].id_projects.filter(Boolean),       // e.g. [75, 82, 99]
+    name_projects:rows[0].name_projects.filter(Boolean)      // e.g. ['UX Design','API Dev','Marketing']
+  };
 };
 
 //////// 2

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Report Étudiant</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 30px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      border-radius: 8px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2em;
+      letter-spacing: 1px;
+      border-bottom: 2px solid #2c3e50;
+      padding-bottom: 10px;
+      color: #2c3e50;
+    }
+    section {
+      margin-bottom: 25px;
+    }
+    section h2 {
+      font-size: 1.4em;
+      margin-bottom: 10px;
+      color: #34495e;
+      border-left: 4px solid #3498db;
+      padding-left: 10px;
+    }
+    p, ul {
+      margin: 5px 0 15px 0;
+      line-height: 1.6;
+    }
+    ul {
+      padding-left: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background: #ecf0f1;
+      font-weight: bold;
+    }
+    .buttons {
+      text-align: center;
+      margin-top: 30px;
+    }
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      margin: 0 10px;
+      background: #3498db;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9em;
+    }
+    .btn:hover {
+      background: #2980b9;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>Student Report</h1>
+    </header>
+
+    <!-- Profile Section -->
+    <section id="profile">
+      <h2>Profil Étudiant</h2>
+      <p><strong>Nom complet :</strong> <%= profile.full_name %></p>
+      <p><strong>CNE :</strong> <%= profile.cne %></p>
+      <p><strong>Niveau :</strong> <%= profile.id_sector %></p>
+      <p><strong>Filière :</strong> <%= profile.id_class %></p>
+      <p><strong>Projets :</strong></p>
+      <% if (!profile.name_projects || profile.name_projects.length === 0) { %>
+        <p>Aucun projet assigné.</p>
+      <% } else { %>
+        <ul>
+          <% profile.name_projects.forEach(function(proj) { %>
+            <li><%= proj %></li>
+          <% }); %>
+        </ul>
+      <% } %>
+    </section>
+
+    <!-- Evaluation Section -->
+    <section id="evaluation">
+      <h2>Évaluation</h2>
+      <% if (!evale) { %>
+        <p>Chargement…</p>
+      <% } else { %>
+        <p><strong>Complété :</strong> <%= evale.completed %></p>
+        <p><strong>Reçu :</strong> <%= evale.received %></p>
+
+        <h3>Compétences</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <% evale.skill_evaluation.forEach(function(skill) { %>
+                <th><%= skill.skill_name %></th>
+              <% }); %>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><%= new Date(evale.skill_evaluation[0].date).toLocaleDateString() %></td>
+              <% evale.skill_evaluation.forEach(function(skill) { %>
+                <td><%= skill.note_skill.toFixed(2) %></td>
+              <% }); %>
+            </tr>
+          </tbody>
+        </table>
+
+        <p><strong>Score moyen :</strong> <%= evale.average_score.toFixed(2) %></p>
+
+        <h3>Sources d’évaluation</h3>
+        <ul>
+          <% evale.evaluation_sources.forEach(function(src) { %>
+            <li><%= src.type_evaluation %> : <%= src.count %></li>
+          <% }); %>
+        </ul>
+      <% } %>
+    </section>
+
+    <!-- Signal Section -->
+    <section id="signals">
+      <h2>Signaux</h2>
+      <% if (!signals) { %>
+        <p>Chargement des signaux…</p>
+      <% } else { %>
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Signalé par</th>
+              <th>Rôle</th>
+              <th>État du signal</th>
+              <th>État de la solution</th>
+              <th>Solution prise</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% signals.forEach(function(sig) { %>
+              <tr>
+                <td><%= new Date(sig.date_add).toLocaleDateString() %></td>
+                <td><%= sig.full_name %></td>
+                <td><%= sig.role %></td>
+                <td><%= sig.signal_state %></td>
+                <td><%= sig.solution_state || 'Aucune action' %></td>
+                <td><%= sig.id_solution || '–' %></td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      <% } %>
+    </section>
+
+    <!-- Comment Section -->
+    <section id="comments">
+      <h2>Commentaires</h2>
+      <% if (!commentResults) { %>
+        <p>Chargement des commentaires…</p>
+      <% } else { %>
+        <% ['professor','supervisor','student'].forEach(function(role) {
+             var list = commentResults[role] || [];
+             if (list.length) { %>
+          <h4>Commentaires (<%= role.charAt(0).toUpperCase() + role.slice(1) %>)</h4>
+          <ul>
+            <% list.forEach(function(c) { %>
+              <li><%= c.comment_evaluation %></li>
+            <% }); %>
+          </ul>
+        <% } }); %>
+        <% if (
+             (!commentResults.professor || !commentResults.professor.length) &&
+             (!commentResults.supervisor || !commentResults.supervisor.length) &&
+             (!commentResults.student || !commentResults.student.length)
+           ) { %>
+          <p>Aucun commentaire disponible.</p>
+        <% } %>
+      <% } %>
+    </section>
+   
+  </div>
+
+</body>
+</html>

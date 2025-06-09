@@ -77,9 +77,10 @@ import StudReason from "./components/MenuStudent/StudReason.vue";
 import selfEval from "./components/MenuStudent/selfEval.vue";
 import Team from "./components/Team.vue";
 import Error from "./components/Error.vue";
+import AddMemberForm from "./components/AddMemberForm.vue";
 
-
-
+import GroupMembers from "@/components/MenuProf/GroupMembers.vue";
+import GeneratePdf from "@/components/GeneratePdf.vue";
 
 
 const routes = [
@@ -201,17 +202,42 @@ const routes = [
         component : AddCoach,
         path : "/AddCoach",
     },
+    {
+        name : "GeneratePdf",
+        component : GeneratePdf,
+        path : "/gen",
+    },
     
+{
+  path: '/AddMember/:id_group',
+  name: 'AddMember',
+  component: AddMemberForm,
+  props: true,
+},
+ {// This route MUST exist for goToAddMember()
+    path: '/GroupMembers/:id_group',
+    name: 'GroupMembers',
+    component: GroupMembers
+  },  
     {
         name : "AddField",
         component : AddField,
         path : "/AddField",
+    },
+    
+    {
+        name : "EditCoach",
+        component : EditCoach,
+        path : "/EditCoach/:id_coach",
+        props: true,
+        meta: {edit:true},
     },
     {
         name : "AddProfessorModal",
         component : AddProfessorModal,
         path : "/AddProfessor",
     },
+    
     
     {
         name : "AddSkill",
@@ -474,6 +500,7 @@ const router =createRouter({
 });
 
 import {useAuthStore} from '@/stores/auth'
+import EditCoach from "./components/EditCoach.vue";
 
 router.beforeEach(async (to, from, next)=>{
     const auth = useAuthStore();

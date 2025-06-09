@@ -13,4 +13,4 @@ router.get("/profile/:id_prof",dashboard.getProfessorProfile);
 router.get("/evaluationprof/:id_prof",dashboard.totalEvaluation);
 
 
-module.exports= router;
+module.exports= router; 
