@@ -913,6 +913,7 @@ SUP005	YZ345678	0673456789	$2a$10$mnopqrstuvwxyzabcdefgh	Supervisor	Hamza El Ala
 3de7f5b0-cb85-44a5-89a8-f11c1e561abc	123212222	\N	$2b$10$cXTxXX..5luhrxf3ToQHgO4ivrUz/YlZaXO2ohh9mAEfNZwr9DEgG	coach	jaouad	kokok@gmail.com	\N		2025-06-05 21:55:00.847144
 8ecc0871-62dc-4f14-b41f-ad17c0d12490	ewrerere	\N	$2b$10$VOpD6CCfx4FdpUtHqTqcke5Mh1Lw6OamL8QO6uv4nG.8gC0rZwQmK	coach	jijij	kokocck@gmail.com	\N	ccdscdda	2025-06-06 00:11:34.460744
 1e7e6475-93ce-4947-92b1-ef1100ee2efa	T33443	\N	$2b$10$zmUzcAhByHM642aCPhHzPuQiQJRjSM96V2VfoLDFGjinJMxKgKBou	student	EL HAIL JAOUAD 	elhailjaouad@gmail.com	\N		2025-06-06 02:13:28.597451
+eb3984fd-f3fa-4b78-98b3-b9e47de9c382	T12	\N	$2b$10$zTk0dl/kOfPuvSj/5WnzsOo1CkF3XlNvwYS56gXxU2RJIZwPBB.OS	student	EL GHRICH SALMAN	salman123@gmail.com	\N		2025-06-06 02:14:57.68473
 103f6326-9935-4002-b471-42114d3433f6	T13	\N	$2b$10$A5krTV/zSIA8Ip7XwL/2e.hV1irfHM7YJ1ITFeuFpwrs73DcDlefO	student	NADA EL OUKILI 	oukili@gmail.com	\N		2025-06-06 02:15:53.442792
 e1a830cd-bff6-47fe-b34f-201f855e6e26	T15	\N	$2b$10$UwXdd1ji9jW7El/KJFfxweR1QP6GjfwBv0dnRo.8bv0Vnt1el6FWi	student	SOUKAINA EL AMADI	soukaina123@gmail.com	\N		2025-06-06 02:17:11.11253
 f8da5d76-de29-4062-bf7a-b1b6931ccc55	T54	\N	$2b$10$TO0EjhMncKpO3zc45OM7pu0lNg1umbjK3kt.zV3L1p0A3IiDzT5ye	student	SARA EL HAJII	sara123@gmail.com	\N		2025-06-06 02:18:52.343312

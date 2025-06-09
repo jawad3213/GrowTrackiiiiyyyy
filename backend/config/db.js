@@ -8,7 +8,7 @@ if (process.env.MODE === "cloud") {
     connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false }
   });
-  console.log("🌐 Connexion à la base de données Cloud (Neon)...");
+  console.log(" Connexion à la base de données Cloud (Neon)...");
 } else {
   pool = new Pool({
     host: process.env.DB_HOST,
@@ -19,7 +19,7 @@ if (process.env.MODE === "cloud") {
     ssl: false
 
   });
-  console.log("💻 Connexion à la base de données Locale...");
+  console.log(" Connexion à la base de données Locale...");
 }
 
 module.exports = pool;
