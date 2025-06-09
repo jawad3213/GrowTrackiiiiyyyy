@@ -15,10 +15,21 @@ exports.Profile_Section_Model = async (id) => {
       join sector t on t.id_sector=l.sector_id
     WHERE m.id_member = $1
   `, [id]);  
+  const id_project = Profile_Section.rows[0]?.id_project;
 
-  
-    console.log("profile:",Profile_Section.rows)
-    return Profile_Section.rows;
+const name_project = await pool.query(`
+  SELECT name_project
+  FROM project
+  WHERE id_project = $1
+`, [id_project]);
+
+
+    return {
+  ...Profile_Section.rows[0],
+  name_project: name_project.rows[0]?.name_project || null
+};
+
+
 };
 
 //////// 2

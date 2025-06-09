@@ -280,17 +280,21 @@ exports.new_evaluation_Model = async (skill1,note1,
     { name: skill6, note: note6 }
   ];
   
-  for (const skill of skills) {
-    const insertResult = await pool.query(`
-      INSERT INTO evaluations
-        (id_evaluation, note_skill, skill_name)
-      VALUES
-        ($1, $2, $3)
-      RETURNING *
-    `, [id_evaluation, skill.note, skill.name]);
-  
-  }
-  return insertResult.rows;
+  let allInserted = [];
+
+for (const skill of skills) {
+  const insertResult = await pool.query(`
+    INSERT INTO evaluations
+      (id_evaluation, note_skill, skill_name)
+    VALUES
+      ($1, $2, $3)
+    RETURNING *;
+  `, [id_evaluation, skill.note, skill.name]);
+
+  allInserted.push(insertResult.rows[0]); // ou juste .rows si tu veux tous les résultats
+}
+
+return allInserted;
   
 
 };

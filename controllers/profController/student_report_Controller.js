@@ -5,7 +5,7 @@ exports.Profile_Section_Controller =  async (req, res) => {
       try {
         const id = req.params.id;
         const result = await report_Model.Profile_Section_Model(id);
-        if(result.length>0){
+        if(result){
           return res.status(200).json({
             result
           });

@@ -4,13 +4,19 @@ const DashModel = require('./AdminDashboardModel.js');
 
 ///////////////////
 exports.TotalUserModel = async () => {
-    const result = await pool.query("SELECT COUNT(*) FROM public.member WHERE EXTRACT(MONTH FROM date_add) = EXTRACT(MONTH FROM CURRENT_DATE)AND EXTRACT(YEAR FROM date_add) = EXTRACT(YEAR FROM CURRENT_DATE)");
-    return parseInt(result.rows[0].count, 10); //base decimale 10
+    const result = await pool.query(`SELECT COUNT(*) 
+      FROM public.member WHERE EXTRACT(MONTH FROM date_add) = EXTRACT(MONTH FROM CURRENT_DATE)
+      AND EXTRACT(YEAR FROM date_add) = EXTRACT(YEAR FROM CURRENT_DATE)`);
+    return parseInt(result.rows[0].count, 10); 
 };
 //////////////////
 exports.differenceUserModel = async () => {
-    const total_current_month = await pool.query("SELECT COUNT(*) FROM public.member WHERE EXTRACT(MONTH FROM date_add) = EXTRACT(MONTH FROM CURRENT_DATE)AND EXTRACT(YEAR FROM date_add) = EXTRACT(YEAR FROM CURRENT_DATE)");
-    const total_previous_month = await pool.query("SELECT COUNT(*) FROM public.member WHERE EXTRACT(MONTH FROM date_add) = EXTRACT(MONTH FROM CURRENT_DATE - INTERVAL '1 month') AND EXTRACT(YEAR FROM date_add) = EXTRACT(YEAR FROM CURRENT_DATE - INTERVAL '1 month')");
+    const total_current_month = await pool.query(`SELECT COUNT(*) FROM public.member WHERE 
+      EXTRACT(MONTH FROM date_add) = EXTRACT(MONTH FROM CURRENT_DATE)
+      AND EXTRACT(YEAR FROM date_add) = EXTRACT(YEAR FROM CURRENT_DATE)`);
+    const total_previous_month = await pool.query(`SELECT COUNT(*) FROM public.member WHERE 
+      EXTRACT(MONTH FROM date_add) = EXTRACT(MONTH FROM CURRENT_DATE - INTERVAL '1 month') 
+      AND EXTRACT(YEAR FROM date_add) = EXTRACT(YEAR FROM CURRENT_DATE - INTERVAL '1 month')`);
 
     const current = parseInt(total_current_month.rows[0].count, 10);
     const previous = parseInt(total_previous_month.rows[0].count, 10);
@@ -27,13 +33,19 @@ exports.differenceUserModel = async () => {
 };
 /////////////////
 exports.TotalEvaluationModel = async () => {
-    const result = await pool.query("SELECT COUNT(*) FROM public.skill_evaluation WHERE EXTRACT(MONTH FROM date_add) = EXTRACT(MONTH FROM CURRENT_DATE)AND EXTRACT(YEAR FROM date_add) = EXTRACT(YEAR FROM CURRENT_DATE)");
+    const result = await pool.query(`SELECT COUNT(*) FROM public.skill_evaluation WHERE 
+      EXTRACT(MONTH FROM date_add) = EXTRACT(MONTH FROM CURRENT_DATE)
+      AND EXTRACT(YEAR FROM date_add) = EXTRACT(YEAR FROM CURRENT_DATE)`);
     return parseInt(result.rows[0].count, 10); 
 };
 /////////////////
 exports.differenceEvaluationModel = async () => {
-    const total_current_month = await pool.query("SELECT COUNT(*) FROM public.skill_evaluation WHERE EXTRACT(MONTH FROM date_add) = EXTRACT(MONTH FROM CURRENT_DATE)AND EXTRACT(YEAR FROM date_add) = EXTRACT(YEAR FROM CURRENT_DATE)");
-    const total_previous_month = await pool.query("SELECT COUNT(*) FROM public.skill_evaluation WHERE EXTRACT(MONTH FROM date_add) = EXTRACT(MONTH FROM CURRENT_DATE - INTERVAL '1 month') AND EXTRACT(YEAR FROM date_add) = EXTRACT(YEAR FROM CURRENT_DATE - INTERVAL '1 month')");
+    const total_current_month = await pool.query(`SELECT COUNT(*) FROM public.skill_evaluation WHERE 
+      EXTRACT(MONTH FROM date_add) = EXTRACT(MONTH FROM CURRENT_DATE)AND 
+      EXTRACT(YEAR FROM date_add) = EXTRACT(YEAR FROM CURRENT_DATE)`);
+    const total_previous_month = await pool.query(`SELECT COUNT(*) FROM public.skill_evaluation WHERE 
+      EXTRACT(MONTH FROM date_add) = EXTRACT(MONTH FROM CURRENT_DATE - INTERVAL '1 month') AND 
+      EXTRACT(YEAR FROM date_add) = EXTRACT(YEAR FROM CURRENT_DATE - INTERVAL '1 month')`);
 
     const current = parseInt(total_current_month.rows[0].count, 10);
     const previous = parseInt(total_previous_month.rows[0].count, 10);
