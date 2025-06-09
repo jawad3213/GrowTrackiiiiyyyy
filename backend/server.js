@@ -1,6 +1,6 @@
 const express = require("express")
 const cookieParser = require('cookie-parser');
-const helmet = require('helmet');
+const csrf = require('csurf');
 require('dotenv').config();
 
 const PORT = process.env.PORT || 3000;
@@ -12,7 +12,6 @@ const path = require('path')
 const ejs         = require('ejs');
 const puppeteer   = require('puppeteer');
 
-
 const corsOptions = {
     origin:["http://localhost:3000", "http://localhost:5173"],
     credentials: true
@@ -23,7 +22,25 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // Pour les formulaires HTML classiques
 app.use(cookieParser());
 app.use(cors(corsOptions));
-app.use(helmet({hsts: false})); // Leaves Default options that come with helmet and removes the one that forces https 
+
+const csrfProtection = csrf({ cookie: true });
+app.use(csrfProtection)
+
+const helmet = require('helmet');
+app.use(helmet({
+  hsts: false, 
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+})); // Leaves Default options that come with helmet and removes the one that forces https 
+
+//Endpoint to serve csrf token
+app.get('/api/csrf-token', (req, res) => {
+  res.cookie('XSRF-TOKEN', req.csrfToken(), {
+    httpOnly: false,
+    sameSite: 'Strict',
+    secure: false   
+  });
+    res.status(200).json({ message: 'CSRF token sent' });
+});
 
 // The routes of Authentication
 const AuthRoute = require("./routes/AuthRoute");
@@ -106,6 +123,8 @@ app.use("/api/signal_classes", prof_signal_classes)
 
 const dashRoute = require("./routes/profRoutes/dashRoute");
 app.use("/prof/dashboard", dashRoute );
+
+//Student report
 const student_report = require("./routes/professorRoutes/student_report");
 app.use("/api/report", student_report)
 
@@ -189,8 +208,18 @@ app.post('/api/generate-pdf', async (req, res) => {
 });
 
 
+/*
 app.listen(PORT, () => {
     console.log(`✅ Server Running on http://localhost:${PORT}`);
-});
+});*/
 
 
+// Only start server if this file is run directly (not imported) 
+if (require.main === module) {
+  app.listen(PORT, () => {
+   console.log(`✅ Server Running on http://localhost:${PORT}`);
+  });
+}
+
+// Export the app for testing
+module.exports = app;

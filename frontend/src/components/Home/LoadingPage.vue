@@ -443,7 +443,7 @@ export default {
   data() {
     return {
       // Typing animation state
-      fullText: 'Master Your Soft Skills with GrowTrack. Your Future Begins Today ',
+      fullText: 'Master Your Soft Skills With GrowTrack. Your Future Begins Today ',
       typedText: '',
 
       // Marquee speed in px/frame

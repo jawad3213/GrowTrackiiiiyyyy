@@ -42,11 +42,18 @@ export default mergeConfig(
 
       // Enable code coverage
       coverage: {
-        provider: 'c8', // Using c8 for coverage reporting
+        provider: 'v8',
         reporter: ['text', 'html'], // Use 'text' for terminal output and 'html' for detailed report
         all: true, // Include all files in coverage
+        enabled: true, // Forcer l'activation
+        reportsDirectory: './coverage',
         include: ['src/**/*.{js,ts,vue}'], // Specify files to be included for coverage
-        exclude: ['node_modules', 'test'], // Exclude files/folders from coverage
+        exclude: [
+    'node_modules/**',
+    'tests/**',
+    '**/*.config.js',
+    '**/main.js' // généralement pas testé
+  ],
       },
     },
   })

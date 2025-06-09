@@ -49,7 +49,7 @@
         <!-- Remember & Forgot -->
         <div class="flex justify-between items-center text-sm">
           <label class="flex items-center space-x-2">
-            <input type="checkbox" class="form-checkbox text-indigo-600" />
+            <input v-model="RememberMe" type="checkbox" class="form-checkbox text-indigo-600" />
             <span class="text-gray-600">Remember me</span>
           </label>
           <router-link to="/forgotpass" class="text-indigo-600 hover:underline">
@@ -98,14 +98,25 @@ const email = ref('');
 const password = ref('');
 const showPassword = ref(false);
 const isSubmitting = ref(false);
+const RememberMe = ref(localStorage.getItem("remember_me"));
+
 
 const togglePassword = () => (showPassword.value = !showPassword.value);
 
 const handlelogin = async () => {
   isSubmitting.value = true;
   try {
-    await store.Login(email.value, password.value);
-    if (!store.errorMsg) router.push('/dashboard');
+    await store.Login(email.value, password.value, RememberMe.value);
+    if (!store.errorMsg) {
+      switch (store.Role) {
+      case 'admin': router.push('/dashboard'); break;
+      case 'student' : router.push('/dashstud'); break;
+      case 'supervisor': router.push('/dashSupervisor'); break;
+      case 'Professor' : router.push('/DashboardProf'); break;
+      default:
+        router.push('/login')
+    }
+    }
   } catch (err) {
     console.error('Login error:', err);
   } finally {
@@ -114,7 +125,18 @@ const handlelogin = async () => {
 };
 
 onMounted(() => {
-  if (store.isAuthenticated) router.push('/dashboard');
+  if (store.isAuthenticated){
+    switch (store.Role) {
+      case 'admin': router.push('/dashboard'); break;
+      case 'student' : router.push('/dashstud'); break;
+      case 'supervisor': router.push('/dashSupervisor'); break;
+      case 'Professor' : router.push('/DashboardProf'); break;
+      default:
+        router.push('/Login')
+    }
+}else{
+  store.checkAuth();
+}
   store.Clearstatus();
 });
 </script>

@@ -201,14 +201,14 @@ exports.deleteSignal = async (id) => {
     try {
 
       await pool.query(
-        "DELETE FROM public.report WHERE id_siganl = $1",
+        "DELETE FROM public.report WHERE id_signal = $1",
         [id]
       );
 
       
   
       const result = await pool.query(
-        "DELETE FROM public.signal WHERE id_siganl = $1",
+        "DELETE FROM public.signal WHERE id_signal = $1",
         [id]
       );
   

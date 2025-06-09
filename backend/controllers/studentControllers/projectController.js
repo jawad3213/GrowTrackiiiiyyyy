@@ -45,10 +45,9 @@ exports.getAllProjects = async (req, res) => {
 }
 
 exports.getMemberProject = async (req, res) => {
-    const { id_student } = req.params;
-    const{ project } = req.query;
+    const{ project_id, id_student} = req.query;
     try {
-        const result = await projectModel.getMemberProject(id_student,project);
+        const result = await projectModel.getMemberProject(id_student,project_id);
         // if (!result || result.length === 0) {
         //     return res.status(404).json({
         //         success: false,

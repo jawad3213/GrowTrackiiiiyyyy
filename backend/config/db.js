@@ -1,5 +1,4 @@
 require("dotenv").config();
-require("dotenv").config();
 const { Pool } = require("pg");
 
 let pool;
@@ -18,11 +17,9 @@ if (process.env.MODE === "cloud") {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     ssl: false
+
   });
   console.log("💻 Connexion à la base de données Locale...");
 }
 
-
-
 module.exports = pool;
-

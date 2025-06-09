@@ -8,7 +8,7 @@
 
       <div v-if="!store.validtoken"> 
       <!-- Titre -->
-      <h1 class="text-2xl font-bold text-gray-800 mb-2">The link is invalide</h1>
+      <h1 class="text-2xl font-bold text-gray-800 mb-2">The link is invalid</h1>
       <!-- Sous-titre -->
       <p class="text-gray-600 text-sm">
         Please request another link

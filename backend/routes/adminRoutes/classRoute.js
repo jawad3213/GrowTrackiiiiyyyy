@@ -3,6 +3,13 @@ const router = express.Router();
 
 const classController = require("../../controllers/adminControllers/classController");
 
+const verifyRolee = require('../../middlewares/verificationRole');
+const {verifyToken}=require('../../middlewares/VerifyToken')
+
+router.use(verifyToken)
+router.use(verifyRolee("admin"))
+
+
 // Create a fields ans classes
 router.post("/create", classController.createClass);
 

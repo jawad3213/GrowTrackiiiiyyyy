@@ -98,41 +98,49 @@ const routes = [
         name: "OurTeam",
         component: Team,
         path:"/OurTeam",
+        meta :{DoNotrequiresAuth: true}
     },
     {
         name: 'ContactUs',
         component: ContactUs,
-        path: '/ContactUs'
+        path: '/ContactUs',
+        meta :{DoNotrequiresAuth: true}
     },
     {
         name: 'TeachersGenralpage',
         component: TeachersGenralpage,
-        path: '/Teachers'
+        path: '/Teachers',
+        meta :{DoNotrequiresAuth: true}
     },
     {
         name: 'Students general page ',
         component: Students,
-        path: '/Students'
+        path: '/Students',
+        meta :{DoNotrequiresAuth: true}
     },
     {
         name: 'Login',
         component: Login,
         path: '/Login',
+        meta :{DoNotrequiresAuth: true}
     },
     {
         name: "restepass",
         component: resetPassword,
         path:"/resetpass",
+        meta :{DoNotrequiresAuth: true}
     },
     {
         name: "forgotepass",
         component: forgotPassword,
         path:"/forgotpass",
+        meta :{DoNotrequiresAuth: true}
     },
     {
         name: "check",
         component: check,
         path:"/check",
+        meta :{DoNotrequiresAuth: true}
     },
     {
         name: "AddSupervisorModal ",
@@ -143,64 +151,75 @@ const routes = [
         name: "Skills",
         component: Skills,
         path:"/Skills",
+        meta :{role: 'admin'}
     },
     {
         name: "Group",
         component: Group,
         path:"/Group",
+        meta :{role: 'admin'}
     },
     {
         name: "Professor",
         component: Professor,
         path:"/Professor",
+        meta :{role: 'admin'}
     },
 
     {
         name: "Supervisor",
         component: Supervisor,
         path:"/Supervisor",
+        meta :{role: 'admin'}
     },
     {
         name: "Student",
         component: Student,
         path:"/Student",
+        meta :{role: 'admin'}
     },
     {
         name : "dashboard",
         component : dashboard,
         path : "/dashboard",
-        meta: { requiresAuth: true },
+        meta :{role: 'admin'}
     },
     {
         name : "Calendar",
         component : Calendar,
         path : "/Calendar",
+        meta :{role: 'admin'}
     },
     {
         name : "UserProfile",
         component : UserProfile,
         path : "/UserProfile",
+        meta :{role: 'admin'}
     },
     {
         name : "GlobalOverview",
         component : GlobalOverview,
         path : "/GlobalOverview",
+        meta :{role: 'admin'}
     },
     
     {
         name : "Signals",
         component : Signals,
         path : "/Signals",
+        meta :{role: 'admin'}
     },
     {
         name : "Coach",
         component : Coach,
         path : "/Coach",
+        meta :{role: 'admin'}
     },
     {
         name : "AddCoach",
         component : AddCoach,
         path : "/AddCoach",
+        meta :{role: 'admin'}
     },
     {
         name : "GeneratePdf",
@@ -223,6 +242,7 @@ const routes = [
         name : "AddField",
         component : AddField,
         path : "/AddField",
+        meta :{role: 'admin'}
     },
     
     {
@@ -236,6 +256,7 @@ const routes = [
         name : "AddProfessorModal",
         component : AddProfessorModal,
         path : "/AddProfessor",
+        meta :{role: 'admin'}
     },
     
     
@@ -243,252 +264,296 @@ const routes = [
         name : "AddSkill",
         component : AddSkill,
         path : "/AddSkill",
+        meta :{role: 'admin'}
     },
     {
         name : "EditSkill",
         component : AddSkill,
         path : "/AddSkill/:skill_name",
         props: true,
-        meta: {edit:true},
+        meta: {edit:true, role: 'admin'},
     },
     {
         name : "DeleteSkill",
         component : DeleteSkill,
         path : "/DeleteSkill/:skill_name",
         props: true,
-        meta: {edit:true},
+        meta: {edit:true, role: 'admin'},
     },
     {
         name : "AddStudentModal",
         component : AddStudentModal,
-        path : "/AddStudent"
+        path : "/AddStudent",
+        meta :{role: 'admin'}
     },
     {
         name : "EditStudentModal",
         component : AddStudentModal,
         path : "/AddStudent/:cin",
         props: true,
-        meta: {edit:true},
+        meta: {edit:true, role:'admin'},
     },
     {
         name : "AddSupervisorModal",
         component : AddSupervisorModal,
         path : "/AddSupervisor",
+        meta :{role: 'admin'}
     },
     {
         name : "Evaluation",
         component : Evaluation,
         path : "/Evaluation",
+        meta :{role: 'admin'}
     },
     {
         name : "Personalized",
         component : Personalized,
         path : "/Personalized",
+        meta :{role: 'admin'}
     },
     {
-       path: '/SignalModal/:id',
-    name: 'SignalModal',
-    component: SignalEvaluationModal,
-    props: true
+        name : "SignalModal/:id",
+        component : SignalEvaluationModal,
+        path : "/SignalModal",
+        props: true,
+        meta :{role: 'admin'}
     },
     {
         name : "Solution",
         component : Solution,
         path : "/Solution",
+        meta :{role: 'admin'}
     },
 
     {
         name : "DeleteStudent",
         component : DeleteStudent,
-        path : "/DeleteStudent/:id_member"
+        path : "/DeleteStudent/:id_member",
+        meta :{role: 'admin'}
     },
     {
         name : "DeleteProf",
         component : DeleteProf,
-        path : "/Deleteprof/:id_member"
+        path : "/Deleteprof/:id_member",
+        meta :{role: 'admin'}
     },
     {
         name : "DeleteSupervisor",
         component : DeleteSupervisor,
-        path : "/DeleteSupervisor/:id_member"
+        path : "/DeleteSupervisor/:id_member",
+        meta :{role: 'admin'}
     },
     {
         name : "DashboardProf",
         component : DashboardProf,
-        path : "/DashboardProf"
+        path : "/DashboardProf",
+        meta :{role: 'Professor'}
     },
     {
         name : "ClassesEval",
         component : ClassesEval,
-        path : "/ClassesEval"
+        path : "/ClassesEval",
+        meta :{role: 'Professor'}
     },
     {
         name : "HistoriqueEval",
         component : HistoriqueEval,
-        path : "/HistoriqueEval"
+        path : "/HistoriqueEval",
+        meta :{role: 'Professor'}
     },
     {
         name : "ProjectMang",
         component : ProjectMang,
-        path : "/ProjectMang"
+        path : "/ProjectMang",
+        meta :{role: 'Professor'}
     },
     {
-        name : "ClassesSignal",
-        component : ClassesSignal,
-        path : "/ClassesSignal"
+    name : "ClassesSignal",
+    component : ClassesSignal,
+    path : "/ClassesSignal",
+    meta : { role: 'Professor' }
     },
     {
         name : "HistoriqueSignal",
         component : HistoriqueSignal,
-        path : "/HistoriqueSignal"
+        path : "/HistoriqueSignal",
+        meta : { role: 'Professor' }
     },
-    
     {
         name : "Rapport",
         component : Rapport,
-        path : "/Rapport"
+        path : "/Rapport",
+        meta : { role: 'Professor' }
     },
     {
         name : "Notification",
         component : Notification,
-        path : "/Notification"
+        path : "/Notification",
+        meta : { role: 'Professor' }
     },
     {
         name : "AddProject",
         component : AddProject,
-        path : "/AddProject"
+        path : "/AddProject",
+        meta : { role: 'Professor' }
     },
     {
         name : "AddMembers",
         component : AddMembers,
-        path : "/AddMembers"
+        path : "/AddMembers",
+        meta : { role: 'Professor' }
     },
     {
-
         name : "NewSignal",
         component : NewSignal,
-        path : "/newsignal"
+        path : "/newsignal",
+        meta : { role: 'Professor' }
     },
     {
         name : "ViewHistory",
         component : ViewHistory,
-        path : "/viewhistory"
+        path : "/viewhistory",
+        meta : { role: 'Professor' }
     },
     {
         name : "SolutionSignal",
         component : SolutionSignal,
-        path : "/SolutionSignal"
+        path : "/SolutionSignal",
+        meta : { role: 'Professor' }
     },
     {
         name : "SolutionError",
         component : SolutionErrror,
-        path : "/SolutionError"
+        path : "/SolutionError",
+        meta : { role: 'Professor' }
     },
-
     {
         name : "ChooseSkills",
         component : ChooseSkills,
-        path : "/ChooseSkills"
+        path : "/ChooseSkills",
+        meta : { role: 'Professor' }
     },
     {
         name : "SkillsChoosen",
         component : SkillsChoosen,
-        path : "/SkillsChoosen"
+        path : "/SkillsChoosen",
+        meta : { role: 'Professor' }
     },
     {
         name : "courseEvaluation",
         component : courseEvaluation,
-        path : "/courseEvaluation"
+        path : "/courseEvaluation",
+        meta : { role: 'Professor' }
     },
     {
         name : "EndEval",
         component : EndEval,
-        path : "/EndEval"
+        path : "/EndEval",
+        meta : { role: 'Professor' }
     },
     {
         name : "Thanku",
         component : Thanku,
-        path : "/Thanku"
+        path : "/Thanku",
+        meta : { role: 'Professor' }
     },
     {
         name : "ViewEval",
         component : ViewEval,
-        path : "/ViewEval"
-    },
+        path : "/ViewEval",
+        meta : { role: 'Professor' }
+    }
+    ,
      {
         name : "StudEvals",
         component : StudEvals,
-        path : "/StudEvals"
-    },
-     {
+        path : "/StudEvals",
+        meta : { role: 'student' }
+        }, 
+    {
         name : "StudProject",
         component : StudProjects,
-        path : "/StudProject"
+        path : "/StudProject",
+        meta : { role: 'student' }
     },
-     {
+    {
         name : "StudRapport",
         component : StudRapport,
-        path : "/StudRapport"
+        path : "/StudRapport",
+        meta : { role: 'student' }
     },
-     {
+    {
         name : "StudSignals",
         component : StudSignals,
-        path : "/StudSignals"
+        path : "/StudSignals",
+        meta : { role: 'student' }
     },
-     {
+    {
         name : "StudNotif",
         component : StudNotif,
-        path : "/StudNotif"
+        path : "/StudNotif",
+        meta : { role: 'student' }
     },
-     {
+    {
         name : "skillsChoseen",
         component : skillsChoseen,
-        path : "/skillsChoseen"
+        path : "/skillsChoseen",
+        meta : { role: 'student' }
     },
-     {
+    {
         name : "evalSkills",
         component : evalSkills,
-        path : "/evalSkills"
+        path : "/evalSkills",
+        meta : { role: 'student' }
     },
-     {
+    {
         name : "StudSolution",
         component : StudSolution,
-        path : "/StudSolution"
+        path : "/StudSolution",
+        meta : { role: 'student' }
     },
-     {
+    {
         name : "StudReason",
         component : StudReason,
-        path : "/StudReason"
-    },
+        path : "/StudReason",
+        meta : { role: 'student' }
+    },
     {
         name : "skillsEnd",
         component : skillsEnd,
-        path : "/skillsEnd"
-    },
+        path : "/skillsEnd",
+        meta : { role: 'student' }
+    },
     {
         name : "end",
         component : end,
-        path : "/end"
-    },
+        path : "/end",
+        meta : { role: 'student' }
+    },
     {
         name : "CompletionRate",
         component : CompletionRate,
-        path : "/CompletionRate"
-    },
+        path : "/CompletionRate",
+        meta : { role: 'student' }
+    },
     {
         name : "dashstud",
         component : dashstud,
-        path : "/dashstud"
-    },
+        path : "/dashstud",
+        meta : { role: 'student' }
+    },
     {
         name : "selfEval",
         component : selfEval,
-        path : "/selfEval"
-    },
-{
+        path : "/selfEval",
+        meta : { role: 'student' }
+    }
+    ,
+    {
         name : "ProjectDetails",
         component : ProjectDetails,
-        path : "/ProjectDetails"
+        path : "/ProjectDetails",
+        meta :{role: 'Professor'}
     },
 
     
@@ -502,19 +567,30 @@ const router =createRouter({
 import {useAuthStore} from '@/stores/auth'
 import EditCoach from "./components/EditCoach.vue";
 
-router.beforeEach(async (to, from, next)=>{
+
+router.beforeEach(async (to, from, next) => {
     const auth = useAuthStore();
-    if(to?.meta.requiresAuth){
+    if (to?.meta?.DoNotrequiresAuth) {
+        return next();
+    }
+    if (!auth.isAuthenticated) {
         try {
-          await auth.checkAuth();
-          next();
+            await auth.checkAuth();
+            if (to?.meta?.role && to.meta.role !== auth.Role) {
+                return next('/Error');
+            }
+            return next();
+
         } catch (error) {
-        console.log('error de check', error)
-          next('/Login'); // Token not OK
+            console.log('Authentication check failed:', error);
+            return next('/Login');
         }
-      } else {
-        next();
-      }
+    } else {
+        if (to?.meta?.role && to.meta.role !== auth.Role) {
+            return next('/Error');
+        }
+        return next();
+    }
 });
 
 export default router

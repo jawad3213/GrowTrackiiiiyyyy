@@ -231,12 +231,12 @@
     {
       title: "Menu",
       items: [
-        { icon: GridIcon, name: "Dashboard", path: "/DashboardProf" },
+        { icon: GridIcon, name: "Dashboard", path: "/dashstud" },
         { 
           icon: UserAdd, 
           name: "Evaluations",
           subItems: [
-            { name: "Projects", path: "/StudProjects" },
+            { name: "Projects", path: "/StudProject" },
             { name: "History Of Evaluations", path: "/StudEvals" },
             { name: "History Of Signals", path: "/StudSignals" },
           ],

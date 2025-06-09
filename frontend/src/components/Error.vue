@@ -38,7 +38,7 @@
                  px-10 py-5 rounded-full text-xl
                  hover:bg-red-600 transition transform hover:-translate-y-1 hover:shadow-2xl"
         >
-          Go to Home
+          Go to the Home page
         </router-link>
       </div>
     </div>
@@ -50,7 +50,10 @@ export default {
   name: "Unauthorized401",
 };
 </script>
+<script setup>
 
+
+</script>
 <style>
 /* ==================================================
    1) Slide‐down fade for the card (same as before)

@@ -1,6 +1,6 @@
 //auth.js 
-import { defineStore } from "pinia";
-import {ref, computed } from 'vue';
+import { defineStore, storeToRefs } from "pinia";
+import {ref, computed, resolveComponent } from 'vue';
 import api from '@/services/api';
 export const useAuthStore = defineStore('auth',() =>
     {
@@ -13,6 +13,8 @@ export const useAuthStore = defineStore('auth',() =>
         const role = ref(null);
         const id = ref(null)
         const valide = ref(false);
+        const CookiesAccepted = localStorage.getItem("cookiesAccepted") || document.cookie.includes('cookiesAccepted') || '';
+        const rememberMe = localStorage.getItem("remember_me")
 
         //pas de email pasword car sont de données temp on aurait pas besoin dans d'autres composants
         /*
@@ -21,12 +23,21 @@ export const useAuthStore = defineStore('auth',() =>
         async function Login(email , password, RememberMe){
             loading.value = true
             try {
-                const response = await api.post('/api/auth/login', {email , password}); //api url !! //envoi de l'objet 
+                const response = await api.post('/api/auth/login', {email , password, RememberMe},
+                    {headers : {
+                    'use-cookies': CookiesAccepted
+                }}); //api url !! //envoi de l'objet 
                 user.value = response.data?.user;
-                // localStorage.setItem('username', user.fullname);
-                localStorage.setItem('token', response.data.token);
+                role.value = response.data?.role;
                 error.value = null;
+                localStorage.setItem('username', response.data?.fullname);
+                localStorage.setItem("remember_me", RememberMe)
+                if(CookiesAccepted){
+                const storeToken = RememberMe ? localStorage:sessionStorage;
+                storeToken.setItem('access_token', response.data?.access_token);
+                }
             } catch (err) {
+                console.log(err)
                 error.value = err.response?.data?.message || 'Email or password incorrect'; // vérifier que l'api envoie un message
                 user.value = null;
             }finally{
@@ -105,7 +116,10 @@ export const useAuthStore = defineStore('auth',() =>
         async function logout() {
             loading.value = true
             try {
-                 await api.post('/api/auth/logout') //url backend
+                await api.post('/api/auth/logout')
+                const storage = rememberMe ? localStorage:sessionStorage;
+                storage.removeItem('access_token');
+                //url backend
                  user.value = null
                  error.value = null;
             } catch (err) {

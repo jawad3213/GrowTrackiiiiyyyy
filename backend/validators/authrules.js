@@ -13,7 +13,7 @@ exports.Login = [
   body('email')
     .notEmpty().withMessage("Email is required.")
     .isEmail().withMessage("Invalide Email.")
-    .normalizeEmail(),
+    ,
 
   body('password')
     .notEmpty().withMessage("Password is required."),
@@ -39,5 +39,5 @@ exports.Email = [
     body("email")
       .notEmpty().withMessage("Email is required.")
       .isEmail().withMessage("Invalide Email.")
-      .normalizeEmail(),
+      
   ];

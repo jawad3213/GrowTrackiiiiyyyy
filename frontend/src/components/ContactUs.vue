@@ -1,5 +1,4 @@
 <template>
-
     <!-- Header -->
     <Header />
 
@@ -157,9 +156,6 @@
     </div>
 
     <!-- Footer -->
-
-        
-
         
       
       <Footer />

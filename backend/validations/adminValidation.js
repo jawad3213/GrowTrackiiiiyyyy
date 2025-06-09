@@ -47,9 +47,7 @@ const validations = [
   // Email
   body('email')
     .notEmpty().withMessage("Email is required.")
-    .isEmail().withMessage("Invalid email address.")
-    .normalizeEmail(),
-
+    .isEmail().withMessage("Invalid email address."),
   // Image (optional)
   body('image')
     .optional()
@@ -95,9 +93,8 @@ const validate_student = [
   // Email
   body('email')
     .notEmpty().withMessage("Email is required.")
-    .isEmail().withMessage("Invalid email address.")
-    .normalizeEmail(),
-
+    .isEmail().withMessage("Invalid email address."),
+    
   // Password
   body('pass')
     .notEmpty().withMessage("Password is required.")
@@ -135,8 +132,6 @@ const validate_student = [
     .trim()
     .escape()
 ];
-
-module.exports = validations;
 
 module.exports = {
     validate_student,

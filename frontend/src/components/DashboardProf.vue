@@ -46,7 +46,7 @@ const authStore = useAuthStore()
 const idProf = authStore.ID
 // Déclarer la variable réactive
 const topStudents = ref([])
-
+const storedUsername = localStorage.getItem('username') || ''
 //import username from local storage 
 const kiko=authStore.full_name
 onMounted(() => {
