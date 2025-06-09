@@ -1,13 +1,13 @@
-<template>
+1<template>
   <StudentLayout>
   
-  <h1 class="text-4xl font-bold text-gray-900 mb-7">
-    Welcome to Your Admin Dashboard <span class="uppercase">user</span>,
-    <span class="text-xl font-medium text-gray-500">
-      here’s what’s happening with your School this month 
+  <h1 class="text-3xl font-bold dark:text-white text-gray-900 mb-7">
+    Good to see you again <span class="uppercase">{{username}}</span>
+    <span class="text-xl font-medium dark:text-white text-gray-500">
+      , Here’s what’s happening this month:
     </span>
+    
   </h1>
-
   <div class="mb-20 grid grid-cols-12 gap-4 md:gap-6">
   <!-- Left column: ecommerce-metrics + monthly-sale -->
       <div class="col-span-12 xl:col-span-7 space-y-15">
@@ -33,6 +33,8 @@
 
  
   </div>
+
+  
 <EvalByRole />
 
 <div class="my-10"></div>  <!-- Ajoute un espace vertical -->
@@ -54,7 +56,7 @@ import Cards from '@/components/MenuStudent/dashStudent/Cards.vue'
 import EvalByRole from './EvalByRole.vue'
 import RatingSkill from './RatingSkill.vue'
 
-
+import { ref, onMounted } from 'vue'
 export default {
   components: {
     Cards,
@@ -66,5 +68,15 @@ export default {
     RatingSkill
   },
   name: 'Ecommerce',
+
+  setup() {
+    const username = ref('');
+
+    onMounted(() => {
+      username.value = localStorage.getItem('username') || 'Nom inconnu';
+    });
+
+    return { username };
+  }
 }
 </script>

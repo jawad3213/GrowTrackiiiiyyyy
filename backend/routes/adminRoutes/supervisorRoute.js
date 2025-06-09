@@ -5,6 +5,11 @@ const supervisorController = require("../../controllers/adminControllers/supervi
 
 const path = require("path");
 const multer = require ("multer");
+const verifyRolee = require('../../middlewares/verificationRole');
+const {verifyToken}=require('../../middlewares/VerifyToken')
+
+router.use(verifyToken)
+router.use(verifyRolee("admin"))
 
 
 // Config multer

@@ -114,16 +114,23 @@
         <p v-if="formStore.success" class="text-green-500 text-sm mt-2 animate-pulse">{{ formStore.success }}</p>
 
         <!-- Boutons -->
-        <div class="flex justify-between pt-4">
-          <button type="button" @click="closeModal"
-            class="w-full py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100">
-            Cancel
-          </button>
-          <button type="submit"
-            class="w-full py-2 font-semibold text-white rounded-md bg-gradient-to-r from-purple-600 to-orange-400 hover:from-purple-700 hover:to-orange-500 transition-all duration-300 transform hover:scale-105">
-            Confirm
-          </button>
-        </div>
+        <div class="flex gap-4 p-5">
+  <button
+    type="button"
+    @click="closeModal"
+    class="flex-1 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100"
+  >
+    Cancel
+  </button>
+
+  <button
+    type="submit"
+    class="flex-1 py-2 font-semibold text-white rounded-md bg-gradient-to-r from-purple-600 to-orange-400 hover:from-purple-700 hover:to-orange-500 transition-all duration-300 transform hover:scale-105"
+  >
+    Confirm
+  </button>
+</div>
+
       </form>
     </div>
   </div>

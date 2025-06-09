@@ -2,9 +2,9 @@
   <admin-layout>
   
   <h1 class="text-3xl font-bold text-gray-900 mb-7">
-    Welcome to Your Admin Dashboard <span class="uppercase">SOUKAINA  </span>,
+    Welcome to Your Admin Dashboard <span class="uppercase">{{username}}  </span>,
     <span class="text-xl font-medium text-gray-500">
-      here’s what’s happening with your Plateform this month 
+      Here’s what’s happening with your Plateform this month 
     </span>
   </h1>
 
@@ -47,7 +47,12 @@ import MonthlyTarget from '@/components/ecommerce/MonthlyTarget.vue'
 import MonthlySale from '@/components/ecommerce/MonthlySale.vue'
 import EvaluationSource from './ecommerce/EvaluationSource.vue'
 import UserDistrubution from './ecommerce/UserDistrubution.vue'
+import { onMounted, ref  } from 'vue'
 
+const username = ref('') 
+onMounted(() => {
+  username.value = localStorage.getItem('username') || 'Nom inconnu'
+})
 
 
 </script>

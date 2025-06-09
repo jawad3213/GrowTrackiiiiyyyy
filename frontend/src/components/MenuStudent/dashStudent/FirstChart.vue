@@ -1,14 +1,15 @@
 <template>
-  <div class="border border-gray-300 rounded-lg shadow p-4 bg-white">
-    <apexchart type="radar" height="450" :options="chartOptions" :series="series"></apexchart>
+  <div class="border border-gray-300 dark:border-gray-700 rounded-lg shadow p-4 bg-white dark:bg-gray-900">
+    <apexchart type="radar" height="450" :options="chartOptions" :series="series" />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
-import VueApexCharts from 'vue3-apexcharts'
+import api from '@/services/api'
+import { useAuthStore } from '@/stores/auth'
 
+const auth = useAuthStore()
 const series = ref([])
 const chartOptions = ref({
   chart: {
@@ -17,7 +18,7 @@ const chartOptions = ref({
     toolbar: {
       show: true,
       tools: {
-        download: true,  // uniquement "More"
+        download: true,
         selection: false,
         zoom: false,
         zoomin: false,
@@ -25,7 +26,11 @@ const chartOptions = ref({
         pan: false,
         reset: false
       }
-    }
+    },
+    foreColor: '#1f2937' // gris foncé pour le mode clair
+  },
+  theme: {
+    mode: 'light'
   },
   title: {
     text: 'Dans la classe (1 seul classe)',
@@ -35,61 +40,55 @@ const chartOptions = ref({
       fontWeight: 'bold'
     }
   },
-  labels: [
-    'Communication',
-    'Public Speaking',
-    'conflict',
-    'Leadership',
-    'Illustrator',
-    'AfterEffect',
-  ],// ✅ labels dynamiques
+  labels: [],
   stroke: {
     width: 2
   },
   fill: {
     opacity: 0.2
   },
-  colors: ['#3B82F6', '#10B981'],
-
+  colors: ['#3B82F6'],
   legend: {
-  position: 'right',
-  offsetY: 60,     // ⬅️ Décale la légende vers le bas
-  markers: {
-    width: 10,
-    height: 10
-  },
-  itemMargin: {
-    vertical: 10    // ⬅️ Espace entre "Yourself" et "Classe"
+    position: 'right',
+    offsetY: 60,
+    markers: {
+      width: 10,
+      height: 10
+    },
+    itemMargin: {
+      vertical: 10
+    }
   }
-}
-
 })
 
-// Récupération des données
 onMounted(async () => {
+  const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+
+  chartOptions.value = {
+    ...chartOptions.value,
+    theme: {
+      mode: isDark ? 'dark' : 'light'
+    },
+    chart: {
+      ...chartOptions.value.chart,
+      foreColor: isDark ? '#e5e7eb' : '#1f2937' // clair en dark mode
+    }
+  }
+
   try {
-    // // 1. Récupérer les labels (noms de skills)
-    // const { data: skillList } = await axios.get('http://localhost:3001/ChooseSkills')
-    // const skillNames = skillList.map(s => s.name)
-    // chartOptions.value.labels = skillNames
+    const { data: response } = await api.get(`http://localhost:3000/student/dashboard/statisticsByclass/${auth.ID}`)
+    const classStats = response.data
 
-    // 2. Récupérer les évaluations radar
-    const { data: radarData } = await axios.get('http://localhost:3001/evaluationsRadar')
-    const evalData = radarData[0]
+    const skillNames = classStats.map(item => item.skill_name)
+    const skillValues = classStats.map(item => item.moyenne)
 
-    // 3. Injecter les séries de données
-    series.value = [
-      {
-        name: 'Yourself',
-        data: evalData.yourself
-      },
-      {
-        name: 'Classe',
-        data: evalData.classe
-      }
-    ]
+    chartOptions.value.labels = skillNames
+    series.value = [{
+      name: 'Classe',
+      data: skillValues
+    }]
   } catch (error) {
-    console.error('❌ Erreur de chargement des données:', error)
+    console.error('❌ Erreur de chargement des données radar par classe :', error)
   }
 })
 </script>

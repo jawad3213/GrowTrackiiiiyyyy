@@ -3,10 +3,10 @@ const { check } = require('express-validator');
 const Types=['pair', 'self', 'supervisor', 'professor']
 
 exports.id_evaluation = [
-      check('id_evaluation')
-      .notEmpty().withMessage("ID is required.")
-      .isInt().withMessage("Must be an integer.")
-  ];
+  check('id_evaluation')
+    .notEmpty().withMessage("ID is required.")
+    .isInt({ min: 0 }).withMessage("Must be a positive integer.")
+];
 
 exports.type = [
   check("type")

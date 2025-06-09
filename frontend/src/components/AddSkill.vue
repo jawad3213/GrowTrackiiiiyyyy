@@ -1,77 +1,131 @@
 <template>
-  <!-- Fond flou et gris clair -->
-  <div v-if="isOpen" class="fixed inset-0 bg-gray-800/70 backdrop-blur-sm flex items-center justify-center z-50 font-inter">
-    
-    <!-- Conteneur du formulaire -->
-    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl p-8 relative">
-      
-      <!-- Bouton de fermeture -->
-      <button @click="closeModal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl font-bold">
+  <!-- Modal Overlay -->
+  <div
+    v-if="isOpen"
+    class="fixed inset-0 flex items-center justify-center overflow-y-auto z-50 font-inter"
+  >
+    <!-- Backdrop: semi-transparent with blur -->
+    <div
+      class="fixed inset-0 bg-gray-400/30 backdrop-blur-[8px]"
+      @click="closeModal"
+      aria-hidden="true"
+    ></div>
+
+    <!-- Modal Container -->
+    <div
+      class="relative bg-white border-2 rounded-2xl shadow-xl w-full max-w-2xl p-8 sm:p-10 border-t-2 border-purple-500"
+    >
+      <!-- Close Button -->
+      <button
+        @click="closeModal"
+        class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl font-bold"
+      >
         &times;
       </button>
 
-      <!-- Titre -->
-      <h2 class="text-2xl font-bold mb-1 text-center">{{ isEditMode ? 'Edit Skill' : 'Add Skill' }}</h2>
-      <p class="text-sm text-gray-600 mb-6 text-center">Fill in the skill and its indicators below</p>
+      <!-- Modal Header -->
+      <div class="mb-6 text-center">
+        <h2 class="text-2xl font-bold text-gray-900">
+          {{ isEditMode ? 'Edit Skill' : 'Add Skill' }}
+        </h2>
+        <p class="text-sm text-gray-600 mt-1">
+          Fill in the skill and its indicators below
+        </p>
+      </div>
 
-      <!-- Formulaire -->
-      <form @submit.prevent="submitForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-        <div v-if="!isEditMode" class="md:col-span-2">
-          <label class="font-semibold">Skill Name*</label>
-          <input v-model="skill.skill_name" type="text" placeholder="Skill name"
-         class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" />
-          <span class="text-red-500 text-sm">{{ formStore.errors.skill_name }}</span>
-        </div>
-
-        <div v-else class="md:col-span-2">
-          <label class="font-semibold">Skill Name* <small>not Editibale</small></label>
-          <input v-model="skill.skill_name" type="text" placeholder="Skill name" readonly
-          class="w-full px-4 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-500 cursor-not-allowed focus:outline-none focus:ring-0"/>
-          <span class="text-red-500 text-sm">{{ formStore.errors.skill_name }}</span>
-        </div>
-
+      <!-- Form -->
+      <form @submit.prevent="submitForm" class="space-y-6">
+        <!-- Skill Name -->
         <div>
-          <label class="font-semibold">Indicator 1*</label>
-          <input v-model="skill.question1" type="text" placeholder="First indicator"
-            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" />
+          <label class="block mb-1 font-semibold text-gray-700">Skill Name*</label>
+          <input
+            v-model="skill.skill_name"
+            :readonly="isEditMode"
+            type="text"
+            placeholder="Skill name"
+            :class="[
+              'w-full px-4 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500',
+              isEditMode ? 'bg-gray-100 text-gray-500 cursor-not-allowed border-gray-300' : 'border-gray-300 text-gray-800'
+            ]"
+          />
+          <span class="text-red-500 text-sm">{{ formStore.errors.skill_name }}</span>
+        </div>
+
+        <!-- Indicator 1 -->
+        <div>
+          <label class="block mb-1 font-semibold text-gray-700">Indicator 1*</label>
+          <input
+            v-model="skill.question1"
+            type="text"
+            placeholder="First indicator"
+            class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 text-gray-800"
+          />
           <span class="text-red-500 text-sm">{{ formStore.errors.question1 }}</span>
         </div>
 
+        <!-- Indicator 2 -->
         <div>
-          <label class="font-semibold">Indicator 2*</label>
-          <input v-model="skill.question2" type="text" placeholder="Second indicator"
-            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" />
+          <label class="block mb-1 font-semibold text-gray-700">Indicator 2*</label>
+          <input
+            v-model="skill.question2"
+            type="text"
+            placeholder="Second indicator"
+            class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 text-gray-800"
+          />
           <span class="text-red-500 text-sm">{{ formStore.errors.question2 }}</span>
         </div>
 
+        <!-- Indicator 3 -->
         <div class="md:col-span-2">
-          <label class="font-semibold">Indicator 3*</label>
-          <input v-model="skill.question3" type="text" placeholder="Third indicator"
-            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" />
+          <label class="block mb-1 font-semibold text-gray-700">Indicator 3*</label>
+          <input
+            v-model="skill.question3"
+            type="text"
+            placeholder="Third indicator"
+            class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 text-gray-800"
+          />
           <span class="text-red-500 text-sm">{{ formStore.errors.question3 }}</span>
         </div>
 
+        <!-- Skill Description -->
         <div class="md:col-span-2">
-          <label class="font-semibold">Skill Description*</label>
-          <textarea v-model="skill.description_skill" rows="3" placeholder="Description of the skill..."
-            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"></textarea>
+          <label class="block mb-1 font-semibold text-gray-700">Skill Description </label>
+          <textarea
+            v-model="skill.description_skill"
+            rows="3"
+            placeholder="Description of the skill..."
+            class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 text-gray-800"
+          ></textarea>
           <span class="text-red-500 text-sm">{{ formStore.errors.description_skill }}</span>
-          <span class="text-red-500 text-sm">{{ formStore.errors.id_admin }}</span>
         </div>
 
-        <div class="md:col-span-2 flex justify-end items-center gap-4 mt-4">
-          <button type="button" @click="closeModal"
-            class="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100">Cancel</button>
-          <button type="submit"
-            class="px-6 py-2 text-white font-semibold bg-purple-600 hover:bg-purple-700 rounded-md shadow-md">
-            Save
-          </button>
-        </div>
-
+        <!-- Form Alerts -->
         <div class="md:col-span-2">
-          <p v-if="formStore.error" class="text-red-500 text-sm mt-2 animate-pulse">{{ formStore.error }}</p>
-          <p v-if="formStore.success" class="text-green-500 text-sm mt-2 animate-pulse">{{ formStore.success }}</p>
+          <p v-if="formStore.error" class="text-red-500 text-sm mb-2 animate-pulse">
+            {{ formStore.error }}
+          </p>
+          <p v-if="formStore.success" class="text-green-500 text-sm mb-2 animate-pulse">
+            {{ formStore.success }}
+          </p>
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex gap-4 pt-4 md:col-span-2">
+          <button
+            type="button"
+            @click="closeModal"
+            class="flex-1 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 transition"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            :disabled="formStore.loading"
+            class="flex-1 py-2 font-semibold text-white rounded-md bg-gradient-to-r from-purple-600 to-orange-400 hover:from-purple-700 hover:to-orange-500 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <span v-if="formStore.loading">Saving...</span>
+            <span v-else>Save</span>
+          </button>
         </div>
       </form>
     </div>
@@ -79,20 +133,19 @@
 </template>
 
 <script setup>
-import { ref,onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useFormStore } from '@/stores/form'
-import { useRouter ,useRoute } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import SkillSchema from '@/schemas/CreateSkill.schema';
-
+import SkillSchema from '@/schemas/CreateSkill.schema'
 
 const formStore = useFormStore()
 const router = useRouter()
 const route = useRoute()
-const isEditMode = route.params.skill_name !== undefined;
 const auth = useAuthStore()
-const OriginalData = {}
 
+const isEditMode = route.params.skill_name !== undefined
+const OriginalData = {}
 
 const isOpen = ref(true)
 
@@ -105,70 +158,63 @@ const skill = ref({
   id_admin: auth.ID
 })
 
-console.log(auth.ID)
 function closeModal() {
   isOpen.value = false
   router.push('/Skills')
 }
 
 async function submitForm() {
-  if(!isEditMode){
+  if (!isEditMode) {
     try {
-    const sanitizedData = formStore.sanitizeInputs(skill.value)
-    console.log(sanitizedData)
-    const valid = await formStore.validateWithSchema(sanitizedData,SkillSchema)
-    if(valid){
-      await formStore.submitForm('/admin/skills/create', sanitizedData, () => {closeModal()})
-      if(!formStore.errors){
-        console.log('sent');
-        formStore.clearStatus();
-        router.push('/Skills');
-    }}} catch (error) {
-      console.log("Error while trying to Add the skill ",error); //bedel hadi mli kolxi yekhdem 
+      const sanitizedData = formStore.sanitizeInputs(skill.value)
+      const valid = await formStore.validateWithSchema(sanitizedData, SkillSchema)
+      if (valid) {
+        await formStore.submitForm('/admin/skills/create', sanitizedData, () => {
+          closeModal()
+        })
+        if (!formStore.errors) {
+          formStore.clearStatus()
+          router.push('/Skills')
+        }
+      }
+    } catch (error) {
+      console.log('Error while trying to add the skill:', error)
     }
-  }else {
+  } else {
     try {
-      // First identify what has changed
       const UpdatedData = {}
       for (const key in skill.value) {
         if (skill.value[key] !== OriginalData[key]) {
-          UpdatedData[key] = skill.value[key];  
+          UpdatedData[key] = skill.value[key]
         }
       }
-      
       if (Object.keys(UpdatedData).length > 0) {
-        const sanitizedPartialData = formStore.sanitizeInputs(UpdatedData);
-        
-        // Create a partial schema only for the fields being updated
-        const partialSchema = SkillSchema.pick(Object.keys(sanitizedPartialData));
-        
+        const sanitizedPartialData = formStore.sanitizeInputs(UpdatedData)
+        const partialSchema = SkillSchema.pick(Object.keys(sanitizedPartialData))
         const valid = await formStore.validateWithSchema(sanitizedPartialData, partialSchema)
-        
-        if(valid) {
+        if (valid) {
           await formStore.Update(`/admin/skills/${OriginalData.skill_name}`, sanitizedPartialData)
-          if(!formStore.errors) {
-            console.log('Update successful');
-            formStore.clearStatus();
-            router.push('/Skills');
+          if (!formStore.errors) {
+            formStore.clearStatus()
+            router.push('/Skills')
           }
         }
       } else {
-        console.log('No changes detected');
-        router.push('/Skills');
+        router.push('/Skills')
       }
     } catch (error) {
-      console.log("Error during update: ", error);
+      console.log('Error during update:', error)
     }
   }
 }
-onMounted(()=>{
-  if(isEditMode){
-    skill.value = formStore.SelectedSkill;
-    for (const key in skill.value ) {
-    OriginalData[key] = skill.value[key];
+
+onMounted(() => {
+  if (isEditMode) {
+    skill.value = formStore.SelectedSkill
+    for (const key in skill.value) {
+      OriginalData[key] = skill.value[key]
+    }
   }
-  console.log(OriginalData)
-  }
+  formStore.clearStatus()
 })
-formStore.clearStatus()
 </script>

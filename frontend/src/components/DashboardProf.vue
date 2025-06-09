@@ -75,16 +75,12 @@ const authStore = useAuthStore()
 const idProf = authStore.ID
 // Déclarer la variable réactive
 const topStudents = ref([])
-
+const storedUsername = localStorage.getItem('username') || ''
 //import username from local storage 
 
 onMounted(() => {
-  const storedUsername = authStore.user.full_name || ''
-  if (storedUsername) {
-    console.log('Username ', storedUsername)
-  } else {
-    console.log('No username found ')
-  }
+ 
+ 
 })
 // Charger les données depuis l'AP I
 onMounted(async () => {

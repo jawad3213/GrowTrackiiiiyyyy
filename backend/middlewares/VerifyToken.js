@@ -1,7 +1,7 @@
 const JWT = require('jsonwebtoken');
 
 exports.verifyToken = (req, res, next) => {
-  const access_token = req.cookies.access_token || req.query.token;
+  const access_token = req.cookies.access_token || req.headers.authorization?.split(" ")[1] ;
 
   if (!access_token) {
     return res.status(401).json({
@@ -34,17 +34,6 @@ exports.verifyToken = (req, res, next) => {
   });
 };
 
-exports.verifyResetToken = (req, res, next) => {
-  const token = req.query.token;
-
-  if (!token) return res.status(400).json({ message: 'Missing reset token' });
-
-  JWT.verify(token, process.env.RESET_SECRET, (err, decoded) => {
-    if (err) return res.status(401).json({ message: 'Invalid or expired token' });
-    req.user = decoded;
-    next();
-  });
-};
 exports.verifyResetToken = (req, res, next) => {
   const token = req.query.token;
 

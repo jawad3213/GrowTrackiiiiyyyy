@@ -15,7 +15,7 @@ const Authlimiter = rateLimit({
 
 const ServerLimiter = rateLimit({
     windowMs: 60 * 60 * 1000, // 60 minutes
-    max: 250, // 250 requests per ip in the current window
+    max: 500, // 500 requests per ip in the current window
     message: {
       status: 429,
       message: "Too many requests, please try again after 60 minutes."

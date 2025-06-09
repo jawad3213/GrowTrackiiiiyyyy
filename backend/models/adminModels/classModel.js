@@ -80,6 +80,7 @@ exports.updateFieldById = async (id, updates) => {
 
 exports.deleteClassById = async (id) => {
   try {
+    
     const result = await pool.query(`DELETE FROM public.class WHERE id_class = $1`, [id]);
     return result;
   } catch (error) {

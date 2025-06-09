@@ -218,6 +218,7 @@
     ChevronDownIcon,
     HorizontalDots,
     PageIcon,
+    PaperclipIcon
   } from "@/components/icons";
   
   import { useSidebar } from "@/composables/useSidebar";
@@ -230,19 +231,19 @@
     {
       title: "Menu",
       items: [
-        { icon: GridIcon, name: "Dashboard", path: "/DashboardProf" },
+        { icon: GridIcon, name: "Dashboard", path: "/dashstud" },
         { 
           icon: UserAdd, 
           name: "Evaluations",
           subItems: [
-            { name: "Projects", path: "/StudProjects" },
+            { name: "Projects", path: "/StudProject" },
             { name: "History Of Evaluations", path: "/StudEvals" },
             { name: "History Of Signals", path: "/StudSignals" },
           ],
         },
         { icon: UserSittings, name: "Self Evaluation", path: "/SelfEval" },
-        { name: "Notifications", icon: PageIcon, path : "/StudNotif" },
-        { name: "Rapport", icon: PageIcon, path : "/StudRapport" },
+        { name: "Notifications", icon: PaperclipIcon, path : "/StudNotif" },
+        { name: "Rapport", icon:PageIcon, path : "/StudRapport" },
       ]
     }
   ];
