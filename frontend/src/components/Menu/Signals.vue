@@ -1,6 +1,6 @@
 <template>
   <AdminLayout>
-    <div class="relative min-h-screen bg-gray-50 dark:bg-gray-900 p-6 font-inter text-gray-800 dark:text-gray-100">
+   
       <!-- Titre + Nombre de signals -->
       <div
         class="flex items-center justify-between p-6 mb-4
@@ -20,7 +20,7 @@
         <!-- (Barre de recherche ou autre bouton peuvent venir ici) -->
       </div>
 
-      <!-- Loader (affiché tant que isLoading == true) -->
+      <!-- Loader -->
       <div v-if="isLoading" class="flex justify-center items-center h-64">
         <div
           class="w-16 h-16 border-4 border-purple-600 border-t-transparent
@@ -34,33 +34,13 @@
         <table class="min-w-full text-sm text-left">
           <thead class="bg-gray-100 dark:bg-gray-700">
             <tr>
-              <!-- Signal ID -->
-              <th class="px-6 py-3 font-semibold text-gray-600 dark:text-gray-200">
-                Signal ID
-              </th>
-
-              <!-- Reported By (fusion photo + nom + rôle) -->
-              <th class="px-6 py-3 font-semibold text-gray-600 dark:text-gray-200">
-                Reported By
-              </th>
-
-              <!-- Reported User (fusion photo + nom + rôle) -->
-              <th class="px-6 py-3 font-semibold text-gray-600 dark:text-gray-200">
-                Reported User
-              </th>
-
-              <!-- Solution State -->
-              <th class="px-6 py-3 font-semibold text-gray-600 dark:text-gray-200">
-                Solution State
-              </th>
-
-              <!-- Review -->
-              <th class="px-6 py-3 font-semibold text-gray-600 dark:text-gray-200">
-                Review
-              </th>
+              <th class="px-6 py-3 font-semibold text-gray-600 dark:text-gray-200">Signal ID</th>
+              <th class="px-6 py-3 font-semibold text-gray-600 dark:text-gray-200">Reported By</th>
+              <th class="px-6 py-3 font-semibold text-gray-600 dark:text-gray-200">Reported User</th>
+              <th class="px-6 py-3 font-semibold text-gray-600 dark:text-gray-200">Solution State</th>
+              <th class="px-6 py-3 font-semibold text-gray-600 dark:text-gray-200">Review</th>
             </tr>
           </thead>
-
           <tbody>
             <tr
               v-for="signal in filteredSignals"
@@ -76,16 +56,24 @@
                 {{ signal.id_signal }}
               </td>
 
-              <!-- Reported By (photo + nom + rôle) -->
+              <!-- Reported By with fallback -->
               <td class="px-6 py-4">
                 <div class="flex items-center space-x-3">
-                  <!-- Avatar -->
-                  <img
-                    :src="signal.reporterAvatar"
-                    alt="Reporter Avatar"
-                    class="w-8 h-8 rounded-full object-cover border border-gray-200"
-                  />
-                  <!-- Nom + rôle -->
+                  <template v-if="signal.reporterAvatar">
+                    <img
+                      :src="signal.reporterAvatar"
+                      alt="Reporter Avatar"
+                      class="w-8 h-8 rounded-full object-cover border border-gray-200"
+                    />
+                  </template>
+                  <template v-else>
+                    <div
+                      class="w-8 h-8 rounded-full flex items-center justify-center text-white border border-gray-200"
+                      :style="{ backgroundColor: stringToColor(signal.reporder_name) }"
+                    >
+                      {{ signal.reporder_name.charAt(0).toUpperCase() }}
+                    </div>
+                  </template>
                   <div>
                     <p class="font-medium text-gray-800 dark:text-gray-100">
                       {{ signal.reporder_name }}
@@ -97,16 +85,24 @@
                 </div>
               </td>
 
-              <!-- Reported User (photo + nom + rôle) -->
+              <!-- Reported User with fallback -->
               <td class="px-6 py-4">
                 <div class="flex items-center space-x-3">
-                  <!-- Avatar -->
-                  <img
-                    :src="signal.userAvatar"
-                    alt="Reported User Avatar"
-                    class="w-8 h-8 rounded-full object-cover border border-gray-200"
-                  />
-                  <!-- Nom + rôle -->
+                  <template v-if="signal.userAvatar">
+                    <img
+                      :src="signal.userAvatar"
+                      alt="Reported User Avatar"
+                      class="w-8 h-8 rounded-full object-cover border border-gray-200"
+                    />
+                  </template>
+                  <template v-else>
+                    <div
+                      class="w-8 h-8 rounded-full flex items-center justify-center text-white border border-gray-200"
+                      :style="{ backgroundColor: stringToColor(signal.reported_name) }"
+                    >
+                      {{ signal.reported_name.charAt(0).toUpperCase() }}
+                    </div>
+                  </template>
                   <div>
                     <p class="font-medium text-gray-800 dark:text-gray-100">
                       {{ signal.reported_name }}
@@ -127,21 +123,14 @@
 
               <!-- Review Button -->
               <td class="px-6 py-4">
-                <router-link
-                  :to="`/SignalModal/${signal.id_signal}`"
-                  class="text-blue-500 hover:text-blue-700 transform hover:scale-110 transition-transform duration-150"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#8C1AF6">
-                    <path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z"/>
-                  </svg>
-                </router-link>
+                <ShowSignalDetailsButton :id="signal.id_signal" />
               </td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <!-- Si pas de signaux (après chargement ET filteredSignals est vide) -->
+      <!-- Pas de signaux -->
       <div
         v-else
         class="flex flex-col items-center justify-center text-center
@@ -152,20 +141,10 @@
         <p class="mb-6">There are no signals to display.</p>
       </div>
 
-      <!-- Overlay sombre si la modale est ouverte -->
-      <div
-        v-if="showModal"
-        class="fixed inset-0 bg-black bg-opacity-40 z-40"
-      ></div>
-
-      <!-- Modal d’évaluation du signal -->
-      <SignalEvaluationModal
-        v-if="showModal"
-        :signal="selectedSignal"
-        @fermer="showModal = false"
-        class="fixed inset-0 z-50 flex items-center justify-center"
-      />
-    </div>
+      <!-- Overlay & Modal -->
+     
+      
+    
   </AdminLayout>
 </template>
 
@@ -174,6 +153,7 @@ import { ref, computed, onMounted } from 'vue'
 import api from '@/services/api'
 import AdminLayout from '@/components/layout/AdminLayout.vue'
 import SignalEvaluationModal from '@/components/SignalEvaluationModal.vue'
+import ShowSignalDetailsButton from '@/components/ShowSignalDetailsButton.vue'
 
 const search = ref('')
 const signals = ref([])
@@ -181,7 +161,6 @@ const selectedSignal = ref(null)
 const showModal = ref(false)
 const isLoading = ref(true)
 
-// Récupération des signaux depuis l’API
 onMounted(async () => {
   try {
     const res = await api.get('/admin/signals')
@@ -193,36 +172,39 @@ onMounted(async () => {
   }
 })
 
-// Computed pour filtrer (si vous ajoutez une barre de recherche)
-const filteredSignals = computed(() => {
-  return signals.value
+const filteredSignals = computed(() =>
+  signals.value
     .filter((s) =>
       s.reporder_name.toLowerCase().includes(search.value.toLowerCase()) ||
       s.reported_name.toLowerCase().includes(search.value.toLowerCase()) ||
       s.reason.toLowerCase().includes(search.value.toLowerCase())
     )
     .sort((a, b) => new Date(b.date_add) - new Date(a.date_add))
-})
+)
 
-// Ouvre la modale en passant le signal sélectionné
 function openSignal(signal) {
   selectedSignal.value = signal
   showModal.value = true
 }
 
+const solutionBadge = (solution) =>
+  ({
+    'No Action Taken': 'bg-gray-200 text-gray-600',
+    'In Progress': 'bg-purple-100 text-purple-600',
+    'Blocked': 'bg-red-100 text-red-600',
+    'Approved': 'bg-green-100 text-green-600'
+  }[solution] || 'bg-gray-200 text-gray-600') +
+  ' px-3 py-1 rounded-full text-xs font-semibold'
+
 /**
- * Applique un style (couleur) sur la solution_state
+ * Same helper to generate a consistent HSL color from a string
  */
-const solutionBadge = (solution) => {
-  return (
-    (
-      {
-        'No Action Taken': 'bg-gray-200 text-gray-600',
-        'in progress': 'bg-purple-100 text-purple-600',
-        'Blocked': 'bg-red-100 text-red-600',
-        'Approved': 'bg-green-100 text-green-600'
-      }[solution] || 'bg-gray-200 text-gray-600'
-    ) + ' px-3 py-1 rounded-full text-xs font-semibold'
-  )
+const stringToColor = (str) => {
+  let hash = 0
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash)
+  }
+  const hue = Math.abs(hash) % 360
+  return `hsl(${hue}, 50%, 60%)`
 }
 </script>

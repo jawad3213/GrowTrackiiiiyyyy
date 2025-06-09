@@ -77,9 +77,10 @@ import StudReason from "./components/MenuStudent/StudReason.vue";
 import selfEval from "./components/MenuStudent/selfEval.vue";
 import Team from "./components/Team.vue";
 import Error from "./components/Error.vue";
+import AddMemberForm from "./components/AddMemberForm.vue";
 
-
-
+import GroupMembers from "@/components/MenuProf/GroupMembers.vue";
+import GeneratePdf from "@/components/GeneratePdf.vue";
 
 
 const routes = [
@@ -145,6 +146,7 @@ const routes = [
         name: "AddSupervisorModal ",
         component: AddSupervisorModal ,
         path:"/AddSupervisorModal",
+        meta :{role: 'admin'}
     },
     {
         name: "Skills",
@@ -220,12 +222,38 @@ const routes = [
         path : "/AddCoach",
         meta :{role: 'admin'}
     },
+    {
+        name : "GeneratePdf",
+        component : GeneratePdf,
+        path : "/gen",
+    },
     
+{
+  path: '/AddMember/:id_group',
+  name: 'AddMember',
+  component: AddMemberForm,
+  props: true,
+  meta :{role: 'Professor'}
+},
+ {// This route MUST exist for goToAddMember()
+    path: '/GroupMembers/:id_group',
+    name: 'GroupMembers',
+    component: GroupMembers,
+    meta :{role: 'Professor'}
+  },  
     {
         name : "AddField",
         component : AddField,
         path : "/AddField",
         meta :{role: 'admin'}
+    },
+    
+    {
+        name : "EditCoach",
+        component : EditCoach,
+        path : "/EditCoach/:id_coach",
+        props: true,
+        meta: {edit:true},
     },
     {
         name : "AddProfessorModal",
@@ -233,6 +261,8 @@ const routes = [
         path : "/AddProfessor",
         meta :{role: 'admin'}
     },
+    
+    
     {
         name : "AddSkill",
         component : AddSkill,
@@ -538,6 +568,7 @@ const router =createRouter({
 });
 
 import {useAuthStore} from '@/stores/auth'
+import EditCoach from "./components/EditCoach.vue";
 
 
 router.beforeEach(async (to, from, next) => {

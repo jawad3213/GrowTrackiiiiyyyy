@@ -1,11 +1,13 @@
 <template>
-  <div class="rounded-2xl border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
-    <!-- Header -->
-    <div class="flex items-center justify-between">
-      <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">Flagged Evaluations</h3>
+  <div
+    class="overflow-hidden rounded-2xl border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6"
+  >
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">
+        Flagged Evaluations
+      </h3>
 
-      <!-- Classe Buttons -->
-      <div class="mt-4 ml-10 flex items-center gap-2 rounded-lg bg-gray-100 p-1 w-fit dark:bg-gray-800">
+      <div class="flex items-center gap-2 rounded-lg bg-gray-100 dark:bg-gray-800 p-1">
         <button
           v-for="(classe, index) in classes"
           :key="index"
@@ -20,52 +22,55 @@
           {{ classe }}
         </button>
       </div>
-
-      <!-- Dropdown -->
-      <div class="relative h-fit">
-        <DropdownMenu :menu-items="menuItems">
-          <template #icon>
-            <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path fill-rule="evenodd" clip-rule="evenodd"
-                d="M10.2441 6C10.2441 5.0335 11.0276 4.25 11.9941 4.25H12.0041C12.9706 4.25 13.7541 5.0335 13.7541 6C13.7541 6.9665 12.9706 7.75 12.0041 7.75H11.9941C11.0276 7.75 10.2441 6.9665 10.2441 6ZM10.2441 18C10.2441 17.0335 11.0276 16.25 11.9941 16.25H12.0041C12.9706 16.25 13.7541 17.0335 13.7541 18C13.7541 18.9665 12.9706 19.75 12.0041 19.75H11.9941C11.0276 19.75 10.2441 18.9665 10.2441 18ZM11.9941 10.25C11.0276 10.25 10.2441 11.0335 10.2441 12C10.2441 12.9665 11.0276 13.75 11.9941 13.75H12.0041C12.9706 13.75 13.7541 12.9665 13.7541 12C13.7541 11.0335 12.9706 10.25 12.0041 10.25H11.9941Z"
-                fill="currentColor" />
-            </svg>
-          </template>
-        </DropdownMenu>
-      </div>
     </div>
 
-    <!-- Graph -->
-    <div class="max-w-full overflow-x-auto custom-scrollbar mt-6">
+    <div class="max-w-full overflow-x-auto custom-scrollbar">
       <div id="chartOne" class="-ml-5 min-w-[650px] xl:min-w-full pl-2">
-        <VueApexCharts type="bar" height="220" :options="chartOptions" :series="series" />
+        <VueApexCharts
+          type="bar"
+          height="180"
+          :options="chartOptions"
+          :series="series"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import axios from 'axios'
+import { ref, onMounted, watch } from 'vue'
 import VueApexCharts from 'vue3-apexcharts'
+import api from '@/services/api'
 
-const series = ref([])
+/**
+ * Liste des noms de classes. Adaptez selon votre contexte.
+ * Exemple : ['Classe A', 'Classe B', 'Classe C', 'Classe D']
+ */
 const classes = ref([])
 const selectedClasse = ref(0)
-const allData = ref([])
 
-const months = [
-  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-]
+const series = ref([
+  {
+    name: 'Flagged',
+    data: [] // sera rempli par l’API
+  }
+])
 
+// IDs correspondant à chaque classe (à ajuster selon votre API)
+const classIds = [1, 2, 3, 4]
+
+/**
+ * Options initiales pour ApexCharts.
+ * On définit un yaxis par défaut (min=0, max=0, tickAmount=0) qui sera
+ * écrasé après réception des données pour obtenir un pas de 2.
+ */
 const chartOptions = ref({
+  colors: ['#692CF3'],
   chart: {
-    type: 'bar',
     fontFamily: 'Outfit, sans-serif',
+    type: 'bar',
     toolbar: { show: false }
   },
-  colors: ['#692CF3'],
   plotOptions: {
     bar: {
       horizontal: false,
@@ -81,7 +86,18 @@ const chartOptions = ref({
     colors: ['transparent']
   },
   xaxis: {
-    categories: months,
+    categories: [
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun'
+    ],
     axisBorder: { show: false },
     axisTicks: { show: false }
   },
@@ -92,35 +108,87 @@ const chartOptions = ref({
     fontFamily: 'Outfit',
     markers: { radius: 99 }
   },
+  // Valeurs par défaut pour yaxis (avant le fetch),
+  // seront remplacées après réception des données pour un pas de 2.
+  yaxis: {
+    min: 0,
+    max: 0,
+    tickAmount: 0,
+    labels: {
+      formatter: (val) => val.toFixed(0)
+    }
+  },
+  grid: {
+    yaxis: {
+      lines: { show: true }
+    }
+  },
   fill: { opacity: 1 },
   tooltip: {
     x: { show: false },
     y: {
-      formatter: val => `${val} flagged`
+      formatter: (val) => val.toString()
     }
-  },
-  grid: {
-    yaxis: { lines: { show: true } }
   }
 })
 
-const menuItems = [
-  { label: 'View More', onClick: () => console.log('View More clicked') },
-  { label: 'Delete', onClick: () => console.log('Delete clicked') }
-]
+/**
+ * Récupère les données "flagged" pour la classe sélectionnée,
+ * met à jour la série de données, puis recalcule le yaxis pour un pas de 2.
+ */
+const fetchFlaggedData = async () => {
+  try {
+    const classId = classIds[selectedClasse.value]
+    const res = await api.get('http://localhost:3000/prof/dashboard/graphe', {
+      params: { classId }
+    })
+
+    // On suppose que l'API renvoie { data: [{ total: <nombre> }, …] }
+    const totals = res.data.data.map((item) => item.total)
+
+    // Mise à jour de la série de données
+    series.value = [
+      {
+        name: 'Flagged',
+        data: totals
+      }
+    ]
+
+    // ── CALCUL POUR PAS DE 2 ──
+    // 1. Valeur maximale réelle de la série
+    const maxVal = totals.length ? Math.max(...totals) : 0
+    // 2. On arrondit au multiple de 2 juste au-dessus (ex. si maxVal = 5 → maxEven = 6)
+    const maxEven = Math.ceil(maxVal / 2) * 2
+    // 3. Nombre d’intervalles = maxEven / 2
+    //    Exemple : si maxEven = 6, tickAmount = 3 → graduations à 0, 2, 4, 6
+    const intervals = maxEven / 2
+
+    // Mise à jour dynamique de l’axe Y pour un pas de 2 : 0, 2, 4, …, maxEven
+    chartOptions.value = {
+      ...chartOptions.value,
+      yaxis: {
+        min: 0,
+        max: maxEven,
+        tickAmount: intervals,
+        labels: {
+          formatter: (val) => val.toFixed(0)
+        }
+      }
+    }
+    // ────────────────────────────
+
+  } catch (error) {
+    console.error('Erreur API flagged_evaluation :', error)
+  }
+}
+
+// Appel initial au montage
+onMounted(fetchFlaggedData)
+
+// Lorsque l'utilisateur change de classe, relancer la requête
+watch(selectedClasse, fetchFlaggedData)
 
 const selectClasse = (index) => {
   selectedClasse.value = index
-  series.value = [{
-    name: 'Flagged',
-    data: allData.value[index].monthly
-  }]
 }
-
-onMounted(async () => {
-  const { data } = await axios.get('http://localhost:3001/flaggedEvaluations')
-  allData.value = data
-  classes.value = data.map(c => c.classe)
-  selectClasse(0) // initialiser par défaut
-})
 </script>

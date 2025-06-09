@@ -1,83 +1,57 @@
 <template>
   <ProfLayout>
     <div class="p-6 dark:bg-[#121212] min-h-screen">
-      <h1 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">
-        My classes <span class="bg-purple-100 text-purple-600 text-sm font-semibold px-3 py-1 rounded-full dark:bg-purple-200/10 dark:text-purple-300">{{ displayedStudents.length }} students</span>
-      </h1>
-
-      <!-- Filtres niveaux -->
-      <div class="mt-10 flex gap-0 border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden w-max text-sm font-medium">
+      <!-- Liste des onglets de classes -->
+      <div class="flex gap-4 mb-6 overflow-x-auto">
         <button
-          v-for="level in Object.keys(levels)"
-          :key="level"
-          @click="selectedLevel = level; selectedClass = ''; displayedStudents = []; fetchClasses(level)"
+          v-for="classe in classes"
+          :key="classe"
+          @click="selectClass(classe)"
           :class="[
-            'px-4 py-2 transition',
-            selectedLevel === level
-              ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
-              : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700',
-            'border-r border-gray-300 dark:border-gray-600 last:border-r-0'
+            'px-4 py-2 rounded-full transition',
+            selectedClass === classe
+              ? 'bg-purple-600 text-white'
+              : 'bg-purple-100 text-purple-600 hover:bg-purple-200'
           ]"
         >
-          {{ level }}
+          {{ classe }}
+          <span v-if="counts[classe] !== undefined" class="ml-1 text-xs font-medium">
+            {{ counts[classe] }} students
+          </span>
         </button>
       </div>
 
-      <!-- Filtres classes dynamiques -->
-      <div class="flex flex-wrap gap-4 text-sm font-medium mt-10">
+      <!-- Titre + total d’étudiants pour la classe sélectionnée -->
+      <h1 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">
+        Class: {{ selectedClass }}
         <span
-          v-for="classe in levels[selectedLevel]"
-          :key="typeof classe === 'string' ? classe : classe.name"
-          class="cursor-pointer"
-          :class="[
-            selectedClass === (typeof classe === 'string' ? classe : classe.name)
-              ? 'text-gray-600 border-b-2 border-purple-600 dark:text-purple-300'
-              : 'text-gray-600 dark:text-gray-300'
-          ]"
-          @click="selectClasse(typeof classe === 'string' ? classe : classe.name)"
+          class="bg-purple-100 text-purple-600 text-sm font-semibold px-3 py-1 rounded-full dark:bg-purple-200/10 dark:text-purple-300"
         >
-          {{ typeof classe === 'string' ? classe : classe.name }}
-          <span
-            class="bg-purple-100 text-purple-600 dark:bg-purple-200/10 dark:text-purple-300 px-3 rounded-full"
-          >
-            ({{ getTotalStudents(typeof classe === 'string' ? classe : classe.name) }} students)
-          </span>
+          {{ displayedStudents.length }} students
         </span>
-      </div>
+      </h1>
 
-      <!-- Recherche -->
-      <div class="mt-10 flex items-center gap-3">
-        <div class="relative w-[400px]">
-          <!-- Icône de recherche -->
-          <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 dark:text-white/30">
-            🔍
-          </span>
-          <input
-            type="text"
-            v-model="search"
-            placeholder="Search by Student ID, Course Status or Project Status"
-            class="h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 pl-10 pr-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400
-                   focus:border-[#692CF3] focus:outline-none focus:ring-2 focus:ring-[#692CF3]/30
-                   hover:border-[#692CF3] transition-colors duration-200
-                   dark:border-gray-800 dark:bg-gray-900 dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-[#692CF3]"
-          />
+      <!-- Zone de contenu principal : loader ou tableau -->
+      <div class="overflow-x-auto">
+        <!-- Loader pendant la récupération des données -->
+        <div v-if="isLoading" class="flex justify-center items-center h-40">
+          <div class="w-10 h-10 border-4 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
         </div>
-      </div>
 
-      <!-- Tableau -->
-      <div class="overflow-x-auto mt-10">
-        <table class="w-full table-auto text-sm bg-white dark:bg-gray-900 rounded shadow">
+        <!-- Tableau des étudiants -->
+        <table
+          v-else
+          class="w-full table-auto text-sm bg-white dark:bg-gray-900 rounded shadow"
+        >
           <thead class="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200">
             <tr>
-              <th class="text-left p-3"><input type="checkbox" /></th>
-              <th class="text-left p-3">Full name</th>
-              <th class="text-left p-3">CNE</th>
-              <th class="text-left p-3">C.Eval.Status</th>
-              <th class="text-left p-3">Last Evaluation</th>
-              <th class="text-left p-3">P.Eval.Status</th>
-              <th class="text-left p-3">Last Evaluation</th>
-              <th class="text-left p-3">Signal Action</th>
-              <th class="text-left p-3">Report</th>
+              <th class="text-center p-3">Full name</th>
+              <th class="text-center p-3">CIN</th>
+              <th class="text-center p-3">CNE</th>
+              <th class="text-center p-3">Evaluation Status</th>
+              <th class="text-center p-3">Last Evaluation</th>
+              <th class="text-center p-3">Signal Action</th>
+              <th class="text-center p-3">Report</th>
             </tr>
           </thead>
           <tbody>
@@ -86,25 +60,90 @@
               :key="student.id"
               class="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800"
             >
-              <td class="p-3"><input type="checkbox" /></td>
               <td class="p-3 flex items-center gap-2">
-                <img :src="student.avatar" class="w-8 h-8 rounded-full object-cover" />
+                <!-- real picture if available -->
+                <template v-if="student.avatar">
+                  <img
+                    :src="student.avatar"
+                    class="w-12 h-12 rounded-full object-cover"
+                    alt="avatar"
+                  />
+                </template>
+                <!-- letter-avatar fallback -->
+                <template v-else>
+                  <div
+                    class="w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold text-lg"
+                    :style="{ backgroundColor: student.bgColor }"
+                  >
+                    {{ student.initial }}
+                  </div>
+                </template>
+
                 <div>
-                  <div class="font-semibold text-gray-900 dark:text-white">{{ student.fullName }}</div>
-                  <div class="text-gray-500 text-xs">{{ student.username }}</div>
+                  <div class="font-semibold text-gray-900 dark:text-white">
+                    {{ student.fullName }}
+                  </div>
                 </div>
               </td>
-              <td class="p-3 text-gray-700 dark:text-gray-300">{{ student.cne }}</td>
-              <td class="p-3">
-                <span :class="badgeClass(student.evalStatus)">{{ student.evalStatus }}</span>
+
+              <td class="text-center p-3 text-gray-700 dark:text-gray-300">{{ student.cin }}</td>
+              <td class="text-center p-3 text-gray-700 dark:text-gray-300">{{ student.cne }}</td>
+
+              <td class="text-center p-3">
+                <span
+                  v-if="student.iscStatus.toLowerCase() === 'submitted'"
+                  class="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300 px-2 py-1 rounded-full text-xs font-semibold animate-pulse"
+                >
+                  Submitted
+                </span>
+                <span
+                  v-else-if="!student.iscStatus"
+                  class="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300 px-2 py-1 rounded-full text-xs font-semibold"
+                >
+                  Not yet
+                </span>
+                <span
+                  v-else-if="student.iscStatus.toLowerCase() === 'overdue'"
+                  class="bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300 px-2 py-1 rounded-full text-xs font-semibold"
+                >
+                  Overdue
+                </span>
+                <span
+                  v-else
+                  class="text-gray-700 dark:text-gray-300 px-2 py-1 rounded-full text-xs font-semibold"
+                >
+                  {{ student.iscStatus }}
+                </span>
               </td>
-              <td class="p-3 text-gray-700 dark:text-gray-300">{{ student.lastEvalDate }}</td>
-              <td class="p-3">
-                <span :class="badgeClass(student.projectEvalStatus)">{{ student.projectEvalStatus }}</span>
+
+              <td class="text-center p-3 text-gray-700 dark:text-gray-300">
+                {{ student.lastC }}
               </td>
-              <td class="p-3 text-gray-700 dark:text-gray-300">{{ student.projectEvalDate }}</td>
-              <td class="p-3 text-purple-600 hover:underline cursor-pointer" @click="goToNewEvaluation(student.id)">➕ New Evaluation</td>
-              <td class="p-3 text-purple-600 hover:underline cursor-pointer" @click="goToViewReport(student.id)">View Report →</td>
+
+              <td class="text-center p-3">
+                <button
+                  @click="goToNewEvaluation(student.id)"
+                  :disabled="student.iscStatus.toLowerCase() === 'submitted'"
+                  :class="['inline-flex items-center space-x-1 px-4 py-2 rounded transition', student.iscStatus.toLowerCase() === 'submitted' ? 'bg-gray-300 text-gray-600 cursor-not-allowed' : 'bg-purple-100 hover:bg-purple-200 text-purple-600 font-bold']"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 -960 960 960" fill="currentColor">
+                    <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" />
+                  </svg>
+                  <span>New Evaluation</span>
+                </button>
+              </td>
+
+              <td class="text-center p-3">
+                <button
+                  @click="goToViewReport(student.id)"
+                  class="inline-flex items-center space-x-1 bg-purple-100 hover:bg-purple-200 text-purple-600 font-bold px-4 py-2 rounded transition"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 -960 960 960" fill="currentColor">
+                    <path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/>
+                  </svg>
+                  <span>View Report</span>
+                </button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -112,174 +151,104 @@
     </div>
   </ProfLayout>
 </template>
-  
-  <script setup>
-  import { ref, onMounted, computed, watch } from 'vue';
-import { debounce } from 'lodash';
-import api from '@/services/api';
-import { useRouter } from 'vue-router';
-import ProfLayout from '@/components/layout/ProfLayout.vue';
 
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import api from '@/services/api'
+import ProfLayout from '@/components/layout/ProfLayout.vue'
 
-const router = useRouter();
-const search = ref('');
-const students = ref([]);
-const levels = ref({});
-const selectedLevel = ref('');
-const selectedClass = ref('');
-const displayedStudents = ref([]);
+// format Date into "YYYY-MM-DD"
+function formatDateTime(dateString) {
+  const d = new Date(dateString)
+  if (isNaN(d)) return 'Invalid date'
+  const yyyy = d.getFullYear()
+  const MM   = String(d.getMonth() + 1).padStart(2, '0')
+  const dd   = String(d.getDate()).padStart(2, '0')
+  return `${yyyy}-${MM}-${dd}`
+}
 
-onMounted(async () => {
-  try {
-     const token = localStorage.getItem('token')
-    const sectorResponse = await api.get('/api/prof_evaluation_classes/get_sector', {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    if (sectorResponse.data.result) {
-      const fetchedLevels = {};
-      sectorResponse.data.result.forEach(sector => {
-        fetchedLevels[sector.name] = [];
-      });
-      levels.value = fetchedLevels;
-      if (Object.keys(fetchedLevels).length > 0) {
-        selectedLevel.value = Object.keys(fetchedLevels)[0];
-        await fetchClasses(selectedLevel.value);
-      }
-    }
-    console.log('Sectors fetched successfully:', levels.value);
-  } catch (error) {
-    console.error('Error fetching sectors:', error);
-    
-  }
-});
+// generate a deterministic background color from the first letter
+function generateColor(letter) {
+  const palette = [
+    '#F56565', // red
+    '#ED8936', // orange
+    '#ECC94B', // yellow
+    '#48BB78', // green
+    '#4299E1', // blue
+    '#9F7AEA', // purple
+    '#ED64A6'  // pink
+  ]
+  const idx = letter.charCodeAt(0) % palette.length
+  return palette[idx]
+}
 
-const fetchClasses = async (level) => {
-  try {
-    const token = localStorage.getItem('token')
-    const response = await api.get(`/api/prof_evaluation_classes/get_classes/${level}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    if (response.data.result) {
-      levels.value[level] = response.data.result.map(classe => classe.name);
-      const storedClass = localStorage.getItem('selectedClass');
-      if (storedClass && levels.value[level].includes(storedClass)) {
-        selectedClass.value = storedClass;
-        await fetchStudents(storedClass);
-      } else if (levels.value[level].length > 0) {
-        selectedClass.value = levels.value[level][0];
-        await fetchStudents(levels.value[level][0]);
-      }
-    }
-  } catch (error) {
-    console.error('Error fetching classes:', error);
-    
-  }
-};
+const router = useRouter()
+
+const classes = ref(['GINF1', 'CYS1'])
+const selectedClass = ref(classes.value[0])
+const counts = ref({})
+const displayedStudents = ref([])
+const isLoading = ref(false)
 
 const fetchStudents = async (classe) => {
+  isLoading.value = true
   try {
     const token = localStorage.getItem('token')
-    const response = await api.get(`/api/prof_evaluation_classes/get_all_student/${classe}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    if (response.data.result) {
-      displayedStudents.value = response.data.result.map(student => ({
-        id: student.id_student,
-        fullName: student.fullName,
-        username: student.username || 'N/A',
-        avatar: student.avatar || 'https://via.placeholder.com/32',
-        cne: student.cne,
-        evalStatus: student.courseEvalStatus || 'Not Submitted',
-        lastEvalDate: student.lastCourseEvalDate || 'N/A',
-        projectEvalStatus: student.projectEvalStatus || 'Not Submitted',
-        projectEvalDate: student.lastProjectEvalDate || 'N/A',
-      }));
-      students.value = displayedStudents.value;
+    const response = await api.get(
+      `/api/prof_evaluation_classes/get_all_student/${classe}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
+
+    if (response.data.number !== undefined) {
+      counts.value[classe] = response.data.number
+    }
+
+    if (Array.isArray(response.data.result)) {
+      displayedStudents.value = response.data.result.map((item) => {
+        const name = (item.full_name?.trim() || 'N')
+        const initial = name.charAt(0).toUpperCase()
+        return {
+          id: item.id_member,
+          fullName: name,
+          cin: item.cin || 'N/A',
+          cne: item.cne || 'N/A',
+          avatar: item.profile_picture,            // may be null
+          initial,                                  // first letter
+          bgColor: generateColor(initial),          // fallback circle color
+          iscStatus: item.isc || '',
+          lastC: item.lastc === null
+            ? 'Never did'
+            : formatDateTime(item.lastc)
+        }
+      })
     } else {
-      displayedStudents.value = [];
-      students.value = [];
-      console.warn('No students found for this class.');
+      displayedStudents.value = []
     }
   } catch (error) {
-    console.error('Error fetching students:', error);
-    
+    console.error('Erreur lors de la récupération des étudiants :', error)
+    displayedStudents.value = []
+    counts.value[classe] = 0
+  } finally {
+    isLoading.value = false
   }
-};
+}
 
-const selectClasse = async (classe) => {
-  selectedClass.value = classe;
-  localStorage.setItem('selectedClass', classe);
-  await fetchStudents(classe);
-};
+onMounted(() => {
+  fetchStudents(selectedClass.value)
+})
 
-const getTotalStudents = (classe) => {
-  return selectedClass.value === classe ? displayedStudents.value.length : 0;
-};
-
-const badgeClass = (status) => {
-  return status.toLowerCase() === 'submitted'
-    ? 'text-green-800 bg-green-100 dark:text-green-300 dark:bg-green-900 px-2 py-1 rounded-full text-xs font-semibold'
-    : 'text-orange-800 bg-orange-100 dark:text-orange-300 dark:bg-orange-900 px-2 py-1 rounded-full text-xs font-semibold';
-};
+const selectClass = (classe) => {
+  if (classe === selectedClass.value) return
+  selectedClass.value = classe
+  fetchStudents(classe)
+}
 
 const goToNewEvaluation = (id) => {
-  router.push({ path: '/SkillsChoosen', query: { id } });
-};
+  router.push({ path: '/courseEvaluation', query: { id } })
+}
 
 const goToViewReport = (id) => {
-  router.push({ path: '/Rapport', query: { id } });
-};
-
-watch(search, debounce(async (newSearch) => {
-  if (newSearch.trim()) {
-    const searchTerm = newSearch.trim().toLowerCase();
-    const isCNE = /^[a-zA-Z0-9]+$/.test(searchTerm);
-    const isStatus = ['submitted', 'not submitted'].includes(searchTerm.toLowerCase());
-
-    if (isCNE && selectedClass.value) {
-      try {
-        const response = await api.get(`/api/prof_evaluation_classes/search_by_student_cne/${searchTerm}/${selectedClass.value}`);
-        displayedStudents.value = response.data.result ? response.data.result.map(mapStudent) : [];
-      } catch (error) {
-        console.error('Error searching by CNE:', error);
-        displayedStudents.value = [];
-        console.error('Failed to search by student ID.',error);
-      }
-    } else if (isStatus && selectedClass.value) {
-      const endpoint = searchTerm.includes('project')
-        ? `/api/prof_evaluation_classes/filtre_by_project_statut/${searchTerm}`
-        : `/api/prof_evaluation_classes/filtre_by_course_statut/${searchTerm}/${selectedClass.value}`;
-      try {
-        const response = await api.get(endpoint);
-        displayedStudents.value = response.data.result ? response.data.result.map(mapStudent) : [];
-      } catch (error) {
-        console.error('Error searching by status:', error);
-        displayedStudents.value = [];
-
-      }
-    } else {
-      displayedStudents.value = students.value.filter(s =>
-        s.fullName.toLowerCase().includes(searchTerm)
-      );
-    }
-  } else {
-    displayedStudents.value = students.value;
-  }
-}, 500));
-
-const mapStudent = student => ({
-  id: student.id_student,
-  fullName: student.fullName,
-  username: student.username || 'N/A',
-  avatar: student.avatar || 'https://via.placeholder.com/32',
-  cne: student.cne,
-  evalStatus: student.courseEvalStatus || 'Not Submitted',
-  lastEvalDate: student.lastCourseEvalDate || 'N/A',
-  projectEvalStatus: student.projectEvalStatus || 'Not Submitted',
-  projectEvalDate: student.lastProjectEvalDate || 'N/A',
-});
-
-  </script>
-  
-  
-  
+  router.push({ path: '/Rapport', query: { id } })
+}
+</script>

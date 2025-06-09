@@ -29,7 +29,7 @@ exports.createCoach = async (id_user,  name, cin, email, pass, field,note, role)
 exports.getAllCoach = async () => {
     try {
         const result = await pool.query(
-            `SELECT m.cin, m.full_name, c.field, m.date_add
+            `SELECT m.id_member,m.cin, m.full_name, c.field, m.date_add
              FROM public.member m 
              JOIN public.coach c ON m.id_member = c.id_member `
         );
@@ -39,6 +39,8 @@ exports.getAllCoach = async () => {
         throw error;
     }
 };
+
+
 
 exports.getCoachByCin = async (cin) => {
     try {
@@ -97,3 +99,28 @@ exports.total = async () => {
 
 
 
+exports.getCoachById = async (id_member) => {
+  try {
+    const result = await pool.query(
+      `SELECT 
+         m.full_name, 
+         m.cin, 
+         c.field, 
+         m.description AS note 
+       FROM public.member m
+       JOIN public.coach c ON m.id_member = c.id_member
+       WHERE m.id_member = $1`,
+      [id_member]
+    );
+
+    // Si on n'a aucun résultat, on renvoie null
+    if (!result || result.rows.length === 0) {
+      return null;
+    }
+
+    return result.rows[0];
+  } catch (error) {
+    console.error("Error retrieving coach by id_member:", error);
+    throw error;
+  }
+};

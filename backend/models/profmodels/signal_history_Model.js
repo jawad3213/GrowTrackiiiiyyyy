@@ -15,6 +15,7 @@ exports.all_signal_Model = async (id) => {
     const result = await pool.query(`
       SELECT
         p.id_signal,
+        t.id_class,
         CASE
           WHEN p.approved = true THEN 'approved'
           ELSE 'new'

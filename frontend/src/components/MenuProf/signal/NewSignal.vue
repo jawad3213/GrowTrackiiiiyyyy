@@ -8,9 +8,9 @@
         </button>
   
         <!-- Titre -->
-        <h2 class="text-xl font-semibold mb-1 text-center">Signal Evaluation Details</h2>
+        
         <h1 class="text-3xl font-black text-center mb-6">
-          Info for your <span class="bg-red-500 text-white px-2 py-1 rounded">Signal</span>
+          <span class="bg-red-500 text-white px-2 py-1 rounded">Signal</span>  Information
         </h1>
   
         <!-- Formulaire -->

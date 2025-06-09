@@ -73,7 +73,7 @@ exports.getStudentByCin = async (cin) => {
 
 // Mise à jour partielle d’un utilisateur (PATCH)
 
- exports.updateStudentById = async (id, fieldsToUpdate) => {
+  exports.updateStudentById = async (id, fieldsToUpdate) => {
   try {
     // Cloner fieldsToUpdate pour éviter de modifier l'original
     const fields = { ...fieldsToUpdate };
@@ -151,44 +151,7 @@ exports.getStudentByCin = async (cin) => {
 };
   
 
-exports.deleteStudentById = async (id) => {
-    try {
 
-      await pool.query(
-        "DELETE FROM public.follow_up WHERE id_student = $1",
-        [id]
-      );
-
-      await pool.query(
-        "DELETE FROM public.report WHERE id_reported = $1",
-        [id]
-      );
-      
-      await pool.query(
-        "DELETE FROM public.supervise WHERE id_student = $1",
-        [id]
-      );
-      await pool.query(
-        "DELETE FROM public.skill_evaluation WHERE id_student = $1",
-        [id]
-      );
-
-      await pool.query(
-        "DELETE FROM public.student WHERE id_member = $1",
-        [id]
-      );
-
-      const result = await pool.query(
-        "DELETE FROM public.member WHERE id_member = $1",
-        [id]
-      );
-      return result;
-       // Renvoie tout l'objet result pour avoir accès à rowCount
-    } catch (error) {
-      console.error("Error deleting student:", error);
-      throw error;
-    }
-  };
 
 exports.total = async (req,res) => {
     try{
@@ -249,5 +212,88 @@ exports.getStudentsByClass = async (classe) => {
     }
   };
   
-  
+  // models/adminModels/studentModel.js
+
+
+exports.deleteStudentById = async (id) => {
+  const client = await pool.connect();
+  try {
+    // Démarre une transaction
+    await client.query("BEGIN");
+
+    // 1) Récupérer tous les id_evaluation liés au student dans skill_evaluation
+    const { rows: evalRows } = await client.query(
+      `SELECT id_evaluation
+       FROM public.skill_evaluation
+       WHERE id_student = $1`,
+      [id]
+    );
+
+    // 2) Si on a des id_evaluation, supprimer d’abord les "enfants" dans evaluations
+    if (evalRows.length > 0) {
+      const ids = evalRows.map(row => row.id_evaluation);
+      // Construire dynamiquement ($1, $2, $3, …)
+      const placeholders = ids.map((_, i) => `$${i + 1}`).join(", ");
+      const deleteEvalChildrenQuery = `
+        DELETE FROM public.evaluations
+        WHERE id_evaluation IN (${placeholders})
+      `;
+      await client.query(deleteEvalChildrenQuery, ids);
+    }
+
+    // 3) Maintenant qu'il n'y a plus d'enfants dans evaluations, supprimer dans skill_evaluation
+    await client.query(
+      "DELETE FROM public.skill_evaluation WHERE id_student = $1",
+      [id]
+    );
+
+    // 4) Supprimer dans team_student (s’il y a des références)
+    await client.query(
+      "DELETE FROM public.team_student WHERE student_id = $1",
+      [id]
+    );
+
+    // 5) Supprimer dans supervise
+    await client.query(
+      "DELETE FROM public.supervise WHERE id_student = $1",
+      [id]
+    );
+
+    // 6) Supprimer dans report
+    await client.query(
+      "DELETE FROM public.report WHERE id_reported = $1",
+      [id]
+    );
+
+    // 7) Supprimer dans follow_up
+    await client.query(
+      "DELETE FROM public.follow_up WHERE id_student = $1",
+      [id]
+    );
+
+    // 8) Supprimer dans student
+    await client.query(
+      "DELETE FROM public.student WHERE id_member = $1",
+      [id]
+    );
+
+    // 9) Enfin, supprimer dans member
+    const result = await client.query(
+      "DELETE FROM public.member WHERE id_member = $1 RETURNING *",
+      [id]
+    );
+
+    // Valide la transaction
+    await client.query("COMMIT");
+    return result; // contient rowCount, rows etc.
+  } catch (error) {
+    // En cas d'erreur, rollback
+    await client.query("ROLLBACK");
+    console.error("Error deleting student:", error);
+    throw error;
+  } finally {
+    client.release();
+  }
+};
+
   

@@ -13,8 +13,7 @@ const neonDB = new Pool({
 const localDB = new Pool({
   user: "postgres",
   host: "localhost",
-  database: "postgres", //pour que si on supprime on doit pas etre connecte a test
-  //database: "postgres",
+  database: "postgres",
   password: "NaDa2004",
   port: 5432,
 });
@@ -25,7 +24,7 @@ const dumpFile = "backup_skills.sql";
 
 async function copyDatabase() {
   try {
-    console.log("🔄 Exportation de la base de données depuis Neon Tech...");
+    console.log("Exportation de la base de données depuis Neon Tech...");
 
     
     await new Promise((resolve, reject) => {
@@ -33,10 +32,14 @@ async function copyDatabase() {
          `pg_dump "${process.env.DATABASE_URL}" -F p -f ${dumpFile} --no-owner --no-privileges`,
           (error, stdout, stderr) => {
             if (error) {
+<<<<<<< HEAD:backend/config/skills.js
               console.error(`❌ Erreur lors de l'exportation : ${error.message}`);
+=======
+              console.error("Erreur lors de l'exportation : ${error.message}");
+>>>>>>> origin/backendNada:config/skills.js
               reject(error);
             } else {
-              console.log("✅ Exportation réussie !");
+              console.log("Exportation réussie !");
               resolve();
             }
           }
@@ -45,33 +48,36 @@ async function copyDatabase() {
 
   
     
-    console.log("🔄 Suppression de l'ancienne base locale...");
+    console.log("Suppression de l'ancienne base locale...");
     await localDB.query("DROP DATABASE IF EXISTS skills;");
 
     
-    console.log("🔄 Création de la base locale...");
+    console.log("Création de la base locale...");
     await localDB.query("CREATE DATABASE skills;");
 
     
     
-    console.log("🔄 Restauration de la base en local...");
+    console.log("Restauration de la base en local...");
     await new Promise((resolve, reject) => {
       exec(`psql -U postgres -d skills -f ${dumpFile}`, (error, stdout, stderr) => {
         if (error) {
+<<<<<<< HEAD:backend/config/skills.js
           console.error(`❌ Erreur lors de la restauration : ${error.message}`);
+=======
+          console.error("Erreur lors de la restauration : ${error.message}");
+>>>>>>> origin/backendNada:config/skills.js
           reject(error);
         } else {
-          console.log("✅ Base de test créée avec succès !");
+          console.log("Base de test créée avec succès !");
           resolve();
         }
       });
     });
 
   } catch (err) {
-    console.error("❌ Erreur générale :", err);
+    console.error("Erreur générale :", err);
   } finally {
     await neonDB.end();
-    //await localDB.end();
   }
 }
 

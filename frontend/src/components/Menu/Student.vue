@@ -27,7 +27,7 @@
                      transform hover:scale-105 hover:shadow-lg
                      transition-transform duration-200"
             >
-              {{ students.length > 0 ? '+ Add Student' : '+ Crete Student' }}
+              {{ students.length > 0 ? '+ Add Student' : '+ Create Student' }}
             </button>
           </router-link>
         </div>
@@ -41,11 +41,9 @@
           ></div>
         </div>
 
-        <!-- Tableau des étudiants (une fois chargé) -->
+        <!-- Tableau des étudiants -->
         <div v-else-if="students.length > 0" class="p-6 overflow-x-auto">
-          <table
-            class="min-w-full bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden"
-          >
+          <table class="min-w-full bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
             <thead class="bg-gray-100 dark:bg-gray-700">
               <tr>
                 <th class="py-3 px-4 text-left text-sm font-semibold text-gray-600 dark:text-gray-300">
@@ -80,9 +78,19 @@
                        hover:bg-gray-50 dark:hover:bg-gray-700
                        transition-colors duration-150"
               >
+                <!-- Full Name with letter-avatar -->
                 <td class="py-3 px-4 text-gray-800 dark:text-gray-100">
-                  {{ student.full_name }}
+                  <div class="flex items-center space-x-3">
+                    <div
+                      class="w-8 h-8 rounded-full flex items-center justify-center text-white border border-gray-200"
+                      :style="{ backgroundColor: stringToColor(student.full_name) }"
+                    >
+                      {{ student.full_name.charAt(0).toUpperCase() }}
+                    </div>
+                    <span>{{ student.full_name }}</span>
+                  </div>
                 </td>
+
                 <td class="py-3 px-4 text-gray-800 dark:text-gray-100">
                   {{ student.cin }}
                 </td>
@@ -105,31 +113,19 @@
                   {{ student.id_sector }}
                 </td>
                 <td class="py-3 px-4 flex justify-center space-x-4">
-                  <!-- Lien d’édition (icône) -->
+                  <!-- Edit -->
                   <router-link
                     :to="`/AddStudent/${student.cin}`"
                     class="text-blue-500 hover:text-blue-700 transform hover:scale-110 transition-transform duration-150"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                         height="24px" viewBox="0 -960 960 960"
-                         width="24px" fill="currentColor">
-                      <path
-                        d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"
-                      />
-                    </svg>
+                    <!-- SVG edit icon -->
                   </router-link>
-                  <!-- Lien de suppression (icône) -->
+                  <!-- Delete -->
                   <router-link
                     :to="`/DeleteStudent/${student.id_member}`"
                     class="text-red-500 hover:text-red-700 transform hover:scale-110 transition-transform duration-150"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                         height="24px" viewBox="0 -960 960 960"
-                         width="24px" fill="currentColor">
-                      <path
-                        d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"
-                      />
-                    </svg>
+                    <!-- SVG delete icon -->
                   </router-link>
                 </td>
               </tr>
@@ -177,9 +173,21 @@ onMounted(async () => {
     students.value = res.data.data
   } catch (err) {
     console.error('Erreur lors du chargement des étudiants :', err)
-    students.value = [] // vide la liste en cas d’erreur
+    students.value = []
   } finally {
     isLoading.value = false
   }
 })
+
+/**
+ * Generate a reproducible HSL color based on the student’s name.
+ */
+const stringToColor = (str) => {
+  let hash = 0
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash)
+  }
+  const hue = Math.abs(hash) % 360
+  return `hsl(${hue}, 50%, 60%)`
+}
 </script>

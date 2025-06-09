@@ -6,10 +6,11 @@ require('dotenv').config();
 const PORT = process.env.PORT || 3000;
 const {ResetPassEmail, check} = require('./controllers/authController');
 const cors = require('cors');
-const {ServerLimiter} = require('../backend/middlewares/Limiter');
+const { ServerLimiter } = require('./middlewares/Limiter');
 const { verifyResetToken }=require('./middlewares/VerifyToken')
 const path = require('path')
-
+const ejs         = require('ejs');
+const puppeteer   = require('puppeteer');
 
 const corsOptions = {
     origin:["http://localhost:3000", "http://localhost:5173"],
@@ -137,6 +138,74 @@ app.use("/student/projects", prjectStudent);
 const notifiRoute = require("./routes/studentRoutes/notifiRoute");
 app.use("/student/notifications", notifiRoute);
 
+
+app.post('/api/generate-pdf', async (req, res) => {
+  try {
+    
+    console.log('hit generate-pdf')
+    const { profile,evale,signals,commentResults } = req.body;
+
+    if (
+  !profile ||
+  typeof profile !== 'object' ||
+  Array.isArray(profile)
+)
+    if (
+  !evale ||
+  typeof evale !== 'object' ||
+  Array.isArray(evale)
+)
+  if (
+  !signals ||
+  typeof signals !== 'object' ||
+  Array.isArray(signals)
+)
+  if (
+  !commentResults ||
+  typeof commentResults !== 'object' ||
+  Array.isArray(commentResults)
+)
+
+{
+  return res
+    .status(400)
+    .json({ error: 'Invalid or missing "profile" object in request body.' });
+}
+
+    // 1. Render HTML with EJS
+    const html = await ejs.renderFile(
+      path.join(__dirname, 'views', 'invoice.ejs'),
+      { profile ,evale,signals,commentResults}
+    );
+
+    // 2. Generate PDF using Puppeteer
+    const browser = await puppeteer.launch({
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
+
+    const page = await browser.newPage();
+    await page.setContent(html, { waitUntil: 'networkidle0' });
+
+    const pdfBuffer = await page.pdf({
+      format: 'A4',
+      printBackground: true,
+      margin: { top: '20mm', bottom: '20mm', left: '15mm', right: '15mm' }
+    });
+
+    await browser.close();
+
+    // 3. Return PDF as a download
+    res
+      .status(200)
+      .header('Content-Type', 'application/pdf')
+      .header('Content-Disposition', 'attachment; filename=profile.pdf')
+      .send(pdfBuffer);
+
+  } catch (err) {
+    console.error('PDF generation error:', err);
+    res.status(500).json({ error: 'PDF generation failed.' });
+  }
+});
 
 
 /*

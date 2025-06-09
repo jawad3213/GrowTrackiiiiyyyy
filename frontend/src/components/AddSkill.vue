@@ -89,7 +89,7 @@
 
         <!-- Skill Description -->
         <div class="md:col-span-2">
-          <label class="block mb-1 font-semibold text-gray-700">Skill Description </label>
+          <label class="block mb-1 font-semibold text-gray-700">Skill Description   </label>
           <textarea
             v-model="skill.description_skill"
             rows="3"

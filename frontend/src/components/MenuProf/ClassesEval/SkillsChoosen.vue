@@ -12,7 +12,7 @@
   
         <!-- Subtitle -->
         <p class="mt-14 ml-5 text-2xl">
-          YOU WILL EVALUATE <span class="text-purple-600 font-bold uppercase">{{ evaluatedName }}</span> BASED ON SOME QUESTION ABOUT THE FOLLOWING SKILLS:
+          You Will Evaluate <span class="text-purple-600 font-bold uppercase">{{ evaluatedName }}</span> Based on some question about the floowing skills:
         </p>
 
         <!-- Skills List -->
