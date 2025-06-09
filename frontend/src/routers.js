@@ -146,6 +146,7 @@ const routes = [
         name: "AddSupervisorModal ",
         component: AddSupervisorModal ,
         path:"/AddSupervisorModal",
+        meta :{role: 'admin'}
     },
     {
         name: "Skills",
@@ -232,11 +233,13 @@ const routes = [
   name: 'AddMember',
   component: AddMemberForm,
   props: true,
+  meta :{role: 'Professor'}
 },
  {// This route MUST exist for goToAddMember()
     path: '/GroupMembers/:id_group',
     name: 'GroupMembers',
-    component: GroupMembers
+    component: GroupMembers,
+    meta :{role: 'Professor'}
   },  
     {
         name : "AddField",
