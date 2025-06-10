@@ -40,6 +40,9 @@ jobs:
         working-directory: ./backend
         run: npm install
 
+      - name: Skip integration DB export (pg_dump version issue)
+        run: echo "Skipping pg_dump due to version mismatch"
+
       - name: Run backend tests
         working-directory: ./backend
         run: npm test -- --passWithNoTests
@@ -93,5 +96,3 @@ jobs:
           docker tag nour537/growtrack-frontend:${{ env.sha_short }} nour537/growtrack-frontend:latest
           docker push nour537/growtrack-frontend:${{ env.sha_short }}
           docker push nour537/growtrack-frontend:latest
-
-#test
