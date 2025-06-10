@@ -18,6 +18,7 @@ jobs:
       EMAIL_PASS: eova pcft uyil asbk
       DATABASE_URL: postgresql://SKILLS_owner:npg_ogbEHrAJ63Rf@ep-shrill-wildflower-a5dpbyo4-pooler.us-east-2.aws.neon.tech/SKILLS?sslmode=require
       MODE: cloud
+      CI: true  # permet de détecter l'environnement GitHub dans le code Node.js
 
     steps:
       - name: Checkout code
@@ -40,12 +41,18 @@ jobs:
         working-directory: ./backend
         run: npm install
 
-      - name: Skip integration DB export (pg_dump version issue)
-        run: echo "Skipping pg_dump due to version mismatch"
-
-      - name: Run backend tests
+      - name: Run backend unit tests
         working-directory: ./backend
         run: npm test -- --passWithNoTests
+
+      - name: Run backend integration tests (optional)
+        working-directory: ./backend
+        run: |
+          if ls __tests__/integration/*.test.js 1> /dev/null 2>&1; then
+            npm run test:integration
+          else
+            echo "No integration tests found, skipping."
+          fi
 
       - name: Check backend health endpoint
         run: |
