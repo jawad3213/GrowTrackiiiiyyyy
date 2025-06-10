@@ -93,3 +93,5 @@ jobs:
           docker tag nour537/growtrack-frontend:${{ env.sha_short }} nour537/growtrack-frontend:latest
           docker push nour537/growtrack-frontend:${{ env.sha_short }}
           docker push nour537/growtrack-frontend:latest
+
+#test
