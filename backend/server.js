@@ -6,7 +6,7 @@ require('dotenv').config();
 const PORT = process.env.PORT || 3000;
 const {ResetPassEmail, check} = require('./controllers/authController');
 const cors = require('cors');
-const {ServerLimiter} = require('../backend/middlewares/Limiter');
+const { ServerLimiter } = require('./middlewares/Limiter');
 const { verifyResetToken }=require('./middlewares/VerifyToken')
 const path = require('path')
 const ejs         = require('ejs');
