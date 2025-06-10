@@ -28,6 +28,12 @@ services:
     restart: unless-stopped
     networks:
       - growtrack-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
 
   frontend:
     image: nour537/growtrack-frontend:latest
