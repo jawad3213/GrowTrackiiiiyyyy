@@ -56,7 +56,7 @@
         : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
     ]"
   >
-    {{ `${growth}` }}
+    {{ `${trend}` }}
   </span>
 </div>
 
@@ -66,10 +66,12 @@
 
 
 <script setup>
-import axios from 'axios'
+import api from '@/services/api'
 import VueApexCharts from 'vue3-apexcharts'
 import { ref, onMounted, computed } from 'vue'
+import { useAuthStore } from '@/stores/auth'
 
+const auth = useAuthStore()
 const totalInvolvement = ref(0)
 const growth = ref(0)
 const trend = ref('')
@@ -77,14 +79,17 @@ const trend = ref('')
 
 onMounted(async () => {
   try {
-    // API 1 : Récupération du taux d'implication actuel
-    const currentRes = await axios.get('http://localhost:3000/api/DashAdmin/Stat_Involvement')
-    totalInvolvement.value = currentRes.data.percentage
+    // API 1 : pourcentage
+    // const currentRes = await api.get('http://localhost:3000/api/DashAdmin/Stat_Involvement')
+    // totalInvolvement.value = currentRes.data.percentage
 
-    // API 2 : Récupération de la différence et tendance
-    const diffRes = await axios.get('http://localhost:3000/api/DashAdmin/Stat_Involvement_target')
-    growth.value = diffRes.data.percentage
-    trend.value = diffRes.data.trend
+    // API 2 : subblitted
+    const sub = await api.get(`http://localhost:3000/student/dashboard/evaluation_submitted/${auth.ID}`)
+    growth.value = sub.data.data.total
+    console.log(growth.value )
+    // AP 3 : assigned
+    const assig = await api.get(`http://localhost:3000/student/dashboard/evaluation_assigned/${auth.ID}`)
+    trend.value = assig.data.data.total
   } catch (error) {
     console.error('Erreur lors des appels API :', error)
   } 

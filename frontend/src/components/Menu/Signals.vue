@@ -190,7 +190,7 @@ function openSignal(signal) {
 const solutionBadge = (solution) =>
   ({
     'No Action Taken': 'bg-gray-200 text-gray-600',
-    'In Progress': 'bg-purple-100 text-purple-600',
+    'in progress': 'bg-purple-100 text-purple-600',
     'Blocked': 'bg-red-100 text-red-600',
     'Approved': 'bg-green-100 text-green-600'
   }[solution] || 'bg-gray-200 text-gray-600') +

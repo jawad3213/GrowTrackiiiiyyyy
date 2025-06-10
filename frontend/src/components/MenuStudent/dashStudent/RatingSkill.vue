@@ -2,7 +2,7 @@
   <div class="border rounded-2xl p-6 bg-white">
     <h3 class="text-lg font-semibold mb-4">Evaluations per Skill</h3>
 
-    <!-- Skills dynamic buttons -->
+    <!-- Boutons dynamiques pour les compétences -->
     <div class="flex gap-2 flex-wrap mb-6">
       <button
         v-for="(skill, index) in skillNames"
@@ -31,16 +31,20 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
+import api from '@/services/api'
 import VueApexCharts from 'vue3-apexcharts'
+import { useAuthStore } from '@/stores/auth'
+
+const auth = useAuthStore()
 
 const skillNames = ref([])
 const selectedSkill = ref('')
 const series = ref([])
+
 const chartOptions = ref({
   chart: {
     type: 'bar',
-    toolbar: { show: false },
+    toolbar: { show: false }
   },
   plotOptions: {
     bar: {
@@ -51,8 +55,8 @@ const chartOptions = ref({
   },
   xaxis: {
     categories: [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb',
+      'Mar', 'Apr', 'May', 'Jun'
     ]
   },
   colors: ['#8b5cf6'],
@@ -60,31 +64,36 @@ const chartOptions = ref({
   legend: { show: false }
 })
 
-// Load skill names and evaluations
+// Chargement initial
 onMounted(async () => {
   try {
-    const res = await axios.get('http://localhost:3001/EvaluationBySkill')
-    skillNames.value = res.data.map(s => s.skill)
-    selectedSkill.value = skillNames.value[0]
-    updateChart(res.data)
+    const res = await api.get('http://localhost:3000/student/dashboard/skills')
+    skillNames.value = res.data.data.map(s => s.skill_name)
+    selectedSkill.value = skillNames.value[0]  // la compétence sélectionnée par défaut est la première dans le tableau.
+    await updateChart()
   } catch (error) {
-    console.error('Erreur chargement skills:', error)
+    console.error('Erreur chargement des skills:', error)
   }
 })
 
-const updateChart = async (data) => {
-  const skillData = data.find(s => s.skill === selectedSkill.value)
-  if (skillData) {
+
+const updateChart = async () => {
+  try {
+    const res = await api.get(`http://localhost:3000/student/dashboard/ratingskill/${auth.ID}?skill=${selectedSkill.value}`)
+    const monthlyAverages = res.data.data.map(item => item.moyenne)
+
     series.value = [{
       name: selectedSkill.value,
-      data: skillData.monthly
+      data: monthlyAverages
     }]
+  } catch (error) {
+    console.error('Erreur chargement des données de la skill:', error)
   }
 }
 
+//  Lors du clic sur un skill
 const selectSkill = async (skill) => {
   selectedSkill.value = skill
-  const res = await axios.get('http://localhost:3001/EvaluationBySkill')
-  updateChart(res.data)
+  await updateChart()
 }
 </script>

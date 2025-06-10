@@ -5,9 +5,9 @@ exports.Profile_Section_Controller = async (req, res) => {
   try {
     const id = req.params.id;
     const result = await report_Model.Profile_Section_Model(id);
-    
+    console.log("id", id);
     // Check if result exists and has length > 0
-    if (result && Array.isArray(result) && result.length > 0) {
+    if (result && Object.keys(result).length > 0 ) {
       return res.status(200).json({
         result
       });

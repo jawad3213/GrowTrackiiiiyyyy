@@ -44,7 +44,7 @@
               : ''"
           />
         </svg>
-        {{ `${userGrowth}%` }}
+        <!-- {{ `${userGrowth}%` }} -->
       </span>
 
   </div>
@@ -93,7 +93,7 @@
         : ''"
     />
   </svg>
-  {{ `${evaluationGrowth}%` }}
+  <!-- {{ `${evaluationGrowth}%` }} -->
 </span>
 
   </div>
@@ -117,7 +117,7 @@
     <div>
       <span class="text-sm text-gray-500 dark:text-gray-400">Class Score</span>
       <h4 class="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-        {{ totalUsers }}
+        {{ userGrowth }}
       </h4>
     </div>
     <!-- pourcentage  -->
@@ -149,7 +149,7 @@
               : ''"
           />
         </svg>
-        {{ `${userGrowth}%` }}
+        <!-- {{ `${userGrowth}%` }} -->
       </span>
 
   </div>
@@ -166,7 +166,7 @@
     <div>
       <span class="text-sm text-gray-500 dark:text-gray-400"> Score </span>
       <h4 class="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-        {{ totalEvaluations }}
+         {{jijo }}
       </h4>
     </div>
     <!-- pourcentage  -->
@@ -198,7 +198,7 @@
         : ''"
     />
   </svg>
-  {{ `${evaluationGrowth}%` }}
+  <!-- {{ `${evaluationGrowth}%` }} -->
 </span>
 
   </div>
@@ -212,34 +212,39 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
+import api from '@/services/api'
+import { useAuthStore } from '@/stores/auth'
 
+const auth = useAuthStore()
 const totalUsers = ref(0)
 const totalEvaluations = ref(0)
 const userGrowth = ref(0)
 const trendUser = ref('')
 const trendEval = ref('')
 const evaluationGrowth = ref(0)
-
+const jijo=ref(0)
+jijo.value=auth.ID
 onMounted(async () => {
   try {
-    // Total users
-    const resUsers = await axios.get('http://localhost:3000/api/DashAdmin/Total_User')
-    totalUsers.value = resUsers.data
+    // Projects enrolled
+    const resUsers = await api.get(`http://localhost:3000/student/dashboard/nombre_projets/${auth.ID}`)
+    totalUsers.value = resUsers.data.data.count
 
-    // Growth in users
-    const resUserGrowth = await axios.get('http://localhost:3000/api/DashAdmin/Stat_User')
-    userGrowth.value = resUserGrowth.data.percentage
-    trendUser.value = resUserGrowth.data.trend
+    // class score
+    const resUserGrowth = await api.get(`http://localhost:3000/student/dashboard/moyenne/${auth.ID}`)
+    userGrowth.value = resUserGrowth.data.data.moyenne
+    
+    
 
     // Total evaluations
-    const resEvals = await axios.get('http://localhost:3000/api/DashAdmin/Total_Evaluation')
-    totalEvaluations.value = resEvals.data
+    const resEvals = await api.get(`http://localhost:3000/student/dashboard/signalreceived/${auth.ID}`)
+    totalEvaluations.value = resEvals.data.data.total
+    
 
     // Growth in evaluations
-    const resEvalGrowth = await axios.get('http://localhost:3000/api/DashAdmin/Stat_Evaluation')
-    evaluationGrowth.value = resEvalGrowth.data.percentage
-    trendEval.value = resEvalGrowth.data.trend
+    // const resEvalGrowth = await axios.get('http://localhost:3000/api/DashAdmin/Stat_Evaluation')
+    // evaluationGrowth.value = resEvalGrowth.data.percentage
+    // trendEval.value = resEvalGrowth.data.trend
   } catch (error) {
     console.error('❌ Erreur API dashboard :', error)
   }

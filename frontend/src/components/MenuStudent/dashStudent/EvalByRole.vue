@@ -7,9 +7,11 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
+import api from '@/services/api'
 import VueApexCharts from 'vue3-apexcharts'
+import { useAuthStore } from '@/stores/auth'
 
+const auth = useAuthStore()
 const chartSeries = ref([])
 const chartOptions = ref({
   chart: {
@@ -21,23 +23,15 @@ const chartOptions = ref({
     bar: {
       horizontal: false,
       columnWidth: '45%',
-        borderRadius: 5,
-        borderRadiusApplication: 'end',
+      borderRadius: 5,
+      borderRadiusApplication: 'end',
     }
   },
   dataLabels: {
     enabled: false
   },
   xaxis: {
-    categories: [
-        'Sep',
-        'Oct',
-        'Nov',
-        'Dec',
-        'Jan',
-        'Feb',
-        'Mar',
-      ],
+    categories: [], // sera rempli dynamiquement
   },
   legend: {
     position: 'top',
@@ -56,19 +50,37 @@ const chartOptions = ref({
 })
 
 onMounted(async () => {
-  const { data } = await axios.get('http://localhost:3001/EvaluationByRole')
+  try {
+    const { data } = await api.get(`http://localhost:3000/student/dashboard/graphe/${auth.ID}`)
 
-  //const months = data.map(item => item.month)
-  const professor = data.map(item => item.Professor)
-  const supervisor = data.map(item => item.Supervisor)
-  const peer = data.map(item => item.Peer)
+    const graphData = data.data 
 
-  chartSeries.value = [
-    { name: 'Professor', data: professor },
-    { name: 'Supervisor', data: supervisor },
-    { name: 'Peer', data: peer }
-  ]
+    
+    const months = graphData.map(item => String(item.month))
+    const professor = graphData.map(item => item.Professor)
+    const supervisor = graphData.map(item => item.Supervisor)
+    const peer = graphData.map(item => item.Pair) // ⚠️ pas "Peer" mais "Pair"
 
-  //chartOptions.value.xaxis.categories = months
+    console.log(months)
+
+    chartSeries.value = [
+      { name: 'Professor', data: professor },
+      { name: 'Supervisor', data: supervisor },
+      { name: 'Peer', data: peer }
+    ]
+
+    chartOptions.value = {
+      ...chartOptions.value,
+      xaxis: {
+        ...chartOptions.value.xaxis,
+        categories: months,
+        labels: { style: { fontSize: '12px' } } // facultatif : taille texte
+      }
+    }
+
+    console.log('Mois:', months) // ← vérifie ici que tu as bien des mois
+  } catch (error) {
+    console.error('Erreur lors de la récupération des données du graphe:', error)
+  }
 })
 </script>

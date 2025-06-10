@@ -22,7 +22,7 @@ import Coach from "./components/Menu/Coach.vue";
 import AddCoach from "./components/AddCoach.vue";
 import AddField from "./components/AddField.vue";
 import AddProfessorModal from "./components/AddProfessorModal.vue";
-import AddSkill from "./components/AddSkill.vue";
+import Addskill from "./components/Addskill.vue";
 import DeleteSkill from "./components/DeleteSkill.vue"
 import AddStudentModal from "./components/AddStudentModal.vue";
 import AddSupervisorModal from "./components/AddSupervisorModal.vue";
@@ -226,6 +226,7 @@ const routes = [
         name : "GeneratePdf",
         component : GeneratePdf,
         path : "/gen",
+        meta :{role: 'Professor'}
     },
     
 {
@@ -265,13 +266,13 @@ const routes = [
     
     {
         name : "AddSkill",
-        component : AddSkill,
+        component : Addskill,
         path : "/AddSkill",
         meta :{role: 'admin'}
     },
     {
         name : "EditSkill",
-        component : AddSkill,
+        component : Addskill,
         path : "/AddSkill/:skill_name",
         props: true,
         meta: {edit:true, role: 'admin'},
@@ -557,7 +558,7 @@ const routes = [
         component : ProjectDetails,
         path : "/ProjectDetails",
         meta :{role: 'Professor'}
-    },
+},
 
     
 ];
