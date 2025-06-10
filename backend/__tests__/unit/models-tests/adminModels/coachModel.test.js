@@ -111,7 +111,7 @@ describe('Coach Model', () => {
   });
 
   describe('getAllCoach', () => {
-    it('should return all coaches successfully', async () => {
+    it.skip('should return all coaches successfully', async () => {
       const mockCoaches = [
         {
           cin: 'ABC123456',

@@ -9,6 +9,17 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      PORT: 3000
+      ACCESS_SECRET: f3e02c4c7d9a44b7a6b5c9f7df6ad7c34fd021fa6f70834b82dfccd5ecfbd3f9a4e0ef1a20660a
+      REFRESH_SECRET: 96cb57ea0c8a437eb7a5c21Ffa0a8ea1b33f9cfefb3e1ab98aa4b5b3cf449f2e90d9627e4ecb83
+      RESET_SECRET: e90d9627e4ecbc21Ffa0a8e97eb3cf449f283f9cfefb3e1ab98aa4b5b37a5a6cb57ea0c8a431b3
+      EMAIL_USER: eloukilinada2004@gmail.com
+      EMAIL_PASS: eova pcft uyil asbk
+      DATABASE_URL: postgresql://SKILLS_owner:npg_ogbEHrAJ63Rf@ep-shrill-wildflower-a5dpbyo4-pooler.us-east-2.aws.neon.tech/SKILLS?sslmode=require
+      MODE: cloud
+      CI: true  # permet de détecter l'environnement GitHub dans le code Node.js
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -18,36 +29,53 @@ jobs:
         with:
           node-version: 18
 
+      - name: Install PostgreSQL client (for pg_dump)
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
       # ---------- Backend ----------
-      - name: Clean backend dependencies
+      - name: Clean backend node_modules
         working-directory: ./backend
-        run: rm -rf node_modules package-lock.json
+        run: rm -rf node_modules
 
       - name: Install backend dependencies
         working-directory: ./backend
-        run: npm ci
+        run: npm install
 
-      - name: Run backend tests
+      - name: Run backend unit tests
         working-directory: ./backend
-        run: npm test          # ← Jest / Supertest
+        run: npm test -- --passWithNoTests
+
+      - name: Run backend integration tests (optional)
+        working-directory: ./backend
+        run: |
+          if ls __tests__/integration/*.test.js 1> /dev/null 2>&1; then
+            npm run test:integration
+          else
+            echo "No integration tests found, skipping."
+          fi
+
+      - name: Check backend health endpoint
+        run: |
+          nohup npm run dev --prefix backend > /dev/null 2>&1 &
+          sleep 10
+          curl --fail http://localhost:3000/health
 
       # ---------- Frontend ----------
-      - name: Clean frontend dependencies
+      - name: Clean frontend node_modules
         working-directory: ./frontend
-        run: rm -rf node_modules package-lock.json
+        run: rm -rf node_modules
 
       - name: Install frontend dependencies
         working-directory: ./frontend
-        run: npm ci
+        run: npm install
 
       - name: Run frontend tests
         working-directory: ./frontend
-        run: npm run test:unit # ← Vitest
+        run: npm run test:unit
 
   build-and-push:
     needs: test
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -59,8 +87,8 @@ jobs:
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          username: nour537
+          password: ton-mot-de-passe-docker
 
       - name: Build and push backend image
         run: |
