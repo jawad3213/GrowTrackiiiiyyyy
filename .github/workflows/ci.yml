@@ -29,7 +29,13 @@ jobs:
 
       - name: Run backend tests
         working-directory: ./backend
-        run: npm test          # ← Jest / Supertest
+        run: npm test
+
+      - name: Check backend health endpoint
+        run: |
+          nohup npm run dev --prefix backend > /dev/null 2>&1 &
+          sleep 10
+          curl --fail http://localhost:3000/health
 
       # ---------- Frontend ----------
       - name: Clean frontend dependencies
@@ -42,7 +48,7 @@ jobs:
 
       - name: Run frontend tests
         working-directory: ./frontend
-        run: npm run test:unit # ← Vitest
+        run: npm run test:unit
 
   build-and-push:
     needs: test
