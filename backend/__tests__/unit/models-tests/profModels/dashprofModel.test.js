@@ -1,3 +1,4 @@
+// dashprofModel.test.js
 const {
   total,
   totalstudent,
@@ -7,7 +8,7 @@ const {
   greatestAll,
   profile,
   totalEvaluation
-} = require('../../../../models/profmodels/dashModel');
+} = require('../../../../models/profModels/dashModel');
 
 // Mock the database pool
 jest.mock('../../../../config/db', () => ({
