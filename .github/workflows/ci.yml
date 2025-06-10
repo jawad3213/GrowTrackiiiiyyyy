@@ -19,13 +19,13 @@ jobs:
           node-version: 18
 
       # ---------- Backend ----------
-      - name: Clean backend dependencies
+      - name: Clean backend node_modules
         working-directory: ./backend
-        run: rm -rf node_modules package-lock.json
+        run: rm -rf node_modules
 
       - name: Install backend dependencies
         working-directory: ./backend
-        run: npm ci
+        run: npm install
 
       - name: Run backend tests
         working-directory: ./backend
@@ -38,13 +38,13 @@ jobs:
           curl --fail http://localhost:3000/health
 
       # ---------- Frontend ----------
-      - name: Clean frontend dependencies
+      - name: Clean frontend node_modules
         working-directory: ./frontend
-        run: rm -rf node_modules package-lock.json
+        run: rm -rf node_modules
 
       - name: Install frontend dependencies
         working-directory: ./frontend
-        run: npm ci
+        run: npm install
 
       - name: Run frontend tests
         working-directory: ./frontend
