@@ -179,7 +179,7 @@ const badgeClass = status =>
 const solutionClass = solution => {
   const base = 'px-3 py-1 rounded-full text-base font-semibold'
   if (solution === 'Resolved')     return `text-green-700 bg-green-100 ${base}`
-  if (solution === 'In Progress') return `text-pink-700 bg-pink-100 ${base}`
+  if (solution === 'in progress') return `text-pink-700 bg-pink-100 ${base}`
   if (solution === 'Blocked')     return `text-red-700 bg-red-100 ${base}`
   return `text-gray-600 bg-gray-100 ${base}`
 }

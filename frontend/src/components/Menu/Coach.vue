@@ -93,7 +93,7 @@
                   </router-link>
                   <!-- Supprimer -->
                   <router-link
-                    :to="`/DeleteStudent/${coach.cin}`"
+                    :to="`/DeleteStudent/${coach.id_member}`"
                     class="text-red-500 hover:text-red-700 transform hover:scale-110 transition-transform duration-150"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" fill="#EA3323">
