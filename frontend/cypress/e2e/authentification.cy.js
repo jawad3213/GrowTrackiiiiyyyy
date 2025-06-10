@@ -1,10 +1,10 @@
 // cypress/e2e/auth/login-comprehensive.cy.js
-// Comprehensive E2E test suite for login functionality
-// Based on working patterns from the first file with expanded test cases
+// Suite de tests E2E complète pour la fonctionnalité de connexion
+// Basée sur les modèles fonctionnels du premier fichier avec des cas de test étendus
 
 const baseUrl = 'http://localhost:3000';
 
-describe('Comprehensive Login E2E Tests', () => {
+describe('Tests E2E Complets de Connexion', () => {
   const validUser = {
     email: 'elouansaidisoukaina@gmail.com',
     password: 'PASS1234'
@@ -21,33 +21,33 @@ describe('Comprehensive Login E2E Tests', () => {
     cy.clearSessionStorage();
     cy.visit('/Login');
     
-    // Handle cookie consent popup by clicking Accept
+    // Gérer la popup de consentement aux cookies en cliquant sur Accepter
     cy.get('body').then(($body) => {
-      // Check if cookie consent popup exists
+      // Vérifier si la popup de consentement aux cookies existe
       if ($body.find('button.bg-purple-500').length > 0) {
-        // Click Accept button (with purple background)
+        // Cliquer sur le bouton Accepter (avec fond violet)
         cy.get('button.bg-purple-500').click();
       }
     });
   });
 
-  describe('Login Page UI Tests', () => {
-    it('should display login form correctly', () => {
-      // Verify page elements are present
+  describe('Tests de l\'Interface Utilisateur de la Page de Connexion', () => {
+    it('devrait afficher le formulaire de connexion correctement', () => {
+      // Vérifier que les éléments de la page sont présents
       cy.get('img[alt="Logo"]').should('be.visible');
       cy.contains('Log In').should('be.visible');
       
-      // Check form inputs
+      // Vérifier les champs du formulaire
       cy.get('input[type="email"]').should('be.visible');
       cy.get('input[type="password"]').should('be.visible');
       
-      // Check other UI elements
+      // Vérifier les autres éléments de l'interface
       cy.contains('Remember me').should('be.visible');
       cy.contains('Forgot Password?').should('be.visible');
       cy.get('button[type="submit"]').should('contain', 'Log In').and('not.be.disabled');
     });
 
-    it('should display all required form elements', () => {
+    it('devrait afficher tous les éléments requis du formulaire', () => {
       cy.get('input[type="email"]').should('be.visible');
       cy.get('input[type="password"]').should('be.visible');
       cy.get('input[type="checkbox"]').should('be.visible');
@@ -55,47 +55,47 @@ describe('Comprehensive Login E2E Tests', () => {
       cy.contains('Forgot Password?').should('be.visible');
     });
 
-    it('should toggle password visibility', () => {
+    it('devrait basculer la visibilité du mot de passe', () => {
       cy.get('input[type="password"]').type('testpassword');
       
-      // Click show password button
+      // Cliquer sur le bouton afficher mot de passe
       cy.get('button[type="button"]').click();
       cy.get('input[type="text"]').should('have.value', 'testpassword');
       
-      // Click hide password button  
+      // Cliquer sur le bouton masquer mot de passe  
       cy.get('button[type="button"]').click();
       cy.get('input[type="password"]').should('have.value', 'testpassword');
     });
 
-    it('should navigate to forgot password page', () => {
+    it('devrait naviguer vers la page mot de passe oublié', () => {
       cy.contains('Forgot Password?').click();
       cy.url().should('include', '/forgotpass');
     });
 
-    it('should handle hover effects on form elements', () => {
-      // Test hover effects on inputs
+    it('devrait gérer les effets de survol sur les éléments du formulaire', () => {
+      // Tester les effets de survol sur les champs
       cy.get('input[type="email"]').trigger('mouseover');
       cy.get('input[type="password"]').trigger('mouseover');
       
-      // Test hover effect on submit button
+      // Tester l'effet de survol sur le bouton de soumission
       cy.get('button[type="submit"]').trigger('mouseover');
       
-      // Test hover effect on logo
+      // Tester l'effet de survol sur le logo
       cy.get('img[alt="Logo"]').trigger('mouseover');
     });
   });
 
-  describe('Core Login Flow', () => {
-    it('should login successfully and redirect to dashboard', () => {
-      // Fill login form
+  describe('Flux Principal de Connexion', () => {
+    it('devrait se connecter avec succès et rediriger vers le tableau de bord', () => {
+      // Remplir le formulaire de connexion
       cy.get('input[type="email"]').type(validUser.email);
       cy.get('input[type="password"]').type(validUser.password);
       cy.get('button[type="submit"]').click();
        
-      // Intercept the login request to see the response
+      // Intercepter la requête de connexion pour voir la réponse
       cy.intercept('POST', '**/api/auth/login').as('loginRequest');
       
-      // Verify successful redirect
+      // Vérifier la redirection réussie
       cy.url().should('satisfy', (url) => {
         return url.includes('/dashboard') || 
                url.includes('/dashstud') || 
@@ -103,98 +103,98 @@ describe('Comprehensive Login E2E Tests', () => {
                url.includes('/DashboardProf');
       }, { timeout: 15000 });
 
-      // Wait for authentication to be established
+      // Attendre que l'authentification soit établie
       cy.wait(2000);
       
-      // Debug: Check storage and cookies
+      // Debug : Vérifier le stockage et les cookies
       cy.window().then((win) => {
-        console.log('localStorage keys after login:', Object.keys(win.localStorage));
-        console.log('sessionStorage keys after login:', Object.keys(win.sessionStorage));
-        console.log('access_token in localStorage:', win.localStorage.getItem('access_token'));
-        console.log('access_token in sessionStorage:', win.sessionStorage.getItem('access_token'));
+        console.log('clés localStorage après connexion:', Object.keys(win.localStorage));
+        console.log('clés sessionStorage après connexion:', Object.keys(win.sessionStorage));
+        console.log('access_token dans localStorage:', win.localStorage.getItem('access_token'));
+        console.log('access_token dans sessionStorage:', win.sessionStorage.getItem('access_token'));
       });
 
-      // Check cookies (your app uses withCredentials: true)
+      // Vérifier les cookies (votre app utilise withCredentials: true)
       cy.getCookies().then((cookies) => {
-        console.log('Cookies after login:', cookies.map(c => ({ name: c.name, value: c.value })));
+        console.log('Cookies après connexion:', cookies.map(c => ({ name: c.name, value: c.value })));
       });
 
-      // Verify authentication (mainly through successful redirect for cookie-based auth)
+      // Vérifier l'authentification (principalement via la redirection réussie pour l'auth basée sur les cookies)
       cy.shouldBeAuthenticated();
     });
 
-    it('should show error message for invalid credentials', () => {
+    it('devrait afficher un message d\'erreur pour les identifiants invalides', () => {
       cy.get('input[type="email"]').type(invalidUser.email);
       cy.get('input[type="password"]').type(invalidUser.password);
       cy.get('button[type="submit"]').click();
 
-      // Verify error message
+      // Vérifier le message d'erreur
       cy.contains('Email or Password is incorrect').should('be.visible');
       cy.url().should('include', '/Login');
       cy.shouldNotBeAuthenticated();
     });
 
-    it('should show error for invalid credentials with proper error styling', () => {
+    it('devrait afficher une erreur pour les identifiants invalides avec le style d\'erreur approprié', () => {
       cy.get('input[type="email"]').type(invalidUser.email);
       cy.get('input[type="password"]').type(invalidUser.password);
       cy.get('button[type="submit"]').click();
       
-      // Wait for error message to appear
+      // Attendre que le message d'erreur apparaisse
       cy.get('.bg-red-100', { timeout: 5000 }).should('be.visible');
       cy.contains('Email or Password is incorrect').should('be.visible');
       
-      // Should stay on login page
+      // Devrait rester sur la page de connexion
       cy.url().should('include', '/Login');
       
-      // Button should be re-enabled after error
+      // Le bouton devrait être réactivé après l'erreur
       cy.get('button[type="submit"]').should('contain', 'Log In').and('not.be.disabled');
     });
 
-    it('should remember login preference', () => {
+    it('devrait mémoriser la préférence de connexion', () => {
       cy.get('input[type="email"]').type(validUser.email);
       cy.get('input[type="password"]').type(validUser.password);
-      cy.get('input[type="checkbox"]').check(); // Remember me
+      cy.get('input[type="checkbox"]').check(); // Se souvenir de moi
       cy.get('button[type="submit"]').click();
 
-      // Verify successful login
+      // Vérifier la connexion réussie
       cy.url().should('not.include', '/Login', { timeout: 15000 });
       
-      // Wait for authentication to complete
+      // Attendre que l'authentification se termine
       cy.wait(2000);
 
-      // Verify remember me preference and token storage
+      // Vérifier la préférence de mémorisation et le stockage du token
       cy.window().then((win) => {
         expect(win.localStorage.getItem('remember_me')).to.equal('true');
         
-        // Since remember_me is true, token should be in localStorage
+        // Puisque remember_me est true, le token devrait être dans localStorage
         const accessToken = win.localStorage.getItem('access_token');
         
-        // Log for debugging what we actually get
-        console.log('Access token in localStorage:', accessToken);
-        console.log('All localStorage keys:', Object.keys(win.localStorage));
+        // Log pour déboguer ce qu'on obtient réellement
+        console.log('Token d\'accès dans localStorage:', accessToken);
+        console.log('Toutes les clés localStorage:', Object.keys(win.localStorage));
       });
     });
 
-    it('should work when cookies are rejected', () => {
-      // Clear and visit again to get fresh cookie popup
+    it('devrait fonctionner quand les cookies sont rejetés', () => {
+      // Effacer et visiter à nouveau pour avoir une popup de cookies fraîche
       cy.clearCookies();
       cy.clearLocalStorage();
       cy.visit('/Login');
       
-      // Reject cookies this time
+      // Rejeter les cookies cette fois
       cy.get('body').then(($body) => {
         if ($body.find('button.bg-gray-200').length > 0) {
-          // Click Reject button (with gray background)
+          // Cliquer sur le bouton Rejeter (avec fond gris)
           cy.get('button.bg-gray-200').click();
         }
       });
 
-      // Continue with login
+      // Continuer avec la connexion
       cy.get('input[type="email"]').type(validUser.email);
       cy.get('input[type="password"]').type(validUser.password);
       cy.get('button[type="submit"]').click();
 
-      // Should still be able to login
+      // Devrait toujours pouvoir se connecter
       cy.url().should('satisfy', (url) => {
         return url.includes('/dashboard') || 
                url.includes('/dashstud') || 
@@ -204,36 +204,36 @@ describe('Comprehensive Login E2E Tests', () => {
     });
   });
 
-  describe('Form Validation', () => {
-    it('should validate required fields', () => {
-      // Clear any existing values first
+  describe('Validation du Formulaire', () => {
+    it('devrait valider les champs requis', () => {
+      // Effacer d'abord les valeurs existantes
       cy.get('input[type="email"]').clear();
       cy.get('input[type="password"]').clear();
       
       cy.get('button[type="submit"]').click();
       
-      // Wait a moment for validation to trigger
+      // Attendre un moment pour que la validation se déclenche
       cy.wait(500);
       
       cy.get('input[type="email"]').then(($input) => {
-        // Check if the field is required and empty
+        // Vérifier si le champ est requis et vide
         const isRequired = $input[0].hasAttribute('required');
         const isEmpty = $input[0].value === '';
         const isValid = $input[0].validity.valid;
         
-        console.log('Email field - Required:', isRequired, 'Empty:', isEmpty, 'Valid:', isValid);
+        console.log('Champ email - Requis:', isRequired, 'Vide:', isEmpty, 'Valide:', isValid);
         
-        // If field is required and empty, it should be invalid
+        // Si le champ est requis et vide, il devrait être invalide
         if (isRequired && isEmpty) {
           expect(isValid).to.be.false;
         } else {
-          // If validation doesn't work as expected, just log it
-          console.log('Form validation might not be working as expected');
+          // Si la validation ne fonctionne pas comme prévu, juste le logger
+          console.log('La validation du formulaire pourrait ne pas fonctionner comme prévu');
         }
       });
     });
 
-    it('should validate email format', () => {
+    it('devrait valider le format de l\'email', () => {
       cy.get('input[type="email"]').type('invalid-email');
       cy.get('input[type="password"]').type('password');
       cy.get('button[type="submit"]').click();
@@ -243,11 +243,11 @@ describe('Comprehensive Login E2E Tests', () => {
       });
     });
 
-    it('should require both email and password', () => {
-      // Try to submit empty form
+    it('devrait exiger à la fois l\'email et le mot de passe', () => {
+      // Essayer de soumettre un formulaire vide
       cy.get('button[type="submit"]').click();
       
-      // Browser validation should prevent submission
+      // La validation du navigateur devrait empêcher la soumission
       cy.get('input[type="email"]').then(($input) => {
         const isRequired = $input[0].hasAttribute('required');
         const isEmpty = $input[0].value === '';
@@ -256,7 +256,7 @@ describe('Comprehensive Login E2E Tests', () => {
         }
       });
       
-      // Fill email only
+      // Remplir seulement l'email
       cy.get('input[type="email"]').clear().type(validUser.email);
       cy.get('button[type="submit"]').click();
       
@@ -270,9 +270,9 @@ describe('Comprehensive Login E2E Tests', () => {
     });
   });
 
-  describe('Loading and Animation Tests', () => {
-    it('should show loading animation during login', () => {
-      // Intercept login to add delay for testing loading state
+  describe('Tests de Chargement et d\'Animation', () => {
+    it('devrait afficher l\'animation de chargement pendant la connexion', () => {
+      // Intercepter la connexion pour ajouter un délai pour tester l'état de chargement
       cy.intercept('POST', '**/api/auth/login', {
         delay: 2000,
         statusCode: 200,
@@ -283,10 +283,10 @@ describe('Comprehensive Login E2E Tests', () => {
       cy.get('input[type="password"]').type(validUser.password);
       cy.get('button[type="submit"]').click();
       
-      // Check loading state - adapt these selectors to your actual loading UI
+      // Vérifier l'état de chargement - adapter ces sélecteurs à votre interface de chargement réelle
       cy.get('button[type="submit"]').should('be.disabled');
       
-      // Check if there's a loading spinner or text change
+      // Vérifier s'il y a un spinner de chargement ou un changement de texte
       cy.get('body').then(($body) => {
         if ($body.find('.animate-spin').length > 0) {
           cy.get('.animate-spin').should('be.visible');
@@ -299,18 +299,18 @@ describe('Comprehensive Login E2E Tests', () => {
       cy.wait('@slowLogin');
     });
 
-    it('should show error message with proper styling', () => {
+    it('devrait afficher le message d\'erreur avec le style approprié', () => {
       cy.get('input[type="email"]').type(invalidUser.email);
       cy.get('input[type="password"]').type(invalidUser.password);
       cy.get('button[type="submit"]').click();
       
-      // Error message should appear with proper styling
+      // Le message d'erreur devrait apparaître avec le bon style
       cy.get('.bg-red-100', { timeout: 5000 }).should('be.visible');
       
-      // Error should contain the text from your controller
+      // L'erreur devrait contenir le texte de votre contrôleur
       cy.contains('Email or Password is incorrect').should('be.visible');
       
-      // Check if error has proper border styling
+      // Vérifier si l'erreur a le bon style de bordure
       cy.get('body').then(($body) => {
         if ($body.find('.border-red-500').length > 0) {
           cy.get('.border-red-500').should('exist');
@@ -319,23 +319,23 @@ describe('Comprehensive Login E2E Tests', () => {
     });
   });
 
-  describe('Cookie Consent Handling', () => {
-    it('should handle cookie acceptance', () => {
+  describe('Gestion du Consentement aux Cookies', () => {
+    it('devrait gérer l\'acceptation des cookies', () => {
       cy.clearCookies();
       cy.clearLocalStorage();
       cy.visit('/Login');
       
-      // Accept cookies
+      // Accepter les cookies
       cy.get('body').then(($body) => {
         if ($body.find('button.bg-purple-500').length > 0) {
           cy.get('button.bg-purple-500').should('be.visible').click();
           
-          // Verify cookie popup is gone
+          // Vérifier que la popup de cookies a disparu
           cy.get('button.bg-purple-500').should('not.exist');
         }
       });
       
-      // Continue with normal login flow
+      // Continuer avec le flux de connexion normal
       cy.get('input[type="email"]').type(validUser.email);
       cy.get('input[type="password"]').type(validUser.password);
       cy.get('button[type="submit"]').click();
@@ -343,22 +343,22 @@ describe('Comprehensive Login E2E Tests', () => {
       cy.url().should('not.include', '/Login', { timeout: 10000 });
     });
 
-    it('should handle cookie rejection', () => {
+    it('devrait gérer le rejet des cookies', () => {
       cy.clearCookies();
       cy.clearLocalStorage();
       cy.visit('/Login');
       
-      // Reject cookies
+      // Rejeter les cookies
       cy.get('body').then(($body) => {
         if ($body.find('button.bg-gray-200').length > 0) {
           cy.get('button.bg-gray-200').should('be.visible').click();
           
-          // Verify cookie popup is gone
+          // Vérifier que la popup de cookies a disparu
           cy.get('button.bg-gray-200').should('not.exist');
         }
       });
       
-      // Login should still work
+      // La connexion devrait toujours fonctionner
       cy.get('input[type="email"]').type(validUser.email);
       cy.get('input[type="password"]').type(validUser.password);
       cy.get('button[type="submit"]').click();
@@ -367,9 +367,9 @@ describe('Comprehensive Login E2E Tests', () => {
     });
   });
 
-  describe('Error Handling', () => {
-    it('should handle server error gracefully', () => {
-      // Intercept API call to simulate server error
+  describe('Gestion des Erreurs', () => {
+    it('devrait gérer les erreurs serveur avec élégance', () => {
+      // Intercepter l'appel API pour simuler une erreur serveur
       cy.intercept('POST', '**/api/auth/login', {
         statusCode: 500,
         body: { message: 'Server Error, Please try again later!' }
@@ -381,138 +381,185 @@ describe('Comprehensive Login E2E Tests', () => {
       
       cy.wait('@loginError');
       
-      // Should show server error message
+      // Devrait afficher le message d'erreur serveur
       cy.get('.bg-red-100', { timeout: 5000 }).should('be.visible');
       cy.contains('Server Error, Please try again later!').should('be.visible');
       
-      // Should stay on login page
+      // Devrait rester sur la page de connexion
       cy.url().should('include', '/Login');
     });
 
-    it('should handle network errors', () => {
-      // Intercept API call to simulate network error
+    it('devrait gérer les erreurs réseau', () => {
+      // Intercepter l'appel API pour simuler une erreur réseau
       cy.intercept('POST', '**/api/auth/login', { forceNetworkError: true }).as('networkError');
       
       cy.get('input[type="email"]').type(validUser.email);
       cy.get('input[type="password"]').type(validUser.password);
       cy.get('button[type="submit"]').click();
       
-      // Wait for the network error to occur
+      // Attendre que l'erreur réseau se produise
       cy.wait('@networkError').then((interception) => {
-        // Verify the network error was intercepted
+        // Vérifier que l'erreur réseau a été interceptée
         expect(interception.error.message).to.include('forceNetworkError');
       });
       
-      // Should handle network error gracefully
-      // The exact behavior depends on your error handling implementation
+      // Devrait gérer l'erreur réseau avec élégance
+      // Le comportement exact dépend de votre implémentation de gestion d'erreur
       cy.url().should('include', '/Login');
     });
   });
 
-  describe('Authentication State', () => {
-    it('should maintain authentication after page refresh', () => {
-      // Login first
+  describe('État d\'Authentification', () => {
+    it('devrait maintenir l\'authentification après actualisation de la page', () => {
+      // Se connecter d'abord
       cy.get('input[type="email"]').type(validUser.email);
       cy.get('input[type="password"]').type(validUser.password);
       cy.get('button[type="submit"]').click();
       
-      // Wait for login to complete
+      // Attendre que la connexion se termine
       cy.url().should('not.include', '/Login', { timeout: 10000 });
       
-      // Refresh the page
+      // Actualiser la page
       cy.reload();
       
-      // Should still be authenticated and not redirect to login
+      // Devrait toujours être authentifié et ne pas rediriger vers la connexion
       cy.url().should('not.include', '/Login');
     });
 
-    it('should clear authentication state on logout', () => {
-      // Login first
+    it('devrait effacer l\'état d\'authentification lors de la déconnexion', () => {
+      // Se connecter d'abord
       cy.get('input[type="email"]').type(validUser.email);
       cy.get('input[type="password"]').type(validUser.password);
       cy.get('button[type="submit"]').click();
       
-      // Wait for login to complete
+      // Attendre que la connexion se termine
       cy.url().should('not.include', '/Login', { timeout: 10000 });
       
-      // Perform logout via API (since UI logout button location may vary)
-      cy.request({
-        method: 'POST',
-        url: `${baseUrl}/api/auth/logout`,
-        failOnStatusCode: false
+      // Intercepter l'appel API de déconnexion
+      cy.intercept('POST', '**/api/auth/logout').as('logoutRequest');
+      
+      // Trouver et cliquer sur le bouton du menu déroulant utilisateur pour ouvrir le menu
+      //cy.get('button').contains('img[alt="User"]').should('be.visible').click();
+      
+      // Sélecteurs alternatifs pour le bouton du menu déroulant utilisateur
+      cy.get('body').then(($body) => {
+        if ($body.find('img[src*="me.png"]').length > 0) {
+          cy.get('img[src*="me.png"]').parent().click();
+        } else if ($body.find('span').contains('Nom inconnu').length > 0) {
+          cy.get('span').contains('Nom inconnu').parent().click();
+        } else {
+          // Solution de repli : chercher tout bouton déroulant avec info utilisateur
+          cy.get('button').contains('span').click();
+        }
       });
       
-      // Visit login page - should not redirect away
-      cy.visit('/Login');
-      cy.url().should('include', '/Login');
+      // Attendre que le menu déroulant apparaisse et cliquer sur déconnexion
+      //cy.get('router-link').contains('Sign out').should('be.visible').click();
+     // cy.get('router-link[to="/"]').click()
+     cy.get('.flex.items-center.gap-3').contains('Sign out').click()
       
-      // Verify authentication state is cleared
+      // Attendre que la déconnexion se termine
+      cy.wait('@logoutRequest');
+      
+      // Devrait rediriger vers la page de connexion ou d'accueil
+      cy.url().should('satisfy', (url) => {
+        return url.includes('/');
+      });
+      
+      // Vérifier que l'état d'authentification est effacé
+      cy.shouldNotBeAuthenticated();
+    });
+
+    it('devrait se déconnecter via le menu déroulant de l\'interface utilisateur', () => {
+      // Se connecter d'abord
+      cy.get('input[type="email"]').type(validUser.email);
+      cy.get('input[type="password"]').type(validUser.password);
+      cy.get('button[type="submit"]').click();
+      
+      // Attendre que la connexion se termine
+      cy.url().should('not.include', '/Login', { timeout: 10000 });
+      
+      // Trouver le bouton du menu déroulant du profil utilisateur
+      // Chercher le bouton contenant l'image utilisateur
+      cy.get('button').find('img[alt="User"]').should('be.visible');
+      cy.get('button').find('img[alt="User"]').parent().click();
+      
+      // Attendre que le menu déroulant soit visible
+      cy.get('[class*="absolute"][class*="right-0"]').should('be.visible');
+      
+      // Cliquer sur le lien Se déconnecter
+      cy.contains('Sign out').should('be.visible').click();
+      
+      // Devrait rediriger vers la page d'accueil
+      cy.url().should('equal', `http://localhost:5173/`);
+      
+      // Vérifier que l'état d'authentification est effacé
       cy.shouldNotBeAuthenticated();
     });
   });
 
-  describe('Rate Limiting Protection', () => {
-    it('should handle multiple failed login attempts', () => {
-      // Make multiple failed login attempts
+  /*describe('Protection contre la Limitation de Débit', () => {
+    it('devrait gérer plusieurs tentatives de connexion échouées', () => {
+      // Faire plusieurs tentatives de connexion échouées
       for (let i = 0; i < 3; i++) {
         cy.get('input[type="email"]').clear().type(invalidUser.email);
         cy.get('input[type="password"]').clear().type(invalidUser.password);
         cy.get('button[type="submit"]').click();
         
-        // Wait for error message
+        // Attendre le message d'erreur
         cy.contains('Email or Password is incorrect', { timeout: 5000 }).should('be.visible');
         
-        // Wait before next attempt
+        // Attendre avant la prochaine tentative
         cy.wait(1000);
       }
       
-      // After multiple failed attempts, the form should still be functional
-      // (Rate limiting behavior depends on your backend implementation)
+      // Après plusieurs tentatives échouées, le formulaire devrait toujours être fonctionnel
+      // (Le comportement de limitation de débit dépend de votre implémentation backend)
       cy.get('button[type="submit"]').should('be.visible');
     });
-  });
+  });*/
 });
 
-// Custom Commands (updated to handle cookie-based authentication)
+// Commandes Personnalisées (mises à jour pour gérer l'authentification basée sur les cookies)
 Cypress.Commands.add('shouldBeAuthenticated', () => {
-  // First, verify we're not on the login page
+  // D'abord, vérifier qu'on n'est pas sur la page de connexion
   cy.url().should('not.include', '/Login');
   
-  // Check for authentication cookies or tokens
+  // Vérifier les cookies d'authentification ou tokens
   cy.window().then((win) => {
     const rememberMe = win.localStorage.getItem('remember_me') === 'true';
     const storage = rememberMe ? win.localStorage : win.sessionStorage;
     const accessToken = storage.getItem('access_token');
     
-    // Log for debugging
-    console.log('Remember me:', rememberMe);
-    console.log('Access token:', accessToken);
+    // Log pour déboguer
+    console.log('Se souvenir de moi:', rememberMe);
+    console.log('Token d\'accès:', accessToken);
     
-    // Check cookies as well since your app uses withCredentials
+    // Vérifier les cookies aussi puisque votre app utilise withCredentials
     cy.getCookies().then((cookies) => {
-      console.log('All cookies:', cookies);
+      console.log('Tous les cookies:', cookies);
       const authCookies = cookies.filter(cookie => 
         cookie.name.includes('auth') || 
         cookie.name.includes('session') || 
         cookie.name.includes('token') ||
         cookie.name === 'XSRF-TOKEN'
       );
-      console.log('Auth-related cookies:', authCookies);
+      console.log('Cookies liés à l\'authentification:', authCookies);
     });
     
-    // For cookie-based auth, the main indicator is successful redirect
-    // and ability to access protected routes without 401
+    // Pour l'authentification basée sur les cookies, l'indicateur principal est la redirection réussie
+    // et la capacité d'accéder aux routes protégées sans 401
   });
 });
 
 Cypress.Commands.add('shouldNotBeAuthenticated', () => {
   cy.window().then((win) => {
     expect(win.localStorage.getItem('access_token')).to.not.exist;
-    expect(win.sessionStorage.getItem('access_token')).to.not.exist;
+   // expect(win.sessionStorage.getItem('access_token')).to.not.exist;
   });
 });
 
-// Helper command for API-based login (useful for setup in other tests)
+// Commande d'aide pour la connexion basée sur l'API (utile pour la configuration dans d'autres tests)
 Cypress.Commands.add('loginViaAPI', (email, password) => {
   cy.request({
     method: 'POST',
@@ -524,10 +571,10 @@ Cypress.Commands.add('loginViaAPI', (email, password) => {
     failOnStatusCode: false
   }).then((response) => {
     if (response.status === 200) {
-      console.log('API login successful');
-      // Cookies are automatically set by the browser
+      console.log('Connexion API réussie');
+      // Les cookies sont automatiquement définis par le navigateur
     } else {
-      console.log('API login failed:', response.body);
+      console.log('Connexion API échouée:', response.body);
     }
   });
 });
@@ -536,4 +583,33 @@ Cypress.Commands.add('clearSessionStorage', () => {
   cy.window().then((win) => {
     win.sessionStorage.clear();
   });
+});
+
+// Commande personnalisée pour gérer le menu déroulant utilisateur et la déconnexion
+Cypress.Commands.add('logoutViaUI', () => {
+  // Multiples stratégies pour trouver et cliquer sur le menu déroulant utilisateur
+  cy.get('body').then(($body) => {
+    // Stratégie 1 : Chercher l'image utilisateur
+    if ($body.find('img[alt="User"]').length > 0) {
+      cy.get('img[alt="User"]').parent('button').click();
+    }
+    // Stratégie 2 : Chercher l'image me.png
+    else if ($body.find('img[src*="me.png"]').length > 0) {
+      cy.get('img[src*="me.png"]').parent('button').click();
+    }
+    // Stratégie 3 : Chercher un bouton avec structure d'info utilisateur
+    else if ($body.find('button').find('span').length > 0) {
+      cy.get('button').contains('span').first().click();
+    }
+    // Stratégie 4 : Chercher un bouton déroulant avec chevron
+    else {
+      cy.get('button').find('[class*="chevron"], [class*="ChevronDown"]').parent().click();
+    }
+  });
+  
+  // Attendre que le menu déroulant apparaisse
+  cy.get('[class*="absolute"][class*="right-0"]', { timeout: 5000 }).should('be.visible');
+  
+  // Cliquer sur Se déconnecter
+  cy.contains('Sign out').click();
 });

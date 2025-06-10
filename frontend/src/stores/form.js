@@ -23,7 +23,7 @@ export const useFormStore = defineStore('form', () => {
     try {
       const res = await api.post(endpoint, data)
       success.value = 'Submitted successfully'
-      errors.value=null;
+      errors.value={};
       if (onSuccess) onSuccess(res.data)
     } catch (err) {
       error.value = err.response?.data?.message || err.response?.data?.error || "Couldn't submit the form. Please retry again later"
@@ -45,7 +45,7 @@ async function Update(endpoint, data, onSuccess = null) {
     try {
       const res = await api.patch(endpoint, data)
       success.value = 'Submitted successfully'
-      errors.value=null;
+      errors.value={};
       if (onSuccess) onSuccess(res.data)
     } catch (err) {
       error.value = err.response?.data?.message || err.response?.data?.error || "Couldn't submit the form. Please retry again later"
