@@ -1,9 +1,9 @@
 1<template>
   <StudentLayout>
   
-  <h1 class="text-3xl font-bold text-gray-900 mb-7">
-    Good to see you again <span class="uppercase">user name</span>
-    <span class="text-xl font-medium text-gray-500">
+  <h1 class="text-3xl font-bold dark:text-white text-gray-900 mb-7">
+    Good to see you again <span class="uppercase">{{username}}</span>
+    <span class="text-xl font-medium dark:text-white text-gray-500">
       , Here’s what’s happening this month:
     </span>
     
@@ -18,6 +18,20 @@
       <div class="col-span-12 xl:col-span-5 space-y-15">
         <CompletionRate />
       </div>
+  </div>
+
+  <div class="mb-20 grid grid-cols-12 gap-4 md:gap-6">
+  <!-- Left column: 6/12 -->
+      <div class="col-span-12 xl:col-span-6 space-y-15">
+        <FirstChart />
+      </div>
+
+        <!-- Right column: 6/12 -->
+        <div class="col-span-12 xl:col-span-6 space-y-15">
+          <SecondChart/>
+        </div>
+
+ 
   </div>
 
   
@@ -42,7 +56,7 @@ import Cards from '@/components/MenuStudent/dashStudent/Cards.vue'
 import EvalByRole from './EvalByRole.vue'
 import RatingSkill from './RatingSkill.vue'
 
-
+import { ref, onMounted } from 'vue'
 export default {
   components: {
     Cards,
@@ -54,5 +68,15 @@ export default {
     RatingSkill
   },
   name: 'Ecommerce',
+
+  setup() {
+    const username = ref('');
+
+    onMounted(() => {
+      username.value = localStorage.getItem('username') || 'Nom inconnu';
+    });
+
+    return { username };
+  }
 }
 </script>

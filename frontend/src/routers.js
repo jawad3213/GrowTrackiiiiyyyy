@@ -226,6 +226,7 @@ const routes = [
         name : "GeneratePdf",
         component : GeneratePdf,
         path : "/gen",
+        meta :{role: 'Professor'}
     },
     
 {

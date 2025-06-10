@@ -78,7 +78,6 @@
                        hover:bg-gray-50 dark:hover:bg-gray-700
                        transition-colors duration-150"
               >
-                <!-- Full Name with letter-avatar -->
                 <td class="py-3 px-4 text-gray-800 dark:text-gray-100">
                   <div class="flex items-center space-x-3">
                     <div
@@ -112,20 +111,27 @@
                 <td class="py-3 px-4 text-gray-800 dark:text-gray-100">
                   {{ student.id_sector }}
                 </td>
-                <td class="py-3 px-4 flex justify-center space-x-4">
+
+                <!-- Actions Column -->
+                <td class="py-3 px-4 flex justify-center items-center space-x-4">
                   <!-- Edit -->
                   <router-link
                     :to="`/AddStudent/${student.cin}`"
                     class="text-blue-500 hover:text-blue-700 transform hover:scale-110 transition-transform duration-150"
                   >
-                    <!-- SVG edit icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536M4 17.25V21h3.75l11.064-11.064-3.75-3.75L4 17.25z"/>
+                    </svg>
                   </router-link>
+
                   <!-- Delete -->
                   <router-link
                     :to="`/DeleteStudent/${student.id_member}`"
                     class="text-red-500 hover:text-red-700 transform hover:scale-110 transition-transform duration-150"
                   >
-                    <!-- SVG delete icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" fill="#EA3323">
+                      <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/>
+                    </svg>
                   </router-link>
                 </td>
               </tr>
@@ -153,7 +159,7 @@
             </button>
           </router-link>
         </div>
-        
+
       </main>
     </div>
   </admin-layout>

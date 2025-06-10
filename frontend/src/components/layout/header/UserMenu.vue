@@ -8,7 +8,7 @@
         <img src="@/assets/me.png" alt="User" />
       </span>
 
-      <span class="block mr-1 font-medium text-theme-sm">Soukaina </span>
+      <span class="block mr-1 font-medium text-theme-sm"> {{username}} </span>
 
       <ChevronDownIcon :class="{ 'rotate-180': dropdownOpen }" />
     </button>
@@ -19,12 +19,18 @@
       class="absolute right-0 mt-[17px] flex w-[260px] flex-col rounded-2xl border border-gray-200 bg-white p-3 shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark"
     >
       <div>
-        <span class="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
-          Soukaina elouansaidi
-        </span>
         <span class="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
-          elouansaidi@test.com
+          {{ email }}
         </span>
+
+        <span class="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
+          {{ role }}
+        </span>
+
+        <span class="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
+          {{ desc }}
+        </span>
+
       </div>
 
       <ul class="flex flex-col gap-1 pt-4 pb-3 border-b border-gray-200 dark:border-gray-800">
@@ -66,8 +72,31 @@ import { useAuthStore } from '../../../stores/auth'
 const store = useAuthStore()
 const router = useRouter()
 
+
+
+// const cin = store.CIN;
+// const desc = store.Description;
+
+console.log(store.CIN);
+console.log(store.Description);
+
 const dropdownOpen = ref(false)
 const dropdownRef = ref(null)
+
+const email = ref('')
+const username = ref('') 
+const role = ref('')
+onMounted(() => {
+  username.value = localStorage.getItem('username') || 'Nom inconnu'
+})
+
+onMounted(() => {
+  email.value = localStorage.getItem('email') || 'Nom inconnu'
+})
+
+onMounted(() => {
+  role.value = localStorage.getItem('role') || 'Nom inconnu'
+})
 
 const menuItems = [
   { href: '/UserProfile', icon: UserCircleIcon, text: 'Edit profile' },
@@ -102,6 +131,7 @@ const handleClickOutside = (event) => {
 
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)
+   
 })
 
 onUnmounted(() => {

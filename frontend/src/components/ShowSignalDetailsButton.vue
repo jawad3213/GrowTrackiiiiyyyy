@@ -83,13 +83,21 @@
             <form @submit.prevent="submitForm" class="space-y-4">
               <div>
                 <label class="block font-medium mb-1">Option Solution</label>
-                <input
+                <!-- Dropdown for Option Solution -->
+                <select
                   v-model="form.option_solution"
-                  type="text"
                   required
                   class="w-full border rounded px-3 py-2"
-                />
+                >
+                  <option value="Tutoring Session">Tutoring Session</option>
+                  <option value="Therapy Session">Therapy Session</option>
+                  <option value="Personalized Follow-Up">Personalized Follow-Up</option>
+                  <option value="Psychopedagogical Interview">Psychopedagogical Interview</option>
+                  <option value="Mediation">Mediation</option>
+                  <option value="Personal Development Workshop">Personal Development Workshop</option>
+                </select>
               </div>
+
               <div>
                 <label class="block font-medium mb-1">Details</label>
                 <textarea
@@ -98,15 +106,21 @@
                   class="w-full border rounded px-3 py-2"
                 ></textarea>
               </div>
+
               <div>
                 <label class="block font-medium mb-1">Coach Name</label>
-                <input
+                <!-- Dropdown for Coach Name -->
+                <select
                   v-model="form.name_coach"
-                  type="text"
                   required
                   class="w-full border rounded px-3 py-2"
-                />
+                >
+                  <option value="Amal Fassi">Amal Fassi</option>
+                  <option value="Tariq Benjelloun">Tariq Benjelloun</option>
+                  <option value="Houda Bekkali">Houda Bekkali</option>
+                </select>
               </div>
+
               <div class="grid grid-cols-2 gap-4">
                 <div>
                   <label class="block font-medium mb-1">Start Date</label>
@@ -127,6 +141,7 @@
                   />
                 </div>
               </div>
+
               <div class="pt-4 flex space-x-4">
                 <button
                   type="button"

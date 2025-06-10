@@ -4,7 +4,7 @@
       <h1 class="text-2xl font-bold flex items-center space-x-2 text-gray-800 dark:text-white">
     <span>Evaluations History</span>
     <span class="bg-purple-100 text-purple-600 text-sm font-semibold px-3 py-1 rounded-full dark:bg-purple-200/10 dark:text-purple-300">
-      {{ avaluations.length }} evaluations(month)
+      <!-- {{ avaluations.length }} evaluations(month) -->
     </span>
   </h1>
   

@@ -119,7 +119,12 @@ import sara from '../assets/personal/sara.jpg'
 import soukaina from '../assets/personal/soukaina.jpg'
 import nada from '../assets/personal/nada.jpg'
 import nour from '../assets/personal/nour.png'
+import ihssan from '../assets/personal/ihssane.png'
+import salman from '../assets/personal/salman.jpg'
+import rim from '../assets/personal/rim.jpg'
 import mosab from '../assets/personal/mosab.jpg'
+import hamza from '../assets/personal/hamza.jpg'
+
 
 
 export default {
@@ -135,8 +140,8 @@ export default {
         {
           name: 'Fairadi Ihssane',
           position: 'Project Manager',
-          bio: 'Passionate about project management and team collaboration.',
-          image: 'jaouad',
+          bio: 'Committed to team coordination and collective success.',
+          image: ihssan,
           linkedin: 'https://linkedin.com/in/oliviarhye',
         },
         {
@@ -169,9 +174,9 @@ export default {
         },
         {
           name: 'El Ghrich Salman',
-          position: 'Product Designer',
-          bio: 'Équipe fondatrice design chez Figma. Ancienne Pleo, Stripe, Tile.',
-          image: '/images/team/natali.jpg',
+          position: 'Security Specialist',
+          bio: 'Ensured application security across both Front-end and Back-end layers.',
+          image: salman,
           linkedin: 'https://linkedin.com/in/natalicraig',
         },
         {
@@ -186,7 +191,7 @@ export default {
           name: 'Kaddoura Hamza',
           position: 'Backend Developer',
           bio: 'Secure, scalable Node.js/Express/PostgreSQL APIs.',
-          image: '/images/team/orlando.jpg',
+          image: hamza,
           linkedin: 'https://linkedin.com/in/orlandodiggs',
           
         },
@@ -200,9 +205,9 @@ export default {
         },
         {
           name: 'El Ibrahimi Rim',
-          position: 'Customer Success',
-          bio: 'CI/CD and Deployment Responsible',
-          image: '/images/team/orlando.jpg',
+          position: 'Frontend and Backend Tester',
+          bio: 'Helping the team deliver high-quality software through thorough testing and quality assurance',
+          image: rim,
           linkedin: 'https://linkedin.com/in/orlandodiggs',
           
         }

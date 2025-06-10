@@ -1,131 +1,178 @@
 <template>
-    <StudentLayout>
-    <div class="p-6 min-h-screen bg-gray-50 dark:bg-[#121212]">
-      <h1 class="text-2xl font-bold flex items-center space-x-2 text-gray-800 dark:text-white">
-    <span>Projects</span>
-    <span class="bg-purple-100 text-purple-600 text-sm font-semibold px-3 py-1 rounded-full dark:bg-purple-200/10 dark:text-purple-300">
-      {{ projects.length }} projects
-    </span>
-  </h1>
-  
-       <!-- Recherche  -->
-        <div class="flex items-center gap-3 mt-6">
-          <div class="relative w-[400px]">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 dark:text-white/30">🔍</span>
-            <input
-              type="text"
-              v-model="search"
-              placeholder="Search "
-              class="h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 pl-10 pr-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-[#692CF3] focus:outline-none focus:ring-2 focus:ring-[#692CF3]/30 hover:border-[#692CF3] transition-colors duration-200 dark:border-gray-800 dark:bg-gray-900 dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-[#692CF3]"
-            />
+  <StudentLayout>
+    <!-- Section d’introduction stylée -->
+    <section class="bg-white dark:bg-gray-900">
+      <div class="w-full flex items-center justify-between px-20 py-10 bg-white dark:bg-gray-900">
+        <h2 class="text-4xl font-bold text-gray-900 dark:text-gray-100">
+          My Projects 
+        </h2>
+
+        <!-- Bouton en haut-droite -->
+        </div>
+
+      
+
+      <!-- Loader avant le chargement des projets -->
+      <div v-if="loading" class="flex justify-center items-center py-16">
+        <div class="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+
+      <!-- Grille de cartes de projets (affichée seulement quand loading est false) -->
+      <div v-else class="mt-8 max-w-6xl mx-auto px-4">
+        <div v-if="projects.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div
+            v-for="project in projects"
+            :key="project.id_project"
+            class="relative group"
+          >
+            <div
+              class="absolute inset-0 bg-gradient-to-r from-indigo-500 via-pink-500 to-yellow-400
+                     rounded-lg opacity-0 filter blur-lg transition-all duration-1000
+                     group-hover:opacity-60 group-hover:duration-200"
+            ></div>
+
+            <!-- Contenu de la carte -->
+            <div
+              @click="goToProject(project.id_project)"
+              class="relative bg-gray-50 dark:bg-gray-800 rounded-lg p-6 cursor-pointer
+                     hover:shadow-lg transition-shadow duration-200"
+            >
+              <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                 {{ project.name_project }}
+              </h3>
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Project ID: {{ project.id_project }}
+              </p>
+
+              <div class="mt-4 space-y-2 text-sm">
+                <p>
+                  <span class="font-semibold">Professor:</span>
+                  <span class="text-gray-700 dark:text-gray-300">{{ project.professor_name }}</span>
+                </p>
+                <p>
+                  <span class="font-semibold">Module:</span>
+                  <span class="text-gray-700 dark:text-gray-300">{{ project.module }}</span>
+                </p>
+                <p>
+                  <span class="font-semibold">Team:</span>
+                  <span class="text-gray-700 dark:text-gray-300">{{ project.team_name }}</span>
+                </p>
+                <p>
+                  <span class="font-semibold">Deadline:</span>
+                  <span class="text-gray-700 dark:text-gray-300">{{ formatDate(project.deadline) }}</span>
+                </p>
+              </div>
+
+              <div class="mt-4 flex justify-end space-x-4">
+                <button
+                  @click.stop="editProject(project)"
+                  class="text-blue-500 hover:text-blue-700"
+                  title="Edit"
+                >✏️</button>
+                <button
+                  @click.stop="confirmDelete(project.id_project)"
+                  class="text-red-500 hover:text-red-700"
+                  title="Delete"
+                >🗑️</button>
+              </div>
+            </div>
           </div>
         </div>
-  
-      <!-- Table -->
-      <div class="overflow-x-auto">
-        <table class="w-full bg-white dark:bg-gray-900 shadow rounded text-sm">
-          <thead class="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 font-semibold">
-            <tr>
-                <th class="text-left p-3">Project Name</th>
-                <th class="text-left p-3">Professor Name</th>
-                <th class="text-left p-3">Module Name</th>
-                <th class="text-left p-3">Groupe Name</th>
-                <th class="text-left p-3">Members</th>
-            </tr>
-          </thead>
-          <tbody>
-            <template v-for="project in filteredProjects" :key="project.id_project">
-              <tr class="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
-                <td class="p-3">{{ project.name_project }}</td>
-                <td class="p-3 flex items-center gap-2">
-                    <div class="font-medium text-gray-800 dark:text-white">{{ project.professor_name }}</div>
-                </td>
-                <td class="p-3">{{ project.module }}</td>
-                <td class="p-3">{{ project.team_name }}</td>
-                <td class="p-3">
-                  <button 
-                    @click="toggleMembers(project.id_project)"
-                    class="px-4 py-2 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-all duration-300 shadow"
-                  >
-                    {{ selectedProjectId === project.id_project && showMembersPopup ? 'Hide Members' : 'View Members' }}
-                  </button>
-                </td>
-              </tr>
-              
-              <!-- Members dropdown row -->
-              <tr v-if="selectedProjectId === project.id_project && showMembersPopup" class="!border-t-0">
-                <td colspan="5" class="p-0">
-                  <viewMembers 
-                    :project_id="project.id_project"
-                    :is_visible="true"
-                    @close="hideMembers"
-                  />
-                </td>
-              </tr>
-            </template>
-          </tbody>
-        </table>
-      </div>
-      
-      <!-- Pagination -->
-      <div class="flex justify-between items-center mt-6 text-sm text-gray-600 dark:text-white">
-        <span>Page 1 of 10</span>
-        <div class="space-x-2">
-          <button class="px-4 py-2 border rounded border-gray-300 dark:border-gray-700">Previous</button>
-          <button class="px-4 py-2 border rounded border-gray-300 dark:border-gray-700">Next</button>
+
+        <!-- Aucun projet trouvé -->
+        <div v-else class="text-center text-gray-500 dark:text-gray-400 py-16">
+          Aucun projet trouvé.
+        </div>
+
+        <!-- Message d’erreur -->
+        <div v-if="errorMessage" class="mt-6 text-red-500 text-sm text-center">
+          {{ errorMessage }}
         </div>
       </div>
-    </div>
-    </StudentLayout>
+    </section>
+  </StudentLayout>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted } from 'vue';
+import { useAuthStore } from '@/stores/auth';
+import api from '@/services/api';
+
+import { useRouter } from 'vue-router';
 import StudentLayout from '@/components/layout/StudentLayout.vue'
-import viewMembers from '../viewMembers.vue'
-import api from '@/services/api'
-import { useAuthStore } from '@/stores/auth'
 
+const router = useRouter();
+const projects = ref([]);
+const errorMessage = ref('');
+const loading = ref(true);
 const authStore = useAuthStore();
-const router = useRouter()
-const projects = ref([])
-const search = ref('')
-const showMembersPopup = ref(false)
-const selectedProjectId = ref(null)
 
-function toggleMembers(id_project) {
-  if (selectedProjectId.value === id_project) {
-    showMembersPopup.value = !showMembersPopup.value
-  } else {
-    selectedProjectId.value = id_project
-    showMembersPopup.value = true
-  }
-}
+// Fonction utilitaire pour formater les dates
+const formatDate = (dateString) => {
+  if (!dateString) return '';
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  return new Date(dateString).toLocaleDateString('en-US', options);
+};
 
-function hideMembers() {
-  showMembersPopup.value = false
-}
-
+// Récupération des projets depuis l’API
 const fetchProjects = async () => {
+  loading.value = true;
+  errorMessage.value = '';
   try {
-    const res = await api.get(`/student/projects/all_projects/${authStore.ID}`)
-    projects.value = res.data.data
-    console.log(res.data.data)
-  } catch (err) {
-    console.error('Erreur chargement des projets  :', err)
+    const token = localStorage.getItem('token');
+    const studentId = authStore.ID;  // Utilisation de l'ID de l'étudiant
+    const response = await api.get(`/student/projects/all_projects/${studentId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    // Vérifiez la structure des données de la réponse
+    console.log('API Response:', response.data); // Debugging
+
+    // Accessing the 'data' property from the API response
+    const data = response.data && response.data.data ? response.data.data : [];
+
+    // Ensure data is an array before processing
+    if (Array.isArray(data)) {
+      projects.value = data.map((p) => ({
+        id_project: p.id_project,
+        name_project: p.name_project,
+        professor_name: p.professor_name,
+        module: p.module,
+        team_name: p.team_name,
+        deadline: p.deadline,
+      }));
+    } else {
+      errorMessage.value = 'The data returned from the API is not an array.';
+    }
+  } catch (error) {
+    console.error('Erreur de récupération des projets:', error);
+    errorMessage.value = 'Failed to load projects. Please try again later.';
+  } finally {
+    loading.value = false;
   }
-}
+};
 
-onMounted(fetchProjects)
+// Supprimer un projet
+const confirmDelete = async (id) => {
+  if (confirm('Voulez-vous vraiment supprimer ce projet ?')) {
+    try {
+      await api.delete(`/student/projects/delete_project/${id}`);
+      projects.value = projects.value.filter((p) => p.id_project !== id);
+    } catch (error) {
+      console.error('Erreur de suppression :', error);
+    }
+  }
+};
 
-const filteredProjects = computed(() =>
-  projects.value.filter((s) =>
-    s.name_project.toLowerCase().includes(search.value.toLowerCase())
-  )
-)
+// Rediriger vers la page de détails
+const goToProject = (id) => {
+  router.push({ name: 'ProjectDetails', query: { id } });
+};
 
-function ViewMembers(id){
-  router.push(`/viewMembers?id=${id}`)
-}
+// Rediriger vers la page d'édition
+const editProject = (project) => {
+  router.push({ path: '/AddProject', query: { id: project.id_project } });
+};
+
+onMounted(fetchProjects);
 </script>

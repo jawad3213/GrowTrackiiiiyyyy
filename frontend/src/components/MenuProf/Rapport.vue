@@ -215,9 +215,10 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import axios from 'axios'
 
-axios.defaults.withCredentials = true
+import api from '@/services/api'
+
+api.defaults.withCredentials = true
 
 // Data refs
 const profile        = ref({})
@@ -259,22 +260,22 @@ function getSolutionClass(sol) {
 
 onMounted(async () => {
   try {
-    const profRes = await axios.get(
-      `http://localhost:3000/api/report/Profile_Section/${studentId}`
+    const profRes = await api.get(
+      `/api/report/Profile_Section/${studentId}`
     )
     profile.value = Array.isArray(profRes.data)
       ? profRes.data[0]
       : profRes.data.result
 
-    const evalRes = await axios.get(
-      `http://localhost:3000/api/report/Evaluation_Section/${studentId}`
+    const evalRes = await api.get(
+      `/api/report/Evaluation_Section/${studentId}`
     )
     evale.value = Array.isArray(evalRes.data)
       ? evalRes.data[0]
       : evalRes.data.result
 
-    const sigRes = await axios.get(
-      `http://localhost:3000/api/report/Signal_History/${studentId}`
+    const sigRes = await api.get(
+      `/api/report/Signal_History/${studentId}`
     )
     signals.value = sigRes.data.result
   } catch (e) {
@@ -284,8 +285,8 @@ onMounted(async () => {
   }
 
   try {
-    const comRes = await axios.get(
-      `http://localhost:3000/api/report/Comment_Section/${studentId}`
+    const comRes = await api.get(
+      `/api/report/Comment_Section/${studentId}`
     )
     commentResults.value = comRes.data.result
   } catch (e) {
@@ -302,8 +303,8 @@ async function generatePdf() {
   error.value   = null
 
   try {
-    const pdfRes = await axios.post(
-      'http://localhost:3000/api/generate-pdf',
+    const pdfRes = await api.post(
+      '/api/generate-pdf',
       {
         profile: profile.value,
         evale: evale.value,
