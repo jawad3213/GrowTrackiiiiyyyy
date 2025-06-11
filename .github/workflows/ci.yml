@@ -43,7 +43,7 @@ jobs:
 
       - name: Run backend unit tests
         working-directory: ./backend
-        run: npm test -- --passWithNoTests
+        run: npm run test:unit
 
       - name: Run backend integration tests (optional)
         working-directory: ./backend
