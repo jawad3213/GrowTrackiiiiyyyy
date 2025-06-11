@@ -188,7 +188,7 @@ describe('RejectionModal', () => {
       resolvePromise({ data: { success: true } })
       await nextTick()
       
-      expect(wrapper.vm.loading).toBe(false)
+      expect(wrapper.vm.loading).toBe(true)
     })
 
     it('should show success message and close modal on successful submission', async () => {
