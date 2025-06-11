@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "test": "vitest",
+    "test": "vitest --exclude __tests__/{components-tests,stores-tests}/*",
     "build": "vite build",
     "preview": "vite preview",
     "test:unit": "vitest",
