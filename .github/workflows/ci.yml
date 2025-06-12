@@ -77,4 +77,4 @@ jobs:
           docker build -t nour537/growtrack-frontend:latest ./frontend
           docker push nour537/growtrack-frontend:latest
 
-# just a test :)
+# it is just a test :)
